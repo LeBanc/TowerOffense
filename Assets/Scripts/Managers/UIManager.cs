@@ -51,11 +51,56 @@ public class UIManager : Singleton<UIManager>
             GameManager.PlayUpdate += PlayUI;
             GameManager.PauseUpdate += PauseMenu;
             GameManager.SaveUpdate += SaveUI;
-            ShowStartMenu();
+            InitializeUI();
         }
     }
 
+    protected override void OnDestroy()
+    {
+        base.OnDestroy();
+        GameManager.OnStartToLoad -= ShowLoadUI;
+        GameManager.OnLoadToPlay -= ShowPlayUI;
+        GameManager.OnPlayToStart -= ShowStartMenu;
+        GameManager.OnPlayToPause -= ShowPauseMenu;
+        GameManager.OnPauseToPlay -= ShowPlayUI;
+        GameManager.OnPauseToStart -= ShowStartMenu;
+        GameManager.OnPauseToLoad -= ShowLoadUI;
+        GameManager.OnPauseToSave -= ShowSaveUI;
+        GameManager.OnSaveToPause -= ShowPauseMenu;
+        GameManager.StartUpdate -= StartMenu;
+        GameManager.LoadUpdate -= LoadUI;
+        GameManager.PlayUpdate -= PlayUI;
+        GameManager.PauseUpdate -= PauseMenu;
+        GameManager.SaveUpdate -= SaveUI;
+    }
+
     #region Show dedicate Canvas Methods
+    void InitializeUI()
+    {
+        switch (GameManager.CurrentGameState)
+        {
+            case GameManager.GameState.start:
+                ShowStartMenu();
+                break;
+            case GameManager.GameState.load:
+                ShowLoadUI();
+                break;
+            case GameManager.GameState.play:
+                ShowPlayUI();
+                break;
+            case GameManager.GameState.pause:
+                ShowPauseMenu();
+                break;
+            case GameManager.GameState.save:
+                ShowSaveUI();
+                break;
+            default:
+                ShowStartMenu();
+                break;
+        }
+    }
+
+
     void ShowStartMenu()
     {
         startMenu.gameObject.SetActive(true);

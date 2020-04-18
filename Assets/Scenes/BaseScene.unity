@@ -150,6 +150,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: bc0b7102ef6ea254cab980975a6ed2d8, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  debugFirstGameState: 0
   managers:
   - {fileID: 6524674781075437055, guid: 52dd27d341752bb4a89b1ff42b44c8e2, type: 3}
   - {fileID: 642464753537798572, guid: 493c2bfe752e0bd4790c133823a0cfaa, type: 3}

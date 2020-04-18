@@ -15,6 +15,9 @@ public class GameManager : Singleton<GameManager>
         save
     }
 
+    [SerializeField]
+    private GameState debugFirstGameState = GameState.start;
+
     private static GameState currentGameState;
     private static GameState previousGameState;
     private static GameState nextGameState;
@@ -104,7 +107,9 @@ public class GameManager : Singleton<GameManager>
     // Start is called before the first frame update
     void Start()
     {
-        currentGameState = GameState.start;
+        previousGameState = debugFirstGameState;
+        currentGameState = debugFirstGameState;
+        nextGameState = debugFirstGameState;
         _instanciatedManagers = new List<GameObject>();
         InstantiateManagers();
     }
