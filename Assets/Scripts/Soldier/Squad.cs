@@ -6,10 +6,17 @@ using UnityEngine.AI;
 public class Squad : MonoBehaviour
 {
     // Soldier positions relative to the squad center point
-    public Vector3 soldier1Position;
-    public Vector3 soldier2Position;
-    public Vector3 soldier3Position;
-    public Vector3 soldier4Position;
+    public SquadData squadData;
+    private Vector3 soldier1Position;
+    private Vector3 soldier2Position;
+    private Vector3 soldier3Position;
+    private Vector3 soldier4Position;
+
+    // Soldier data
+    public SoldierData soldier1data;
+    public SoldierData soldier2data;
+    public SoldierData soldier3data;
+    public SoldierData soldier4data;
 
     // Soldier prefab
     [SerializeField]
@@ -42,10 +49,15 @@ public class Squad : MonoBehaviour
         navAgent = GetComponent<NavMeshAgent>();
         navAgent.enabled = true;
 
-        soldier1 = CreateSoldier("Soldier1", soldierPrefab, soldier1Position);
-        soldier2 = CreateSoldier("Soldier2", soldierPrefab, soldier2Position);
-        soldier3 = CreateSoldier("Soldier3", soldierPrefab, soldier3Position);
-        soldier4 = CreateSoldier("Soldier4", soldierPrefab, soldier4Position);
+        soldier1Position = squadData.soldier1Position;
+        soldier2Position = squadData.soldier2Position;
+        soldier3Position = squadData.soldier3Position;
+        soldier4Position = squadData.soldier4Position;
+
+        soldier1 = CreateSoldier("Soldier1", soldierPrefab, soldier1Position, soldier1data);
+        soldier2 = CreateSoldier("Soldier2", soldierPrefab, soldier2Position, soldier2data);
+        soldier3 = CreateSoldier("Soldier3", soldierPrefab, soldier3Position, soldier3data);
+        soldier4 = CreateSoldier("Soldier4", soldierPrefab, soldier4Position, soldier4data);
 
         // Link update events
         GameManager.PlayUpdate += SquadUpdate;
@@ -73,7 +85,7 @@ public class Squad : MonoBehaviour
     /// <param name="_prefab">Prefab of soldier to instanciate</param>
     /// <param name="_position">Relative position where to instanciate the soldier</param>
     /// <returns></returns>
-    private Soldier CreateSoldier(string _name, GameObject _prefab, Vector3 _position)
+    private Soldier CreateSoldier(string _name, GameObject _prefab, Vector3 _position, SoldierData _data)
     {
         // Creates a gameObject from prefab and changes its name
         GameObject _soldierGO = Instantiate(_prefab, transform.position + _position, transform.rotation, transform);
@@ -87,44 +99,10 @@ public class Squad : MonoBehaviour
         }
         else
         {
-            _soldier.Setup(this);
+            _soldier.Setup(this, _data, _data.maxHP);
         }
 
         return _soldier;
-    }
-
-    /// <summary>
-    /// Get the nearest tower in range
-    /// </summary>
-    private void GetNearestInRangeTarget()
-    {
-        Collider[] _towers;
-        Transform _target = null;
-        float _targetDist = Mathf.Infinity;
-
-        // Get all the in range towers
-        _towers = Physics.OverlapSphere(transform.position, 20f, LayerMask.GetMask("Buildings"));
-        if (_towers.Length > 0)
-        {
-            // If there is at least a tower in range, find the closest one
-            foreach (Collider c in _towers)
-            {
-                if (c.TryGetComponent<Tower>(out Tower _tower))
-                {
-                    if((transform.position-_tower.transform.position).magnitude < _targetDist)
-                    {
-                        _target = _tower.transform;
-                        _targetDist = (transform.position - _tower.transform.position).magnitude;
-                    }
-                }
-            }
-        }
-        // If a tower was found in range, defines it as the squad target and activate the dedicate event
-        if (_target != null)
-        {
-            target = _target;
-            OnTargetChange(target);
-        }
     }
 
     /// <summary>
@@ -178,9 +156,16 @@ public class Squad : MonoBehaviour
                 }
             }
         }
-        
+
         // If there is no target defined, search for the nearest in range tower
-        if(target == null) GetNearestInRangeTarget();
+        if (target == null)
+        {
+            target = Ranges.GetNearestTower(this.transform, 1,1,0);
+            if (target != null)
+            {
+                OnTargetChange(target);
+            }
+        }
         // If there is still no target found, allow the squad rotation to be managed by NavMeshAgent (forward = movement direction)
         if(target == null)
         {
@@ -193,7 +178,7 @@ public class Squad : MonoBehaviour
             FaceTarget(target);
 
             // If the target enters the longest attack range, sets the protection stance at true
-            if ((target.position - transform.position).magnitude < 40f)
+            if ((target.position - transform.position).magnitude <= PlayManager.LongRange)
             {
                 if (!protectionStance) protectionStance = true;
             }

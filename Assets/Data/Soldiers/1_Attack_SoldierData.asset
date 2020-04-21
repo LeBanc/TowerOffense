@@ -1,0 +1,28 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 330704c9c90b4834a9c3bf61c96dfa2c, type: 3}
+  m_Name: 1_Attack_SoldierData
+  m_EditorClassIdentifier: 
+  shortRangeAttack: 2
+  middleRangeAttack: 2
+  longRangeAttack: 1
+  shortRangeDefense: 0
+  middleRangeDefense: 0
+  longRangeDefense: 0
+  explosiveDefense: 0
+  speed: 100
+  maxHP: 100
+  capacities: 
+  improveTo:
+  - {fileID: 11400000, guid: 72cc1b5596860264d8b3865557e5af76, type: 2}
+  - {fileID: 11400000, guid: 78823169fef020646a63597efd87fff2, type: 2}
+  - {fileID: 11400000, guid: f27c5ae7a4175b243b61269b41bd6dc9, type: 2}

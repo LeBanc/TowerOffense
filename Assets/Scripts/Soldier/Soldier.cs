@@ -9,14 +9,19 @@ public class Soldier : MonoBehaviour
     private NavMeshAgent navAgent;
     private Squad squad;
     private Transform target;
+    private Transform secondaryTarget;
+    private SoldierData data;
+    private int hP;
 
     /// <summary>
     /// Soldier setup sets the parent squad, the soldier's navMeshAgent and the events used
     /// </summary>
     /// <param name="_squad"></param>
-    public void Setup(Squad _squad)
+    public void Setup(Squad _squad, SoldierData _data, int _HP)
     {
         squad = _squad;
+        data = _data;
+        hP = _HP;
         navAgent = GetComponent<NavMeshAgent>();
         // Events used are PlayUpdate and Squad target change
         squad.OnTargetChange += SetTarget;
@@ -35,10 +40,10 @@ public class Soldier : MonoBehaviour
     /// <summary>
     /// SetDestination sets the soldier's NavMeshAgent SetDestination (easily called by Squad this way)
     /// </summary>
-    /// <param name="_target"></param>
-    public void SetDestination(Vector3 _target)
+    /// <param name="_destination"></param>
+    public void SetDestination(Vector3 _destination)
     {
-        navAgent.SetDestination(_target);
+        navAgent.SetDestination(_destination);
     }
 
     /// <summary>
@@ -48,6 +53,7 @@ public class Soldier : MonoBehaviour
     private void SetTarget(Transform _target)
     {
         target = _target;
+        secondaryTarget = null;
     }
 
     /// <summary>
@@ -78,7 +84,25 @@ public class Soldier : MonoBehaviour
         else
         {
             navAgent.updateRotation = false;
-            FaceTarget(target);
+            // if target reachable
+                FaceTarget(target);
+            // shoot target
+
+            // else (target not reachable)
+            // if a secondary target can be found
+            secondaryTarget = Ranges.GetNearestTower(this.transform, data.shortRangeAttack,data.middleRangeAttack,data.longRangeAttack);
+            if(secondaryTarget != null)
+            {
+                FaceTarget(secondaryTarget);
+                // shoot secondary target
+            }
+            else
+            {
+                //else (no secondary target found)
+                FaceTarget(target);
+            }
+
+
         }
     }
 }

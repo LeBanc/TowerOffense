@@ -11,11 +11,8 @@ public class Tower : MonoBehaviour
     // Boolean to set the tower as active or not (active towers are shown as towers, not buildings)
     private bool active = false;
 
-    // List of soldiers seen by the tower
-    private List<GameObject> targets;
-
     // Selected target of the tower
-    private GameObject selectedTarget;
+    private Transform selectedTarget;
 
     // For debug purpose
     // /*
@@ -26,7 +23,6 @@ public class Tower : MonoBehaviour
     private void Start()
     {
         // Initialization
-        targets = new List<GameObject>();
         GameManager.PlayUpdate += TowerUpdate;
 
         // For debug purpose
@@ -63,56 +59,13 @@ public class Tower : MonoBehaviour
     }
 
     /// <summary>
-    /// AddTarget adds a target to the target list if it isn't already in the list
+    /// TowerUpdate is the Update methods of the Tower, to call in Update in test scene or to add to GameManager event in game
     /// </summary>
-    /// <param name="target">GameObject to add to the list</param>
-    private void AddTarget(GameObject target)
+    private void TowerUpdate()
     {
-        if (!targets.Contains(target)) targets.Add(target);
-    }
+        selectedTarget = Ranges.GetNearestSoldier(this.transform, 1, 1, 1);
+        if (!active && selectedTarget != null) Activate();
 
-    /// <summary>
-    /// RemoveTarget removes the target from the list if it contains it
-    /// </summary>
-    /// <param name="target">GameObject to remove from the list</param>
-    private void RemoveTarget(GameObject target)
-    {
-        if (targets.Contains(target)) targets.Remove(target);
-    }
-
-    /// <summary>
-    /// GetNearestInSightTarget sets the nearest in range and in sight soldier as the selected target (null if none)
-    /// </summary>
-    private void GetNearsetInSightTarget()
-    {
-        // For debug purpose
-        line.enabled = false;
-
-        selectedTarget = null; // Clear selection
-        if (!(targets.Count > 0)) return; // If there is no in range targets, return
-        
-        float _targetDist = Mathf.Infinity; // float used to get the nearest target
-        foreach (GameObject t in targets)
-        {
-            // Checks for each target in range if it is a soldier that can be hit by a raycast
-            Vector3 rayDirection = (t.transform.position - transform.position);
-            rayDirection.Normalize();
-            
-            //Debug.DrawRay(transform.position, rayDirection * 100f, Color.yellow);
-
-            if (Physics.Raycast(transform.position, rayDirection, out RaycastHit hit, Mathf.Infinity, LayerMask.GetMask(new string[] { "Soldiers", "Buildings" })))
-            {
-                if (hit.collider.gameObject == t && hit.collider.TryGetComponent<Soldier>(out Soldier _soldier))
-                {
-                    // Sets the nearest soldier as the selected target
-                    if ((hit.transform.position - transform.position).magnitude < _targetDist)
-                    {
-                        _targetDist = (t.transform.position - transform.position).magnitude;
-                        selectedTarget = t;
-                    }
-                }
-            }
-        }
         // For debug purpose
         // /*
         // Checks if a target is selected and draws a line to it
@@ -123,46 +76,11 @@ public class Tower : MonoBehaviour
             line.SetPositions(_positions);
             line.enabled = true;
         }
+        else
+        {
+            line.enabled = false;
+        }
         // */
-    }
-
-    /// <summary>
-    /// GetInRangeTargets search for any in range targets (in range: between smaller and larger detection ranges)
-    /// </summary>
-    private void GetInRangeTargets()
-    {
-        targets.Clear();
-        Collider[] _soldiers;
-        _soldiers = Physics.OverlapSphere(transform.position, largerDetectionRange, LayerMask.GetMask("Soldiers"));
-        if (_soldiers.Length > 0)
-        {
-            foreach (Collider c in _soldiers)
-            {
-                AddTarget(c.gameObject);
-            }
-        }
-
-        if (smallerDetectionRange > 0f && smallerDetectionRange < largerDetectionRange)
-        {
-            _soldiers = Physics.OverlapSphere(transform.position, smallerDetectionRange, LayerMask.GetMask("Soldiers"));
-            if (_soldiers.Length > 0)
-            {
-                foreach (Collider c in _soldiers)
-                {
-                    RemoveTarget(c.gameObject);
-                }
-            }
-        }
-    }
-
-    /// <summary>
-    /// TowerUpdate is the Update methods of the Tower, to call in Update in test scene or to add to GameManager event in game
-    /// </summary>
-    private void TowerUpdate()
-    {
-        GetInRangeTargets();
-        GetNearsetInSightTarget();
-        if (!active && selectedTarget != null) Activate();
     }
 
 }

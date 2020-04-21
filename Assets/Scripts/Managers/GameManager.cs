@@ -60,7 +60,6 @@ public class GameManager : Singleton<GameManager>
     #region Managers
 
     public GameObject[] managers;
-
     private List<GameObject> _instanciatedManagers;
 
     private void InstantiateManagers()
@@ -83,6 +82,24 @@ public class GameManager : Singleton<GameManager>
             Destroy(go);
         }
         _instanciatedManagers.Clear();
+    }
+
+    private void AddManager(GameObject manager)
+    {
+        _instanciatedManagers.Add(manager);
+    }
+
+    private void RemoveManager(GameObject manager)
+    {
+        if (_instanciatedManagers.Contains(manager))
+        {
+            _instanciatedManagers.Remove(manager);
+            Destroy(manager);
+        }
+        else
+        {
+            Debug.LogError("[GameManager] Trying to delete an unknown manager: " + manager.name);
+        }
     }
     #endregion
 
