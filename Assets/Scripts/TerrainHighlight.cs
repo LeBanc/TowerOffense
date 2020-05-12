@@ -26,7 +26,7 @@ public class TerrainHighlight : MonoBehaviour
         {
             // Shows the quad and moves it to the nearest grid coordinates of the hit point
             GetComponent<MeshRenderer>().enabled = true;
-            transform.position = GridAdjustment.GetGridCoordinates(hit.point);
+            transform.position = GridAdjustment.GetGridCoordinates(hit.point) + Vector3.up * 0.01f;
         }
         else
         {

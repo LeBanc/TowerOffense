@@ -3,7 +3,9 @@ guid: c7074a885fa392e41afae528aca81404
 MonoImporter:
   externalObjects: {}
   serializedVersion: 2
-  defaultReferences: []
+  defaultReferences:
+  - squadPrefab: {instanceID: 0}
+  - defaultSquadType: {instanceID: 0}
   executionOrder: 0
   icon: {instanceID: 0}
   userData: 

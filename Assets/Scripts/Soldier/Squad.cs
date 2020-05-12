@@ -1,208 +1,138 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
-using UnityEngine.AI;
+using System;
+using UnityEngine.UI;
 
+[Serializable]
 public class Squad : MonoBehaviour
 {
-    // Soldier positions relative to the squad center point
-    public SquadData squadData;
-    private Vector3 soldier1Position;
-    private Vector3 soldier2Position;
-    private Vector3 soldier3Position;
-    private Vector3 soldier4Position;
+    public enum PreferedRange
+    {
+        ShortRange,
+        MiddleRange,
+        LongRange
+    }
 
-    // Soldier data
-    public SoldierData soldier1data;
-    public SoldierData soldier2data;
-    public SoldierData soldier3data;
-    public SoldierData soldier4data;
+    public enum PositionChoice
+    {
+        MaximizeAttack,
+        MaximizeDefense,
+        PlayerChoice
+    }
 
-    // Soldier prefab
+    public bool isEngaged = false;
+
+    private int iD;
     [SerializeField]
-    private GameObject soldierPrefab;
+    private Color color;
+    [SerializeField]
+    private SquadData squadType;
+    [SerializeField]
+    private Soldier[] soldierList = new Soldier[4];
+    [SerializeField]
+    private PreferedRange range;
+    [SerializeField]
+    private PositionChoice posChoice;
 
-    // Basic components
-    private Camera mainCamera;
-    private NavMeshAgent navAgent;
-    
-    // Soldier components
-    private Soldier soldier1;
-    private Soldier soldier2;
-    private Soldier soldier3;
-    private Soldier soldier4;
 
-    // Target components
-    private Transform target;
-    private bool protectionStance = false;
-
-    // Events
-    public delegate void SquadTargetEventHandler(Transform _target);
-    public event SquadTargetEventHandler OnTargetChange;
-
-    /// <summary>
-    /// On start, define basic components and creates soldiers
-    /// </summary>
-    void Start()
+    #region Properties access
+    public int ID
     {
-        mainCamera = Camera.main;
-        navAgent = GetComponent<NavMeshAgent>();
-        navAgent.enabled = true;
-
-        soldier1Position = squadData.soldier1Position;
-        soldier2Position = squadData.soldier2Position;
-        soldier3Position = squadData.soldier3Position;
-        soldier4Position = squadData.soldier4Position;
-
-        soldier1 = CreateSoldier("Soldier1", soldierPrefab, soldier1Position, soldier1data);
-        soldier2 = CreateSoldier("Soldier2", soldierPrefab, soldier2Position, soldier2data);
-        soldier3 = CreateSoldier("Soldier3", soldierPrefab, soldier3Position, soldier3data);
-        soldier4 = CreateSoldier("Soldier4", soldierPrefab, soldier4Position, soldier4data);
-
-        // Link update events
-        GameManager.PlayUpdate += SquadUpdate;
+        get { return iD; }
     }
 
-    /// <summary>
-    /// On destroy, destoys soldiers and clear event links
-    /// </summary>
-    private void OnDestroy()
+    public Color Color
     {
-        // Destroys soldiers
-        Destroy(soldier1.gameObject);
-        Destroy(soldier2.gameObject);
-        Destroy(soldier3.gameObject);
-        Destroy(soldier4.gameObject);
-
-        // Unlinks event
-        GameManager.PlayUpdate -= SquadUpdate;
+        get { return color; }
     }
 
-    /// <summary>
-    /// CreateSoldier methods creates a soldier ans returns its Soldier component
-    /// </summary>
-    /// <param name="_name">Name of the gameobject</param>
-    /// <param name="_prefab">Prefab of soldier to instanciate</param>
-    /// <param name="_position">Relative position where to instanciate the soldier</param>
-    /// <returns></returns>
-    private Soldier CreateSoldier(string _name, GameObject _prefab, Vector3 _position, SoldierData _data)
+    public SquadData SquadType
     {
-        // Creates a gameObject from prefab and changes its name
-        GameObject _soldierGO = Instantiate(_prefab, transform.position + _position, transform.rotation, transform);
-        _soldierGO.name = _name;
-
-        // Gets the Soldier component and calls its setup if found
-        Soldier _soldier = _soldierGO.GetComponent<Soldier>();
-        if (_soldier == null)
-        {
-            Debug.LogError("[Squad] Trying to instantiate GameObject that is not a Soldier");
-        }
-        else
-        {
-            _soldier.Setup(this, _data, _data.maxHP);
-        }
-
-        return _soldier;
+        get { return squadType; }
     }
 
-    /// <summary>
-    /// FaceTarget method is used to rotate the squad toward its target
-    /// </summary>
-    /// <param name="_target"></param>
-    private void FaceTarget(Transform _target)
+    public PositionChoice PosChoice
     {
-        // Gets the projection on XZ plane of the vector between target and squad positions
-        Vector3 _diff = _target.position - transform.position;
-        _diff = new Vector3(_diff.x, 0f, _diff.z);
-
-        // Gets the angle between the _diff vector and the forward squad axe
-        float _angle = Vector3.SignedAngle(transform.forward, Vector3.Normalize(_diff), transform.up);
-        // Clamps that angle value depending of the NavMeshAgent parameters and rotates the squad
-        _angle = Mathf.Clamp(_angle, -navAgent.angularSpeed * Time.deltaTime, navAgent.angularSpeed * Time.deltaTime);
-        transform.Rotate(transform.up, _angle);
+        set { posChoice = value; }
+        get { return posChoice; }
     }
 
-    /// <summary>
-    /// SquadUpdate is the Update method of the squad
-    /// It defines the squad destination, the squad target and the soldiers destination
-    /// </summary>
-    void SquadUpdate()
+    public PreferedRange PrefRange
     {
+        get { return range; }
+    }
 
-        // For now a target is defined by the player with mouse click on terrain or active tower
-        if (Input.GetMouseButtonDown(0))
-        {
-            RaycastHit hit;
-            Ray ray = mainCamera.ScreenPointToRay(Input.mousePosition);
-            if (Physics.Raycast(ray, out hit, Mathf.Infinity, LayerMask.GetMask(new string[] { "Buildings", "Terrain" })))
-            {
-                // If the player click on a tower
-                if(hit.collider.TryGetComponent<Tower>(out Tower tower))
-                {
-                    // Checks if its active (unactive towers behave like buildings and nothing happens)
-                    if (tower.IsActive())
-                    {
-                        // Resets protectionStance to allow the rotation towards new target and sets squad target and destination
-                        protectionStance = false;
-                        navAgent.SetDestination(tower.transform.position);
-                        target = tower.transform;
-                        OnTargetChange(target);
-                    }
-                }
-                else if (hit.collider.gameObject.CompareTag("Terrain"))
-                {
-                    // If the object hit was the terrain, sets sqaud destination
-                    navAgent.SetDestination(GridAdjustment.GetGridCoordinates(hit.point));
-                }
-            }
-        }
+    public Soldier[] Soldiers
+    {
+        get { return soldierList; }
+    }
+    #endregion
 
-        // If there is no target defined, search for the nearest in range tower
-        if (target == null)
-        {
-            target = Ranges.GetNearestTower(this.transform, 1,1,0);
-            if (target != null)
-            {
-                OnTargetChange(target);
-            }
-        }
-        // If there is still no target found, allow the squad rotation to be managed by NavMeshAgent (forward = movement direction)
-        if(target == null)
-        {
-            navAgent.updateRotation = true;
-        }
-        else
-        {
-            // But if there is a target, the rotation is managed by FaceTarget to face the target
-            navAgent.updateRotation = false;
-            FaceTarget(target);
+    public void Setup()
+    {
+        iD = PlayManager.GetFreeSquadID();
+        color = PlayManager.GetSquadColor(iD);
+        squadType = PlayManager.defaultSquadType;
+        posChoice = PositionChoice.MaximizeAttack;
+        range = PreferedRange.MiddleRange;
+    }
 
-            // If the target enters the longest attack range, sets the protection stance at true
-            if ((target.position - transform.position).magnitude <= PlayManager.LongRange)
-            {
-                if (!protectionStance) protectionStance = true;
-            }
-            else
-            {
-                // If the target is at more than the longest attack range
-                // Checks if the squad was once at shooting distance and resets it along with the target
-                // This is useful for retreat, the squad keeps its stance facing the target until it is not in range anymore
-                if (protectionStance)
-                {
-                    protectionStance = false;
-                    target = null;
-                    OnTargetChange(target);
-                }
-            }
-        }
+    public void ChangeSquadType(SquadData _newType)
+    {
+        squadType = _newType;
+    }
 
-        // If the squad is moving, defines the soldiers position relatively from the current squad position
-        if (!navAgent.isStopped)
+    public SquadUnit InstanciateSquadUnit(Vector3 spawPoint)
+    {
+        GameObject _go = Instantiate(PlayManager.SquadPrefab, GridAdjustment.GetGridCoordinates(spawPoint), Quaternion.identity);
+        SquadUnit _su = _go.GetComponent<SquadUnit>();
+        _su.Setup(this);
+        FindObjectOfType<CityCanvas>().AddSquad(this, _su);
+        return _su;
+    }
+
+    public void UpdatePosChoice(PositionChoice _newChoice)
+    {
+        posChoice = _newChoice;
+        switch(posChoice)
         {
-            soldier1.SetDestination(transform.position + soldier1Position.x * transform.right + soldier1Position.y * transform.up + soldier1Position.z * transform.forward);
-            soldier2.SetDestination(transform.position + soldier2Position.x * transform.right + soldier2Position.y * transform.up + soldier2Position.z * transform.forward);
-            soldier3.SetDestination(transform.position + soldier3Position.x * transform.right + soldier3Position.y * transform.up + soldier3Position.z * transform.forward);
-            soldier4.SetDestination(transform.position + soldier4Position.x * transform.right + soldier4Position.y * transform.up + soldier4Position.z * transform.forward);
+            case PositionChoice.MaximizeAttack:
+                range = GetMaxAttackRange();
+                break;
+            case PositionChoice.MaximizeDefense:
+                range = GetMaxDefenseRange();
+                break;
+            case PositionChoice.PlayerChoice:
+                break;
+            default:
+                break;
         }
+    }
+
+    private PreferedRange GetMaxAttackRange()
+    {
+        if (soldierList[0] == null || soldierList[1] == null || soldierList[2] == null || soldierList[3] == null) return PreferedRange.MiddleRange;
+
+        int _shortRange = soldierList[0].ShortRangeAttack + soldierList[1].ShortRangeAttack + soldierList[2].ShortRangeAttack + soldierList[3].ShortRangeAttack;
+        int _middleRange = soldierList[0].MiddleRangeAttack + soldierList[1].MiddleRangeAttack + soldierList[2].MiddleRangeAttack + soldierList[3].MiddleRangeAttack;
+        int _longRange = soldierList[0].LongRangeAttack + soldierList[1].LongRangeAttack + soldierList[2].LongRangeAttack + soldierList[3].LongRangeAttack;
+
+        if (_longRange >= _middleRange && _longRange >= _shortRange) return PreferedRange.LongRange;
+        else if (_middleRange >= _shortRange) return PreferedRange.MiddleRange;
+        else return PreferedRange.ShortRange;
+    }
+
+    private PreferedRange GetMaxDefenseRange()
+    {
+        if (soldierList[0] == null || soldierList[1] == null || soldierList[2] == null || soldierList[3] == null) return PreferedRange.LongRange;
+
+        int _shortRange = soldierList[0].ShortRangeDefense + soldierList[1].ShortRangeDefense + soldierList[2].ShortRangeDefense + soldierList[3].ShortRangeDefense;
+        int _middleRange = soldierList[0].MiddleRangeDefense + soldierList[1].MiddleRangeDefense + soldierList[2].MiddleRangeDefense + soldierList[3].MiddleRangeDefense;
+        int _longRange = soldierList[0].LongRangeDefense + soldierList[1].LongRangeDefense + soldierList[2].LongRangeDefense + soldierList[3].LongRangeDefense;
+
+        if (_longRange >= _middleRange && _longRange >= _shortRange) return PreferedRange.LongRange;
+        else if (_middleRange >= _shortRange) return PreferedRange.MiddleRange;
+        else return PreferedRange.ShortRange;
     }
 }

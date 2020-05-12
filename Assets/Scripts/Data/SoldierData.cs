@@ -16,6 +16,8 @@ public class SoldierData : ScriptableObject
         WoundedSaving
     }
 
+    public GameObject prefab;
+
     public int shortRangeAttack;
     public int middleRangeAttack;
     public int longRangeAttack;
@@ -27,6 +29,8 @@ public class SoldierData : ScriptableObject
 
     public int speed;
     public int maxHP;
+    public float shootingDelay;
+    public AudioClip shootingSound;
 
     public List<Capacities> capacities;
 

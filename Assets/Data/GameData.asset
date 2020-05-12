@@ -15,3 +15,19 @@ MonoBehaviour:
   shortRange: 10
   middleRange: 30
   longRange: 50
+  squadPrefab: {fileID: 16989649490458422, guid: 4115a4419e61bb34a9a08f353b0cc578,
+    type: 3}
+  defaultSquadType: {fileID: 11400000, guid: 3ba13929eb5df914f93a858a1f8a067e, type: 2}
+  squadColors:
+  - {r: 1, g: 0.84705883, b: 0, a: 1}
+  - {r: 0.14901961, g: 0.49803922, b: 0, a: 1}
+  - {r: 0, g: 0.5803922, b: 1, a: 1}
+  - {r: 1, g: 0, b: 0.11372549, a: 1}
+  soldierImages:
+  - {fileID: 21300000, guid: 0b977be902319134281ebfdf6b4ee6e8, type: 3}
+  - {fileID: 21300000, guid: 1fe592591d7fc0e4c81e60dab966a742, type: 3}
+  - {fileID: 21300000, guid: 888936182c7338043915bc9b88c021e5, type: 3}
+  - {fileID: 21300000, guid: 95b3e1bc08ce35644aba10e47cd321bb, type: 3}
+  - {fileID: 21300000, guid: ffabe18f14c66f7498eef5cf9070bf8e, type: 3}
+  soldierFirstNames: []
+  soldierLastNames: []

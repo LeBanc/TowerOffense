@@ -47,8 +47,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 4c3e4fc48654f2648be6bf358c70413b, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  largerDetectionRange: 50
-  smallerDetectionRange: 0
+  healthBar: {fileID: 0}
 --- !u!33 &8749437313307577316
 MeshFilter:
   m_ObjectHideFlags: 0

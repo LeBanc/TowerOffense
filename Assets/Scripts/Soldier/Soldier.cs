@@ -1,108 +1,144 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
-using UnityEngine.AI;
+using UnityEngine.UI;
+using System;
 
+[Serializable]
 public class Soldier : MonoBehaviour
 {
-
-    private NavMeshAgent navAgent;
-    private Squad squad;
-    private Transform target;
-    private Transform secondaryTarget;
+    [SerializeField]
+    private int iD;
+    [SerializeField]
+    private string soldierName;
+    [SerializeField]
+    private Sprite image;
+    [SerializeField]
     private SoldierData data;
-    private int hP;
+    [SerializeField]
+    private int currentHP;
+    [SerializeField]
+    private int currentXP;
 
-    /// <summary>
-    /// Soldier setup sets the parent squad, the soldier's navMeshAgent and the events used
-    /// </summary>
-    /// <param name="_squad"></param>
-    public void Setup(Squad _squad, SoldierData _data, int _HP)
+    private bool isEngaged = false;
+    private bool isDead = false;
+
+    // private ??? friendships;
+
+    #region Properties access
+    public int ID
     {
-        squad = _squad;
-        data = _data;
-        hP = _HP;
-        navAgent = GetComponent<NavMeshAgent>();
-        // Events used are PlayUpdate and Squad target change
-        squad.OnTargetChange += SetTarget;
-        GameManager.PlayUpdate += SoldierUpdate;
+        get { return iD; }
     }
 
-    /// <summary>
-    /// Clears event links when soldier is destroyed
-    /// </summary>
-    private void OnDestroy()
+    public string Name
     {
-        squad.OnTargetChange -= SetTarget;
-        GameManager.PlayUpdate -= SoldierUpdate;
+        get { return soldierName; }
     }
 
-    /// <summary>
-    /// SetDestination sets the soldier's NavMeshAgent SetDestination (easily called by Squad this way)
-    /// </summary>
-    /// <param name="_destination"></param>
-    public void SetDestination(Vector3 _destination)
+    public Sprite Image
     {
-        navAgent.SetDestination(_destination);
+        get { return image; }
     }
 
-    /// <summary>
-    /// SetTarget is used to define the soldier's target, it is called when the squad OnTargetChange event is triggered
-    /// </summary>
-    /// <param name="_target"></param>
-    private void SetTarget(Transform _target)
+    public SoldierData Data
     {
-        target = _target;
-        secondaryTarget = null;
+        get { return data; }
     }
 
-    /// <summary>
-    /// FaceTarget method is used to rotate the soldier toward its target
-    /// </summary>
-    /// <param name="_target"></param>
-    private void FaceTarget(Transform _target)
+    public int MaxHP
     {
-        // Gets the projection on XZ plane of the vector between target and squad positions
-        Vector3 _diff = _target.position - transform.position;
-        _diff = new Vector3(_diff.x, 0f, _diff.z);
-        // Gets the angle between the _diff vector and the forward squad axe
-        float _angle = Vector3.SignedAngle(transform.forward, Vector3.Normalize(_diff), transform.up);
-        // Clamps that angle value depending of the NavMeshAgent parameters and rotates the squad
-        _angle = Mathf.Clamp(_angle, -navAgent.angularSpeed * Time.deltaTime, navAgent.angularSpeed * Time.deltaTime);
-        transform.Rotate(transform.up, _angle);
+        get { return data.maxHP; }
     }
 
-    /// <summary>
-    /// SoldierUpdate is the Update method of Soldier, it changes the soldier forward direction setting if a target is set or not
-    /// </summary>
-    void SoldierUpdate()
+    public int CurrentHP
     {
-        if (target == null)
-        {
-            navAgent.updateRotation = true;
-        }
-        else
-        {
-            navAgent.updateRotation = false;
-            // if target reachable
-                FaceTarget(target);
-            // shoot target
+        set { currentHP = value; }
+        get { return currentHP; }
+    }
 
-            // else (target not reachable)
-            // if a secondary target can be found
-            secondaryTarget = Ranges.GetNearestTower(this.transform, data.shortRangeAttack,data.middleRangeAttack,data.longRangeAttack);
-            if(secondaryTarget != null)
-            {
-                FaceTarget(secondaryTarget);
-                // shoot secondary target
-            }
-            else
-            {
-                //else (no secondary target found)
-                FaceTarget(target);
-            }
+    public int CurrentXP
+    {
+        set { currentHP = value; }
+        get { return currentHP; }
+    }
 
+    public int ShortRangeAttack
+    {
+        get { return data.shortRangeAttack; }
+    }
 
-        }
+    public int MiddleRangeAttack
+    {
+        get { return data.middleRangeAttack; }
+    }
+
+    public int LongRangeAttack
+    {
+        get { return data.longRangeAttack; }
+    }
+
+    public int ShortRangeDefense
+    {
+        get { return data.shortRangeAttack; }
+    }
+
+    public int MiddleRangeDefense
+    {
+        get { return data.middleRangeAttack; }
+    }
+
+    public int LongRangeDefense
+    {
+        get { return data.longRangeAttack; }
+    }
+
+    #endregion
+
+    public Soldier(SoldierData _newData)
+    {
+        iD = PlayManager.GetFreeSoldierID();
+        soldierName = PlayManager.GetRandomSoldierName();
+        image = PlayManager.GetRandomSoldierImage();
+        data = _newData;
+        currentHP = data.maxHP;
+        currentXP = 0;
+    }
+
+    public void Evolve(SoldierData _newData)
+    {
+        data = _newData;
+        if (currentHP > MaxHP) currentHP = MaxHP;
+    }
+
+    public void Rename(string _newName)
+    {
+        soldierName = _newName;
+    }
+
+    public bool IsEngaged()
+    {
+        return isEngaged;
+    }
+
+    public bool IsDead()
+    {
+        return isDead;
+    }
+
+    public void Engage(bool engage)
+    {
+        isEngaged = engage;
+    }
+
+    public void Heal(int hp)
+    {
+        currentHP += hp;
+        if (currentHP > MaxHP) currentHP = MaxHP;
+    }
+
+    public void Die()
+    {
+        isDead = true;
     }
 }

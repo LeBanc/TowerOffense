@@ -12,6 +12,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 330704c9c90b4834a9c3bf61c96dfa2c, type: 3}
   m_Name: 1_Defense_SoldierData
   m_EditorClassIdentifier: 
+  prefab: {fileID: 7775684171843242171, guid: 8cb6299af0adcab41a42da1618286ec3, type: 3}
   shortRangeAttack: 1
   middleRangeAttack: 1
   longRangeAttack: 0
@@ -21,6 +22,8 @@ MonoBehaviour:
   explosiveDefense: 0
   speed: 90
   maxHP: 110
+  shootingDelay: 3
+  shootingSound: {fileID: 8300000, guid: cf5c4803435bf5d4f920a0533150c10d, type: 3}
   capacities: 
   improveTo:
   - {fileID: 11400000, guid: 3137c38853d19604fac4eea04956f41c, type: 2}
