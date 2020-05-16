@@ -3,22 +3,27 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
 using UnityEngine.EventSystems;
+using TMPro.EditorUtilities;
 
 public class CityCanvas : MonoBehaviour
 {
-    public Image squad1Sprite;
-    public Image squad2Sprite;
-    public Image squad3Sprite;
-    public Image squad4Sprite;
+    public SquadActionPanel squad1;
+    public SquadActionPanel squad2;
+    public SquadActionPanel squad3;
+    public SquadActionPanel squad4;
     public Image slowMotionEffect;
 
+    private SquadActionPanel selectedSquad = null;
+    private int lastSelected = 0;
+
     public GameObject healthBar;
+    private List<HealthBar> hBarList;
 
     public delegate void CityCanvasEventHandler(bool isSelected);
-    public event CityCanvasEventHandler SelectSquad1;
-    public event CityCanvasEventHandler SelectSquad2;
-    public event CityCanvasEventHandler SelectSquad3;
-    public event CityCanvasEventHandler SelectSquad4;
+    public event CityCanvasEventHandler OnSquad1Selection;
+    public event CityCanvasEventHandler OnSquad2Selection;
+    public event CityCanvasEventHandler OnSquad3Selection;
+    public event CityCanvasEventHandler OnSquad4Selection;
 
     GraphicRaycaster m_Raycaster;
     PointerEventData m_PointerEventData;
@@ -27,34 +32,43 @@ public class CityCanvas : MonoBehaviour
     // Start is called before the first frame update
     void Awake()
     {
-        squad1Sprite.enabled = false;
-        squad2Sprite.enabled = false;
-        squad3Sprite.enabled = false;
-        squad4Sprite.enabled = false;
+        squad1.enabled = false;
+        squad2.enabled = false;
+        squad3.enabled = false;
+        squad4.enabled = false;
+
+        hBarList = new List<HealthBar>();
     }
 
     private void Start()
     {
         // Link update events
-        GameManager.PlayUpdate += UIUpdate;
+//        GameManager.PlayUpdate += UIUpdate;
 
         //Fetch the Raycaster from the GameObject (the Canvas)
         m_Raycaster = GetComponent<GraphicRaycaster>();
         //Fetch the Event System from the Scene
         m_EventSystem = GetComponent<EventSystem>();
 
-        squad1Sprite.color = new Color(1f, 1f, 1f, 0.5f);
-        squad2Sprite.color = new Color(1f, 1f, 1f, 0.5f);
-        squad3Sprite.color = new Color(1f, 1f, 1f, 0.5f);
-        squad4Sprite.color = new Color(1f, 1f, 1f, 0.5f);
+        squad1.gameObject.SetActive(false);
+        squad2.gameObject.SetActive(false);
+        squad3.gameObject.SetActive(false);
+        squad4.gameObject.SetActive(false);
 
         slowMotionEffect.CrossFadeAlpha(0f, 0f, true);
+
+        enabled = false;
     }
 
     private void OnDestroy()
     {
         // Unlink update events
         GameManager.PlayUpdate -= UIUpdate;
+        foreach(HealthBar _hb in hBarList)
+        {
+            _hb.OnRemove -= RemoveHealthBar;
+        }
+        hBarList.Clear();
     }
 
     public HealthBar AddHealthBar(Transform _t, float _maxW)
@@ -63,54 +77,78 @@ public class CityCanvas : MonoBehaviour
         HealthBar _hb = _go.GetComponent<HealthBar>();
         _hb.Setup(_t, _maxW);
         _hb.UpdatePosition();
+        hBarList.Add(_hb);
+        _hb.OnRemove += RemoveHealthBar;
         return _hb;
+    }
+
+    private void RemoveHealthBar(HealthBar _hb)
+    {
+        hBarList.Remove(_hb);
+        _hb.OnRemove -= RemoveHealthBar;
     }
 
     #region Squad
     public void AddSquad(Squad _squad, SquadUnit _unit)
     {
-        if (!squad1Sprite.enabled)
+        if (!squad1.gameObject.activeSelf)
         {
-            squad1Sprite.color = _squad.Color;
-            HighlightSquad1(false);
-            squad1Sprite.enabled = true;
-            SelectSquad1 += _unit.Select;
-            SelectSquad1 += HighlightSquad1;
-            SelectSquad1 += PlayManager.SlowSpeed;
+            squad1.Setup(_squad, _unit);
+
+            //SelectSquad1 += _unit.Select;
+            OnSquad1Selection += SelectSquad1;
+            OnSquad1Selection += squad1.SelectSquad;
+            OnSquad1Selection += ShowMotionEffect;
+            OnSquad1Selection += PlayManager.SlowSpeed;
+            OnSquad1Selection?.Invoke(false);
+
             _unit.Unselect += UnselectSquads;
+            _unit.Unselect += HideMotionEffect;
             _unit.Unselect += PlayManager.NormalSpeed;
         }
-        else if (!squad2Sprite.enabled)
+        else if (!squad2.gameObject.activeSelf)
         {
-            squad2Sprite.color = _squad.Color;
-            HighlightSquad2(false);
-            squad2Sprite.enabled = true;
-            SelectSquad2 += _unit.Select;
-            SelectSquad2 += HighlightSquad2;
-            SelectSquad2 += PlayManager.SlowSpeed;
+            squad2.Setup(_squad, _unit);
+
+            //SelectSquad2 += _unit.Select;
+            OnSquad2Selection += SelectSquad2;
+            OnSquad2Selection += squad2.SelectSquad;
+            OnSquad2Selection += ShowMotionEffect;
+            OnSquad2Selection += PlayManager.SlowSpeed;
+            OnSquad2Selection?.Invoke(false);
+
             _unit.Unselect += UnselectSquads;
+            _unit.Unselect += HideMotionEffect;
             _unit.Unselect += PlayManager.NormalSpeed;
         }
-        else if (!squad3Sprite.enabled)
+        else if (!squad3.gameObject.activeSelf)
         {
-            squad3Sprite.color = _squad.Color;
-            HighlightSquad3(false);
-            squad3Sprite.enabled = true;
-            SelectSquad3 += _unit.Select;
-            SelectSquad3 += HighlightSquad3;
-            SelectSquad3 += PlayManager.SlowSpeed;
+            squad3.Setup(_squad, _unit);
+
+            //SelectSquad3 += _unit.Select;
+            OnSquad3Selection += SelectSquad3;
+            OnSquad3Selection += squad3.SelectSquad;
+            OnSquad3Selection += ShowMotionEffect;
+            OnSquad3Selection += PlayManager.SlowSpeed;
+            OnSquad3Selection?.Invoke(false);
+
             _unit.Unselect += UnselectSquads;
+            _unit.Unselect += HideMotionEffect;
             _unit.Unselect += PlayManager.NormalSpeed;
         }
-        else if (!squad4Sprite.enabled)
+        else if (!squad4.gameObject.activeSelf)
         {
-            squad4Sprite.color = _squad.Color;
-            HighlightSquad4(false);
-            squad4Sprite.enabled = true;
-            SelectSquad4 += _unit.Select;
-            SelectSquad4 += HighlightSquad4;
-            SelectSquad4 += PlayManager.SlowSpeed;
+            squad4.Setup(_squad, _unit);
+
+            //SelectSquad4 += _unit.Select;
+            OnSquad4Selection += SelectSquad4;
+            OnSquad4Selection += squad4.SelectSquad;
+            OnSquad4Selection += ShowMotionEffect;
+            OnSquad4Selection += PlayManager.SlowSpeed;
+            OnSquad4Selection?.Invoke(false);
+
             _unit.Unselect += UnselectSquads;
+            _unit.Unselect += HideMotionEffect;
             _unit.Unselect += PlayManager.NormalSpeed;
         } 
         else
@@ -119,51 +157,68 @@ public class CityCanvas : MonoBehaviour
         }
     }
 
-    private void HighlightSquad1(bool isSelected)
+    private void SelectSquad1(bool _b)
     {
-        Color _c = squad1Sprite.color;
-        _c.a = isSelected ? 1f : 0.5f;
-        squad1Sprite.color = _c;
-        if(isSelected) ShowMotionEffect();
+        if (_b)
+        {
+            selectedSquad = squad1;
+            lastSelected = 1;
+        }
+        else
+        {
+            selectedSquad = null;
+        }
+    }
+    private void SelectSquad2(bool _b)
+    {
+        if (_b)
+        {
+            selectedSquad = squad2;
+            lastSelected = 2;
+        }
+        else
+        {
+            selectedSquad = null;
+        }
+    }
+    private void SelectSquad3(bool _b)
+    {
+        if (_b)
+        {
+            selectedSquad = squad3;
+            lastSelected = 3;
+        }
+        else
+        {
+            selectedSquad = null;
+        }
+    }
+    private void SelectSquad4(bool _b)
+    {
+        if (_b)
+        {
+            selectedSquad = squad4;
+            lastSelected = 4;
+        }
+        else
+        {
+            selectedSquad = null;
+        }
     }
 
-    private void HighlightSquad2(bool isSelected)
-    {
-        Color _c = squad2Sprite.color;
-        _c.a = isSelected ? 1f : 0.5f;
-        squad2Sprite.color = _c;
-        if (isSelected) ShowMotionEffect();
-    }
-
-    private void HighlightSquad3(bool isSelected)
-    {
-        Color _c = squad3Sprite.color;
-        _c.a = isSelected ? 1f : 0.5f;
-        squad3Sprite.color = _c;
-        if (isSelected) ShowMotionEffect();
-    }
-
-    private void HighlightSquad4(bool isSelected)
-    {
-        Color _c = squad4Sprite.color;
-        _c.a = isSelected ? 1f : 0.5f;
-        squad4Sprite.color = _c;
-        if (isSelected) ShowMotionEffect();
-    }
 
     public void UnselectSquads()
     {
-        SelectSquad1?.Invoke(false);
-        SelectSquad2?.Invoke(false);
-        SelectSquad3?.Invoke(false);
-        SelectSquad4?.Invoke(false);
-        HideMotionEffect();
+        OnSquad1Selection?.Invoke(false);
+        OnSquad2Selection?.Invoke(false);
+        OnSquad3Selection?.Invoke(false);
+        OnSquad4Selection?.Invoke(false);
     }
     #endregion
 
-    private void ShowMotionEffect()
+    private void ShowMotionEffect(bool isSelected)
     {
-        slowMotionEffect.CrossFadeAlpha(0.6f, 0.2f, true);
+        if(isSelected) slowMotionEffect.CrossFadeAlpha(0.6f, 0.2f, true);
     }
 
     private void HideMotionEffect()
@@ -183,21 +238,20 @@ public class CityCanvas : MonoBehaviour
         GameManager.PlayUpdate -= UIUpdate;
 
         // Clear all private parameters
-        squad1Sprite.enabled = false;
-        squad2Sprite.enabled = false;
-        squad3Sprite.enabled = false;
-        squad4Sprite.enabled = false;
-        SelectSquad1 = null;
-        SelectSquad2 = null;
-        SelectSquad3 = null;
-        SelectSquad4 = null;
+        squad1.gameObject.SetActive(false);
+        squad2.gameObject.SetActive(false);
+        squad3.gameObject.SetActive(false);
+        squad4.gameObject.SetActive(false);
+        OnSquad1Selection = null;
+        OnSquad2Selection = null;
+        OnSquad3Selection = null;
+        OnSquad4Selection = null;
     }
 
     private void UIUpdate()
     {
         if (Input.GetMouseButtonDown(0))
         {
-
             //Set up the new Pointer Event
             m_PointerEventData = new PointerEventData(m_EventSystem);
             //Set the Pointer Event Position to that of the mouse position
@@ -212,10 +266,149 @@ public class CityCanvas : MonoBehaviour
             //For every result returned, output the name of the GameObject on the Canvas hit by the Ray
             foreach (RaycastResult result in results)
             {
-                SelectSquad1?.Invoke(result.gameObject == squad1Sprite.gameObject);
-                SelectSquad2?.Invoke(result.gameObject == squad2Sprite.gameObject);
-                SelectSquad3?.Invoke(result.gameObject == squad3Sprite.gameObject);
-                SelectSquad4?.Invoke(result.gameObject == squad4Sprite.gameObject);
+                if(result.gameObject == squad1.gameObject || result.gameObject == squad2.gameObject ||
+                    result.gameObject == squad3.gameObject || result.gameObject == squad4.gameObject)
+                {
+                    if(selectedSquad == null)
+                    {
+                        OnSquad1Selection?.Invoke(result.gameObject == squad1.gameObject);
+                        OnSquad2Selection?.Invoke(result.gameObject == squad2.gameObject);
+                        OnSquad3Selection?.Invoke(result.gameObject == squad3.gameObject);
+                        OnSquad4Selection?.Invoke(result.gameObject == squad4.gameObject);
+                    }
+                    else if(result.gameObject != selectedSquad.gameObject)
+                    {
+                        OnSquad1Selection?.Invoke(result.gameObject == squad1.gameObject);
+                        OnSquad2Selection?.Invoke(result.gameObject == squad2.gameObject);
+                        OnSquad3Selection?.Invoke(result.gameObject == squad3.gameObject);
+                        OnSquad4Selection?.Invoke(result.gameObject == squad4.gameObject);
+                    }
+                }
+            }
+        }
+        if (Input.GetKeyDown(KeyCode.Tab))
+        {
+            if (lastSelected == 0)
+            {
+                OnSquad1Selection.Invoke(true);
+            }
+            else
+            {
+                switch (lastSelected)
+                {
+                    case 1:
+                        if(selectedSquad == null && squad1.gameObject.activeSelf)
+                        {
+                            OnSquad1Selection?.Invoke(true);
+                        }
+                        else
+                        {
+                            if (squad2.gameObject.activeSelf)
+                            {
+                                OnSquad1Selection?.Invoke(false);
+                                OnSquad2Selection?.Invoke(true);
+                            }
+                            else if (squad3.gameObject.activeSelf)
+                            {
+                                OnSquad1Selection?.Invoke(false);
+                                OnSquad3Selection?.Invoke(true);
+                            }
+                            else if (squad4.gameObject.activeSelf)
+                            {
+                                OnSquad1Selection?.Invoke(false);
+                                OnSquad4Selection?.Invoke(true);
+                            }
+                        }
+                        break;
+                    case 2:
+                        if (selectedSquad == null && squad2.gameObject.activeSelf)
+                        {
+                            OnSquad2Selection?.Invoke(true);
+                        }
+                        else
+                        {
+                            if (squad3.gameObject.activeSelf)
+                            {
+                                OnSquad2Selection?.Invoke(false);
+                                OnSquad3Selection?.Invoke(true);
+                            }
+                            else if (squad4.gameObject.activeSelf)
+                            {
+                                OnSquad2Selection?.Invoke(false);
+                                OnSquad4Selection?.Invoke(true);
+                            }
+                            else if (squad1.gameObject.activeSelf)
+                            {
+                                OnSquad2Selection?.Invoke(false);
+                                OnSquad1Selection?.Invoke(true);
+                            }
+                        }
+                        break;
+                    case 3:
+                        if (selectedSquad == null && squad3.gameObject.activeSelf)
+                        {
+                            OnSquad3Selection?.Invoke(true);
+                        }
+                        else
+                        {
+                            if (squad4.gameObject.activeSelf)
+                            {
+                                OnSquad3Selection?.Invoke(false);
+                                OnSquad4Selection?.Invoke(true);
+                            }
+                            else if (squad1.gameObject.activeSelf)
+                            {
+                                OnSquad3Selection?.Invoke(false);
+                                OnSquad1Selection?.Invoke(true);
+                            }
+                            else if (squad2.gameObject.activeSelf)
+                            {
+                                OnSquad3Selection?.Invoke(false);
+                                OnSquad2Selection?.Invoke(true);
+                            }
+                        }
+                        break;
+                    case 4:
+                        if (selectedSquad == null && squad4.gameObject.activeSelf)
+                        {
+                            OnSquad4Selection?.Invoke(true);
+                        }
+                        else
+                        {
+                            if (squad1.gameObject.activeSelf)
+                            {
+                                OnSquad4Selection?.Invoke(false);
+                                OnSquad1Selection?.Invoke(true);
+                            }
+                            else if (squad2.gameObject.activeSelf)
+                            {
+                                OnSquad4Selection?.Invoke(false);
+                                OnSquad2Selection?.Invoke(true);
+                            }
+                            else if (squad3.gameObject.activeSelf)
+                            {
+                                OnSquad4Selection?.Invoke(false);
+                                OnSquad3Selection?.Invoke(true);
+                            }
+                        }
+                        break;
+                }
+            }
+        }
+        if (Input.GetKey(KeyCode.UpArrow))
+        {
+            Camera.main.transform.position += new Vector3(0f, 0f, 1f);
+            foreach(HealthBar _hb in hBarList)
+            {
+                _hb.UpdatePosition();
+            }
+        }
+        if (Input.GetKey(KeyCode.DownArrow))
+        {
+            Camera.main.transform.position += new Vector3(0f, 0f, -1f);
+            foreach (HealthBar _hb in hBarList)
+            {
+                _hb.UpdatePosition();
             }
         }
     }

@@ -83,6 +83,7 @@ public class Tower : MonoBehaviour
 
     private void DestroyTower()
     {
+        if (destroyed) return;
         destroyed = true;
         active = false;
         GameManager.PlayUpdate -= TowerUpdate;
@@ -104,6 +105,11 @@ public class Tower : MonoBehaviour
     public bool IsActive()
     {
         return active;
+    }
+
+    public bool IsDestroyed()
+    {
+        return destroyed;
     }
 
     private void SetTarget(SoldierUnit _target)

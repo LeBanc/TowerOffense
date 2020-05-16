@@ -24,6 +24,9 @@ public class SoldierUnit : MonoBehaviour
     public delegate void SoldierUnitEventHandler();
     public event SoldierUnitEventHandler OnWounded;
 
+    public delegate void SoldierUnitDamageEventHandler(int hp, int maxHP);
+    public event SoldierUnitDamageEventHandler OnDamage;
+
     // temp
     private float shootingDelay;
     private float shootingDataDuration;
@@ -56,8 +59,8 @@ public class SoldierUnit : MonoBehaviour
         hP = soldier.CurrentHP;
 
         healthBar = PlayManager.AddHealthBar(transform, 30f);
-        healthBar.UpdateValue(hP,data.maxHP);
-
+        OnDamage += healthBar.UpdateValue;
+        
         navAgent = GetComponent<NavMeshAgent>();
         navAgent.enabled = false;
 
@@ -79,6 +82,8 @@ public class SoldierUnit : MonoBehaviour
         OnWounded += squadUnit.CheckDeath;
         
         GameManager.PlayUpdate += SoldierUpdate;
+
+        OnDamage?.Invoke(hP, data.maxHP);
     }
 
     /// <summary>
@@ -309,7 +314,7 @@ public class SoldierUnit : MonoBehaviour
             WoundSoldier();
             OnWounded?.Invoke();
         }
-        healthBar.UpdateValue(hP, data.maxHP);
+        OnDamage?.Invoke(hP, data.maxHP);
     }
 
     private void WoundSoldier()
@@ -318,4 +323,16 @@ public class SoldierUnit : MonoBehaviour
         GetComponent<MeshRenderer>().material.color = Color.black;
     }
     #endregion
+
+    public void Heal(int _amount)
+    {
+        hP += _amount;
+        if (hP > data.maxHP) hP = data.maxHP;
+        if (wounded)
+        {
+            wounded = false;
+            GetComponent<MeshRenderer>().material.color = Color.white;
+        }
+        OnDamage?.Invoke(hP, data.maxHP);
+    }
 }

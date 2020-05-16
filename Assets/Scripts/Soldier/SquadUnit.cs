@@ -52,6 +52,24 @@ public class SquadUnit : MonoBehaviour
     {
         get { return squad.ID; }
     }
+
+    public SoldierUnit Soldier1
+    {
+        get { return soldier1; }
+    }
+    public SoldierUnit Soldier2
+    {
+        get { return soldier2; }
+    }
+    public SoldierUnit Soldier3
+    {
+        get { return soldier3; }
+    }
+    public SoldierUnit Soldier4
+    {
+        get { return soldier4; }
+    }
+
     #endregion
 
     public void Setup(Squad _squad)
@@ -89,7 +107,6 @@ public class SquadUnit : MonoBehaviour
 
         // Link update events
         GameManager.PlayUpdate += SquadUpdate;
-        PlayManager.RetreatAll += Retreat;
     }
 
     /// <summary>
@@ -97,15 +114,8 @@ public class SquadUnit : MonoBehaviour
     /// </summary>
     private void OnDestroy()
     {
-        // Destroys soldiers
-        //Destroy(soldier1.gameObject);
-        //Destroy(soldier2.gameObject);
-        //Destroy(soldier3.gameObject);
-        //Destroy(soldier4.gameObject);
-
         // Unlinks event
         GameManager.PlayUpdate -= SquadUpdate;
-        PlayManager.RetreatAll -= Retreat;
         Unselect = null;
     }
 
@@ -147,6 +157,45 @@ public class SquadUnit : MonoBehaviour
         {
             GameManager.PlayUpdate -= SquadMoveSelection;
         }
+    }
+
+    public void OnMoveActionSelected()
+    {
+        GameManager.PlayUpdate += SquadMoveSelection;
+        Unselect += OnMoveActionUnselected;
+    }
+    public void OnMoveActionUnselected()
+    {
+        GameManager.PlayUpdate -= SquadMoveSelection;
+        Unselect -= OnMoveActionUnselected;
+    }
+
+    public void OnBuildHQSelected()
+    {
+
+    }
+    public void OnBuildHQUnselected()
+    {
+
+    }
+
+    public void OnBuildTurretSelected()
+    {
+
+    }
+    public void OnBuildTurretUnselected()
+    {
+
+    }
+
+    public void Heal()
+    {
+        Soldier1.Heal(25);
+        Soldier2.Heal(25);
+        Soldier3.Heal(25);
+        Soldier4.Heal(25);
+
+        Unselect?.Invoke();
     }
 
     #region Target
@@ -542,6 +591,7 @@ public class SquadUnit : MonoBehaviour
         navAgent.SetDestination(PlayManager.hqPos);
         fixedDestination = true;
         retreatActive = true;
+        Unselect?.Invoke();
     }
     public void BackToHQ()
     {

@@ -166,10 +166,13 @@ public static class Ranges
             {
                 if(c.TryGetComponent<Tower>(out Tower _tower))
                 {
-                    _ray = new Ray(_source.position, (c.transform.position - _source.position).normalized);
-                    if (Physics.Raycast(_ray, out _hit, Mathf.Infinity, LayerMask.GetMask(new string[] {"Buildings" , "Terrain" })))
+                    if (!_tower.IsDestroyed())
                     {
-                        if (_hit.collider.gameObject == c.gameObject && _tower.IsActive()) _targets.Add(_tower);
+                        _ray = new Ray(_source.position, (c.transform.position - _source.position).normalized);
+                        if (Physics.Raycast(_ray, out _hit, Mathf.Infinity, LayerMask.GetMask(new string[] { "Buildings", "Terrain" })))
+                        {
+                            if (_hit.collider.gameObject == c.gameObject && _tower.IsActive()) _targets.Add(_tower);
+                        }
                     }
                 }
             }

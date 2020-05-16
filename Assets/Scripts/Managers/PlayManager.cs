@@ -13,6 +13,7 @@ public class PlayManager : Singleton<PlayManager>
     
     // Level properties
     public static HQ hq;
+    public static DayLight dayLight;
     public static Vector3 hqPos;
     public static List<Tower> towerList;
     public static List<Vector3> towerPosList;
@@ -91,6 +92,8 @@ public class PlayManager : Singleton<PlayManager>
         hq.HealAmount = data.baseHealAmount + 3 * infirmaryLevel + med;
         // Set the attack time as base attack time + unlocked bons (TBD)
         hq.AttackTime = data.baseAttackTime;
+        // Initialize sun light at morning
+        dayLight.Morning(data.baseAttackTime);
 
         // Launch a new day
         LoadSquadsOnNewDay?.Invoke();
@@ -105,9 +108,7 @@ public class PlayManager : Singleton<PlayManager>
     public static void EndOfAttack()
     {
         RetreatAll?.Invoke();
-        FindObjectOfType<CityCanvas>().UnselectSquads();
         NormalSpeed();
-        FindObjectOfType<CityCanvas>().enabled = false;
     }
 
     public static void RemoveSquadUnit(SquadUnit _su)
@@ -117,6 +118,8 @@ public class PlayManager : Singleton<PlayManager>
         {
             // Switch to HQ
             hq.EndDayAtHQ();
+            dayLight.Night();
+            FindObjectOfType<CityCanvas>().enabled = false;
         }
     }
 
@@ -163,6 +166,16 @@ public class PlayManager : Singleton<PlayManager>
         {
             hq = _hq.GetComponent<HQ>();
             hqPos = GridAdjustment.GetGridCoordinates(new Vector3(hq.transform.position.x,0f,hq.transform.position.z));
+        }
+        // Load DayLight
+        GameObject _dayLight = GameObject.Find("Directional Day Light");
+        if (_dayLight == null)
+        {
+            Debug.LogError("[PlayManager] Cannot find DayLight GameObject!");
+        }
+        else
+        {
+            dayLight = _dayLight.GetComponent<DayLight>();
         }
         // Load towers
         Tower[] _tArray = FindObjectsOfType<Tower>();

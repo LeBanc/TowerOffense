@@ -16,12 +16,13 @@ public class HealthBar : MonoBehaviour
     private Transform source;
     private Image bar;
 
-    public float test = 100f;
+    public delegate void HealthBarEvents(HealthBar _hb);
+    public event HealthBarEvents OnRemove;
 
     private void Awake()
     {
         bar = GetComponent<Image>();
-        if (bar == null) Debug.LogError("[HelthBar] Cannot find Image component!");
+        if (bar == null) Debug.LogError("[HealthBar] Cannot find Image component!");
     }
 
     public void Setup(Transform _t, float _maxW)
@@ -45,6 +46,7 @@ public class HealthBar : MonoBehaviour
 
     public void Remove()
     {
+        OnRemove?.Invoke(this);
         if(gameObject != null) Destroy(gameObject);
     }
 

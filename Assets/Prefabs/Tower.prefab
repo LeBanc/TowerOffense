@@ -47,7 +47,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 4c3e4fc48654f2648be6bf358c70413b, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  healthBar: {fileID: 0}
 --- !u!33 &8749437313307577316
 MeshFilter:
   m_ObjectHideFlags: 0
@@ -55,7 +54,7 @@ MeshFilter:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 8749437313307577339}
-  m_Mesh: {fileID: 10202, guid: 0000000000000000e000000000000000, type: 0}
+  m_Mesh: {fileID: -1277366460620338370, guid: e0a163c5799c07945977d4462a6c1433, type: 3}
 --- !u!23 &8749437313307577317
 MeshRenderer:
   m_ObjectHideFlags: 0
