@@ -1,14 +1,21 @@
-﻿using System.Collections;
-using System.Collections.Generic;
-using UnityEngine;
+﻿using UnityEngine;
 
+/// <summary>
+/// TerrainHighlight class is used to highlight the terrain pointed by the mouse
+/// </summary>
 public class TerrainHighlight : MonoBehaviour
 {
+    /// <summary>
+    /// On Start, subscribe to PlayUpdate event
+    /// </summary>
     private void Start()
     {
-        
         GameManager.PlayUpdate += GridHighlightUpdate;
     }
+
+    /// <summary>
+    /// OnDestroy, unsubscribe events
+    /// </summary>
     private void OnDestroy()
     {
         // Remove the Highlight from PlayUpdate
@@ -33,7 +40,5 @@ public class TerrainHighlight : MonoBehaviour
             // If not on terrain, hides the quad
             GetComponent<MeshRenderer>().enabled = false;
         }
-    }
-
-    
+    }    
 }

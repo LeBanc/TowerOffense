@@ -3,6 +3,9 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
 
+/// <summary>
+/// Tower class is the classe of a Tower
+/// </summary>
 public class Tower : MonoBehaviour
 {
     // Boolean to set the tower's states
@@ -17,8 +20,8 @@ public class Tower : MonoBehaviour
     private List<Vector3> middleRangeCells;
     private List<Vector3> longRangeCells;
 
-    private int hp = 200;
-    private int maxHP = 200;
+    private int hp = 100;
+    private int maxHP = 100;
     private int shortRangeAttack = 10;
     private int middleRangeAttack = 10;
     private int longRangeAttack = 10;
@@ -36,6 +39,9 @@ public class Tower : MonoBehaviour
     // Events
     public delegate void TowerEventHandler();
     public event TowerEventHandler OnDestruction;
+
+    public delegate void TowerDamageEventHandler(int hp, int maxHP);
+    public event TowerDamageEventHandler OnDamage;
 
     // For debug purpose
     // /*
@@ -78,17 +84,21 @@ public class Tower : MonoBehaviour
         // GFX
         GetComponent<MeshRenderer>().material.color = Color.red;
         healthBar.Show();
+        OnDamage += healthBar.UpdateValue;
         // SFX
     }
 
     private void DestroyTower()
     {
         if (destroyed) return;
+        hp = 0;
+        OnDestruction?.Invoke();
         destroyed = true;
         active = false;
         GameManager.PlayUpdate -= TowerUpdate;
         // GFX
         GetComponent<MeshRenderer>().material.color = Color.black;
+        OnDamage -= healthBar.UpdateValue;
         healthBar.Remove();
         // SFX
 
@@ -225,13 +235,8 @@ public class Tower : MonoBehaviour
     private void DamageTower(int dmg)
     {
         hp -= dmg;
-        if(hp <= 0)
-        {
-            hp = 0;
-            DestroyTower();
-            OnDestruction?.Invoke();
-        }
-        healthBar.UpdateValue(hp, maxHP);
+        if(hp <= 0 && !destroyed) DestroyTower();
+        OnDamage?.Invoke(hp, maxHP);
     }
 
     private void Shoot(SoldierUnit _t)

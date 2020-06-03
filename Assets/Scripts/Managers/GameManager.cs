@@ -1,10 +1,12 @@
-﻿using System.Collections;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.SceneManagement;
 
 public class GameManager : Singleton<GameManager>
 {
+    /// <summary>
+    /// There are 5 GameStates defined. It is possible know the current GameState and to request a change of GameState
+    /// </summary>
     #region GameState
     public enum GameState
     {
@@ -15,7 +17,7 @@ public class GameManager : Singleton<GameManager>
         save
     }
 
-    [SerializeField]
+    [SerializeField] // For development, when not starting the game from Main Menu
     private GameState debugFirstGameState = GameState.start;
 
     private static GameState currentGameState;
@@ -31,13 +33,13 @@ public class GameManager : Singleton<GameManager>
     {
         nextGameState = next;
     }
-
     #endregion
 
     #region Events
 
     public delegate void GameStateEventHandler();
 
+    // Events for GameState change
     public static event GameStateEventHandler OnStartToLoad;
     public static event GameStateEventHandler OnLoadToPlay;
     public static event GameStateEventHandler OnPlayToStart;
@@ -49,6 +51,7 @@ public class GameManager : Singleton<GameManager>
     public static event GameStateEventHandler OnPauseToStart;
     public static event GameStateEventHandler OnSaveToPause;
 
+    // Events called in GameState to Update components
     public static event GameStateEventHandler StartUpdate;
     public static event GameStateEventHandler LoadUpdate;
     public static event GameStateEventHandler PlayUpdate;
@@ -57,6 +60,9 @@ public class GameManager : Singleton<GameManager>
 
     #endregion
 
+    /// <summary>
+    /// List of managers to instantiate (public) and method to instantiate/clear them or add/remove one
+    /// </summary>
     #region Managers
 
     public GameObject[] managers;
@@ -103,6 +109,10 @@ public class GameManager : Singleton<GameManager>
     }
     #endregion
 
+
+    /// <summary>
+    /// Methods to load/unload scene (AsyncOperation)
+    /// </summary>
     #region Scenes
 
     private List<AsyncOperation> _loadOperations = new List<AsyncOperation>();
@@ -121,7 +131,9 @@ public class GameManager : Singleton<GameManager>
     }
     #endregion
 
-    // Start is called before the first frame update
+    /// <summary>
+    /// At Start, initialize the GameState values and instatiate the chosen Managers
+    /// </summary>
     void Start()
     {
         previousGameState = debugFirstGameState;
@@ -131,7 +143,10 @@ public class GameManager : Singleton<GameManager>
         InstantiateManagers();
     }
 
-    // Update is called once per frame
+    /// <summary>
+    /// Update is called once per frame, after changing the GameState if needed, it calls the event dedicated to the current GameState 
+    /// It is (or should be) the only Update call of all Component in the project. The other elements should subscribe to the GameManager events
+    /// </summary>
     void Update()
     {
         // Change state if needed
@@ -161,6 +176,10 @@ public class GameManager : Singleton<GameManager>
         }
     }
 
+    /// <summary>
+    /// ChangeGameState method is a state machine of GameState changes.
+    /// It switches from currentGameState to nextGameState only if the transition is allowed
+    /// </summary>
     void ChangeGameState()
     {
         switch (GameManager.currentGameState)
@@ -196,6 +215,9 @@ public class GameManager : Singleton<GameManager>
         }
     }
 
+    /// <summary>
+    /// OnDestroy method clears the managers
+    /// </summary>
     protected override void OnDestroy()
     {
         base.OnDestroy();

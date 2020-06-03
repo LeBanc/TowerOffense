@@ -1,8 +1,9 @@
-﻿using System.Collections;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using UnityEngine;
-using UnityEngine.SocialPlatforms;
 
+/// <summary>
+/// Ranges is a utility class to get easily nearest soldier and tower and know if a shoot is possible
+/// </summary>
 public static class Ranges
 {
     /// <summary>
@@ -62,7 +63,7 @@ public static class Ranges
     /// <param name="_rangeMax">float for max range</param>
     /// <param name="_rangeMin">float for min range (optional)</param>
     /// <returns>Returns the transform of the nearest soldier or the source transform if no soldier found</returns>
-    public static SoldierUnit GetNearestSoldierInRange(Transform _source, float _rangeMax, float _rangeMin = 0f)
+    private static SoldierUnit GetNearestSoldierInRange(Transform _source, float _rangeMax, float _rangeMin = 0f)
     {
         List<SoldierUnit> _targets = new List<SoldierUnit>();
         Ray _ray;
@@ -153,7 +154,7 @@ public static class Ranges
     /// <param name="_rangeMax">float for max range</param>
     /// <param name="_rangeMin">float for min range (optional)</param>
     /// <returns>Returns the transform of the nearest tower or the source transform if no soldier found</returns>
-    public static Tower GetNearestTowerInRange(Transform _source, float _rangeMax, float _rangeMin = 0f)
+    private static Tower GetNearestTowerInRange(Transform _source, float _rangeMax, float _rangeMin = 0f)
     {
         List<Tower> _targets = new List<Tower>();
         Ray _ray;

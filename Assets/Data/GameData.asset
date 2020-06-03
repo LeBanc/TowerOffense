@@ -15,6 +15,8 @@ MonoBehaviour:
   shortRange: 10
   middleRange: 30
   longRange: 50
+  baseAttackTime: 45
+  baseHealAmount: 30
   squadPrefab: {fileID: 16989649490458422, guid: 4115a4419e61bb34a9a08f353b0cc578,
     type: 3}
   defaultSquadType: {fileID: 11400000, guid: 3ba13929eb5df914f93a858a1f8a067e, type: 2}
@@ -29,5 +31,18 @@ MonoBehaviour:
   - {fileID: 21300000, guid: 888936182c7338043915bc9b88c021e5, type: 3}
   - {fileID: 21300000, guid: 95b3e1bc08ce35644aba10e47cd321bb, type: 3}
   - {fileID: 21300000, guid: ffabe18f14c66f7498eef5cf9070bf8e, type: 3}
-  soldierFirstNames: []
-  soldierLastNames: []
+  soldierFirstNames:
+  - Michel
+  - Robert
+  - Nathalie
+  - "Fran\xE7ois"
+  - Eli
+  soldierLastNames:
+  - Martin
+  - Gaga
+  - Mouche
+  - "De La Robussi\xE8re"
+  - O'Maley
+  - Xi
+  - Doe
+  - Licorne

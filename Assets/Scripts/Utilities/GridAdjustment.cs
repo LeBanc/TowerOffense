@@ -1,7 +1,8 @@
-﻿using System.Collections;
-using System.Collections.Generic;
-using UnityEngine;
+﻿using UnityEngine;
 
+/// <summary>
+/// GridAdjustment utility class is used to adjust a position to the grid
+/// </summary>
 public static class GridAdjustment
 {
     public static Vector3 GetGridCoordinates(Vector3 _input)

@@ -1,12 +1,11 @@
-﻿using System.Collections;
-using System.Collections.Generic;
-using UnityEngine;
-using System;
-using UnityEngine.UI;
+﻿using UnityEngine;
 
-[Serializable]
-public class Squad : MonoBehaviour
+/// <summary>
+/// Squad is the class that represents the squad with all its data
+/// </summary>
+public class Squad : ScriptableObject
 {
+    // PreferedRange is the range at which the squad will attack if it is possible
     public enum PreferedRange
     {
         ShortRange,
@@ -14,6 +13,7 @@ public class Squad : MonoBehaviour
         LongRange
     }
 
+    // PositionChoice enum is the choice given to the player to define the computing of PreferedRange
     public enum PositionChoice
     {
         MaximizeAttack,
@@ -21,20 +21,42 @@ public class Squad : MonoBehaviour
         PlayerChoice
     }
 
+    // If the squad is engaged, it will be deploy in the city
     public bool isEngaged = false;
 
+    // iD is a private iD to identify the squad
     private int iD;
-    [SerializeField]
+    // color is the background color of the squad used in UI and game
     private Color color;
-    [SerializeField]
+    // squad type is the SquadData that defines the shape of the squad
     private SquadData squadType;
-    [SerializeField]
+    // soldierLisr is the array of 4 soldiers composing the squad
     private Soldier[] soldierList = new Soldier[4];
-    [SerializeField]
+    // preferedRange is the current range of the squad
     private PreferedRange range;
-    [SerializeField]
+    // posChoice is the current choice of position computing of the squad
     private PositionChoice posChoice;
 
+    // Attack, defense and speed value of the squad
+    private int atkShortRange = 0;
+    private int atkMiddleRange = 0;
+    private int atkLongRange = 0;
+    private int defShortRange = 0;
+    private int defMiddleRange = 0;
+    private int defLongRange = 0;
+    private int defExplosives = 0;
+    private int speed = 0;
+
+    // Squad events
+    public delegate void SquadEventHandler();
+    public event SquadEventHandler OnTypeChange; // When changing SquadData
+    public event SquadEventHandler OnColorChange; // When changing color
+    public event SquadEventHandler OnSoldier1Change; // When changing soldier1
+    public event SquadEventHandler OnSoldier2Change; // When changing soldier2
+    public event SquadEventHandler OnSoldier3Change; // When changing soldier3
+    public event SquadEventHandler OnSoldier4Change; // When changing soldier4
+    public event SquadEventHandler OnValueChange; // When changing any attack, defense or speed value
+    public event SquadEventHandler OnPrefRangeChange; // When changing the preferred range
 
     #region Properties access
     public int ID
@@ -60,6 +82,7 @@ public class Squad : MonoBehaviour
 
     public PreferedRange PrefRange
     {
+        set { range = value; }
         get { return range; }
     }
 
@@ -67,34 +90,117 @@ public class Squad : MonoBehaviour
     {
         get { return soldierList; }
     }
+
+    public int Speed
+    {
+        get { return speed; }
+    }
+
+    public int[] AttackValues
+    {
+        get { return new int[] { atkShortRange, atkMiddleRange, atkLongRange }; }
+    }
+
+    public int[] DefenseValues
+    {
+        get { return new int[] { defShortRange, defMiddleRange, defLongRange, defExplosives }; }
+    }
     #endregion
 
+    /// <summary>
+    /// Constructor to create a new squad
+    /// </summary>
+    public Squad()
+    {
+        this.Setup();
+    }
+
+    /// <summary>
+    /// Constructor to create a new squad from data (save file)
+    /// </summary>
+    /// <param name="_ID">Squad iD</param>
+    /// <param name="_COLOR">Squad color</param>
+    /// <param name="_SQUADTYPE">Squad SqaudData</param>
+    /// <param name="_SOLDIER1ID">Soldier1</param>
+    /// <param name="_SOLDIER2ID">Soldier2</param>
+    /// <param name="_SOLDIER3ID">Soldier3</param>
+    /// <param name="_SOLDIER4ID">Soldier4</param>
+    /// <param name="_RANGE">Squad preferred range</param>
+    /// <param name="_POS">Squad position choice</param>
+    /// <param name="_ENGAGED">Squad engaged boolean</param>
+    public Squad(int _ID, Color _COLOR, string _SQUADTYPE, int _SOLDIER1ID, int _SOLDIER2ID, int _SOLDIER3ID, int _SOLDIER4ID, PreferedRange _RANGE, PositionChoice _POS, bool _ENGAGED)
+    {
+        iD = _ID;
+        color = _COLOR;
+        squadType = Resources.Load("SquadData/" + _SQUADTYPE) as SquadData;
+        soldierList[0] = PlayManager.soldierList[PlayManager.soldierIDList.FindIndex(x => x == _SOLDIER1ID)];
+        soldierList[1] = PlayManager.soldierList[PlayManager.soldierIDList.FindIndex(x => x == _SOLDIER2ID)];
+        soldierList[2] = PlayManager.soldierList[PlayManager.soldierIDList.FindIndex(x => x == _SOLDIER3ID)];
+        soldierList[3] = PlayManager.soldierList[PlayManager.soldierIDList.FindIndex(x => x == _SOLDIER4ID)];
+        range = _RANGE;
+        ComputeSquadValues();
+        UpdatePosChoice(_POS);
+        isEngaged = _ENGAGED;
+    }
+
+    /// <summary>
+    /// At Awake, compute preferred range from chosen position
+    /// </summary>
+    private void Awake()
+    {
+        UpdatePosChoice(posChoice);
+    }
+
+    /// <summary>
+    /// Setup method sets up the squad data with default value
+    /// </summary>
     public void Setup()
     {
         iD = PlayManager.GetFreeSquadID();
         color = PlayManager.GetSquadColor(iD);
         squadType = PlayManager.defaultSquadType;
-        posChoice = PositionChoice.MaximizeAttack;
+        UpdatePosChoice(PositionChoice.MaximizeAttack);
         range = PreferedRange.MiddleRange;
     }
 
+    /// <summary>
+    /// Engage method sets the isEngaged boolean
+    /// </summary>
+    /// <param name="_engage">Boolean to set isEngaged to</param>
+    public void Engage(bool _engage)
+    {
+        isEngaged = _engage;
+    }
+
+    /// <summary>
+    /// ChangeSquadType method sets the new SquadData and invoke OnTypeChange event
+    /// </summary>
+    /// <param name="_newType">SquadData to set squadType to</param>
     public void ChangeSquadType(SquadData _newType)
     {
         squadType = _newType;
+        OnTypeChange?.Invoke();
     }
 
-    public SquadUnit InstanciateSquadUnit(Vector3 spawPoint)
+    /// <summary>
+    /// ChangeColor method sets the new squad color and invoke OnColorChange event
+    /// </summary>
+    /// <param name="_color">Color to set squad color to</param>
+    public void ChangeColor(Color _color)
     {
-        GameObject _go = Instantiate(PlayManager.SquadPrefab, GridAdjustment.GetGridCoordinates(spawPoint), Quaternion.identity);
-        SquadUnit _su = _go.GetComponent<SquadUnit>();
-        _su.Setup(this);
-        FindObjectOfType<CityCanvas>().AddSquad(this, _su);
-        return _su;
+        color = _color;
+        OnColorChange?.Invoke();
     }
 
+    /// <summary>
+    /// UpdatePosChoice method sets the new player choice and compute the preferred range and invoke OnPrefRangeChange event
+    /// </summary>
+    /// <param name="_newChoice">PositionChoice to set</param>
     public void UpdatePosChoice(PositionChoice _newChoice)
     {
+        // Set the new choice
         posChoice = _newChoice;
+        // Compute the preferred range from the new choice
         switch(posChoice)
         {
             case PositionChoice.MaximizeAttack:
@@ -108,31 +214,154 @@ public class Squad : MonoBehaviour
             default:
                 break;
         }
+        // Invoke event
+        OnPrefRangeChange?.Invoke();
     }
 
+    /// <summary>
+    /// GetMaxAttackRange method compute the preferred range from the attack values
+    /// </summary>
+    /// <returns>PreferedRange that maximize attack</returns>
     private PreferedRange GetMaxAttackRange()
     {
-        if (soldierList[0] == null || soldierList[1] == null || soldierList[2] == null || soldierList[3] == null) return PreferedRange.MiddleRange;
-
-        int _shortRange = soldierList[0].ShortRangeAttack + soldierList[1].ShortRangeAttack + soldierList[2].ShortRangeAttack + soldierList[3].ShortRangeAttack;
-        int _middleRange = soldierList[0].MiddleRangeAttack + soldierList[1].MiddleRangeAttack + soldierList[2].MiddleRangeAttack + soldierList[3].MiddleRangeAttack;
-        int _longRange = soldierList[0].LongRangeAttack + soldierList[1].LongRangeAttack + soldierList[2].LongRangeAttack + soldierList[3].LongRangeAttack;
-
-        if (_longRange >= _middleRange && _longRange >= _shortRange) return PreferedRange.LongRange;
-        else if (_middleRange >= _shortRange) return PreferedRange.MiddleRange;
+        if (atkLongRange >= atkMiddleRange && atkLongRange >= atkShortRange) return PreferedRange.LongRange;
+        else if (atkMiddleRange >= atkShortRange) return PreferedRange.MiddleRange;
         else return PreferedRange.ShortRange;
     }
 
+    /// <summary>
+    /// GetMaxDefenseRange method compute the preferred range from the defense values
+    /// </summary>
+    /// <returns>PreferedRange that maximize defense</returns>
     private PreferedRange GetMaxDefenseRange()
     {
-        if (soldierList[0] == null || soldierList[1] == null || soldierList[2] == null || soldierList[3] == null) return PreferedRange.LongRange;
-
-        int _shortRange = soldierList[0].ShortRangeDefense + soldierList[1].ShortRangeDefense + soldierList[2].ShortRangeDefense + soldierList[3].ShortRangeDefense;
-        int _middleRange = soldierList[0].MiddleRangeDefense + soldierList[1].MiddleRangeDefense + soldierList[2].MiddleRangeDefense + soldierList[3].MiddleRangeDefense;
-        int _longRange = soldierList[0].LongRangeDefense + soldierList[1].LongRangeDefense + soldierList[2].LongRangeDefense + soldierList[3].LongRangeDefense;
-
-        if (_longRange >= _middleRange && _longRange >= _shortRange) return PreferedRange.LongRange;
-        else if (_middleRange >= _shortRange) return PreferedRange.MiddleRange;
+        if (defLongRange >= defMiddleRange && defLongRange >= defShortRange) return PreferedRange.LongRange;
+        else if (defMiddleRange >= defShortRange) return PreferedRange.MiddleRange;
         else return PreferedRange.ShortRange;
+    }
+    
+    /// <summary>
+    /// ChangeSoldier method update a soldier of the squad and invoke the right event
+    /// </summary>
+    /// <param name="_number">Number of the soldier to change</param>
+    /// <param name="_soldier">Soldier to link to the squad</param>
+    public void ChangeSoldier(int _number, Soldier _soldier)
+    {
+        switch (_number)
+        {
+            case 1: // Change soldier 1
+                soldierList[0] = _soldier;
+                OnSoldier1Change?.Invoke();
+                break;
+            case 2: // Change soldier 2
+                soldierList[1] = _soldier;
+                OnSoldier2Change?.Invoke();
+                break;
+            case 3: // Change soldier 3
+                soldierList[2] = _soldier;
+                OnSoldier3Change?.Invoke();
+                break;
+            case 4: // Change soldier 4
+                soldierList[3] = _soldier;
+                OnSoldier4Change?.Invoke();
+                break;
+            default: // if _number is not between 1 to 4 (inclusive), display an error
+                Debug.LogError("[Squad] Trying to change a soldier not between 1st and 4th position (inclusive)");
+                break;
+        }
+        // Compute new value after soldier change
+        ComputeSquadValues();
+        // Update position choice (to compute new preferred range id needed)
+        UpdatePosChoice(posChoice);
+    }
+
+    /// <summary>
+    /// ComputeSquadValues method computes all the squad data from the soldier data and invoke OnValueChange event
+    /// </summary>
+    public void ComputeSquadValues()
+    {
+        // Compute attack data
+        atkShortRange = 0;
+        atkShortRange += soldierList[0] == null ? 0 : soldierList[0].ShortRangeAttack;
+        atkShortRange += soldierList[1] == null ? 0 : soldierList[1].ShortRangeAttack;
+        atkShortRange += soldierList[2] == null ? 0 : soldierList[2].ShortRangeAttack;
+        atkShortRange += soldierList[3] == null ? 0 : soldierList[3].ShortRangeAttack;
+
+        atkMiddleRange = 0;
+        atkMiddleRange += soldierList[0] == null ? 0 : soldierList[0].MiddleRangeAttack;
+        atkMiddleRange += soldierList[1] == null ? 0 : soldierList[1].MiddleRangeAttack;
+        atkMiddleRange += soldierList[2] == null ? 0 : soldierList[2].MiddleRangeAttack;
+        atkMiddleRange += soldierList[3] == null ? 0 : soldierList[3].MiddleRangeAttack;
+
+        atkLongRange = 0;
+        atkLongRange += soldierList[0] == null ? 0 : soldierList[0].LongRangeAttack;
+        atkLongRange += soldierList[1] == null ? 0 : soldierList[1].LongRangeAttack;
+        atkLongRange += soldierList[2] == null ? 0 : soldierList[2].LongRangeAttack;
+        atkLongRange += soldierList[3] == null ? 0 : soldierList[3].LongRangeAttack;
+
+        // Compute defense data
+        defShortRange = 0;
+        defShortRange += soldierList[0] == null ? 0 : soldierList[0].ShortRangeDefense;
+        defShortRange += soldierList[1] == null ? 0 : soldierList[1].ShortRangeDefense;
+        defShortRange += soldierList[2] == null ? 0 : soldierList[2].ShortRangeDefense;
+        defShortRange += soldierList[3] == null ? 0 : soldierList[3].ShortRangeDefense;
+
+        defMiddleRange = 0;
+        defMiddleRange += soldierList[0] == null ? 0 : soldierList[0].MiddleRangeDefense;
+        defMiddleRange += soldierList[1] == null ? 0 : soldierList[1].MiddleRangeDefense;
+        defMiddleRange += soldierList[2] == null ? 0 : soldierList[2].MiddleRangeDefense;
+        defMiddleRange += soldierList[3] == null ? 0 : soldierList[3].MiddleRangeDefense;
+
+        defLongRange = 0;
+        defLongRange += soldierList[0] == null ? 0 : soldierList[0].LongRangeDefense;
+        defLongRange += soldierList[1] == null ? 0 : soldierList[1].LongRangeDefense;
+        defLongRange += soldierList[2] == null ? 0 : soldierList[2].LongRangeDefense;
+        defLongRange += soldierList[3] == null ? 0 : soldierList[3].LongRangeDefense;
+
+        defExplosives = 0;
+        defExplosives += soldierList[0] == null ? 0 : soldierList[0].ExplosivesDefense;
+        defExplosives += soldierList[1] == null ? 0 : soldierList[1].ExplosivesDefense;
+        defExplosives += soldierList[2] == null ? 0 : soldierList[2].ExplosivesDefense;
+        defExplosives += soldierList[3] == null ? 0 : soldierList[3].ExplosivesDefense;
+
+        // Compute speed
+        UpdateSpeed();
+
+        // Invoke event
+        OnValueChange?.Invoke();
+    }
+
+    /// <summary>
+    /// UpdateSpeed method updates the squad speed value from the soldier value
+    /// </summary>
+    public void UpdateSpeed()
+    {
+        speed = 999;
+        foreach (Soldier _soldier in soldierList)
+        {
+            // The squad speed is the minimum speed of all soldiers
+            if (_soldier != null)
+            {
+                speed = Mathf.Min(speed, _soldier.Speed);
+            }
+        }
+        if (speed == 999) speed = 0;
+    }
+
+    /// <summary>
+    /// InstantiateSquadUnit method instantiate a SquadUnit in the City Scene from Squad data
+    /// </summary>
+    /// <param name="spawPoint">Vector3 where to spawn the SquadUnit</param>
+    /// <returns>The SquadUnit created</returns>
+    public SquadUnit InstanciateSquadUnit(Vector3 spawPoint)
+    {
+        // Instantiate SquadUnit at spawnPoint
+        GameObject _go = Instantiate(PlayManager.SquadPrefab, GridAdjustment.GetGridCoordinates(spawPoint), Quaternion.identity);
+        SquadUnit _su = _go.GetComponent<SquadUnit>();
+        // Setup SquadUnit with Squad
+        _su.Setup(this);
+        // Add Squad to CityCanvas => To be changed when updating UIManager
+        FindObjectOfType<CityCanvas>().AddSquad(_su);
+        return _su;
     }
 }

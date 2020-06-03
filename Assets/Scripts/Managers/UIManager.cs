@@ -1,16 +1,18 @@
 ﻿using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
 
 public class UIManager : Singleton<UIManager>
 {
+    // Public Canvas, one for each GameManager GameState
     public Canvas startMenu;
     public Canvas pauseMenu;
     public Canvas loadUI;
     public Canvas saveUI;
     public Canvas playUI;
 
-    // Start is called before the first frame update
+    /// <summary>
+    /// At Start, checks for missing UI Canvas and subscribes to GameManager events
+    /// </summary>
     void Start()
     {
         // Default checks
@@ -36,6 +38,7 @@ public class UIManager : Singleton<UIManager>
         }
         else
         {
+            // Subscribe to all GameManager events to change and upadte UI
             GameManager.OnStartToLoad += ShowLoadUI;
             GameManager.OnLoadToPlay += ShowPlayUI;
             GameManager.OnPlayToStart += ShowStartMenu;
@@ -51,13 +54,20 @@ public class UIManager : Singleton<UIManager>
             GameManager.PlayUpdate += PlayUI;
             GameManager.PauseUpdate += PauseMenu;
             GameManager.SaveUpdate += SaveUI;
+
+            // Initialize UI from current GameState
             InitializeUI();
         }
     }
 
+    /// <summary>
+    /// OnDestroy methods delete the UIManager and ununscribes from GameManager events
+    /// </summary>
     protected override void OnDestroy()
     {
         base.OnDestroy();
+
+        // Unsubscribe from GameManager events
         GameManager.OnStartToLoad -= ShowLoadUI;
         GameManager.OnLoadToPlay -= ShowPlayUI;
         GameManager.OnPlayToStart -= ShowStartMenu;
@@ -75,6 +85,9 @@ public class UIManager : Singleton<UIManager>
     }
 
     #region Show dedicate Canvas Methods
+    /// <summary>
+    /// InitializeUI method shows the first Canvas depending on the current GameState (the first)
+    /// </summary>
     void InitializeUI()
     {
         switch (GameManager.CurrentGameState)
@@ -100,7 +113,9 @@ public class UIManager : Singleton<UIManager>
         }
     }
 
-
+    /// <summary>
+    /// ShowStartMenu method activates the Start Menu and hides all the others
+    /// </summary>
     void ShowStartMenu()
     {
         startMenu.gameObject.SetActive(true);
@@ -110,6 +125,9 @@ public class UIManager : Singleton<UIManager>
         playUI.gameObject.SetActive(false);
     }
 
+    /// <summary>
+    /// ShowPauseMenu method activates the Pause Menu and hides all the others
+    /// </summary>
     void ShowPauseMenu()
     {
         startMenu.gameObject.SetActive(false);
@@ -119,6 +137,9 @@ public class UIManager : Singleton<UIManager>
         playUI.gameObject.SetActive(false);
     }
 
+    /// <summary>
+    /// ShowPlayUI method activates the Play UI and hides all the others
+    /// </summary>
     void ShowPlayUI()
     {
         startMenu.gameObject.SetActive(false);
@@ -128,6 +149,9 @@ public class UIManager : Singleton<UIManager>
         playUI.gameObject.SetActive(true);
     }
 
+    /// <summary>
+    /// ShowLoadUI method activates the Load UI and hides all the others
+    /// </summary>
     void ShowLoadUI()
     {
         startMenu.gameObject.SetActive(false);
@@ -136,10 +160,13 @@ public class UIManager : Singleton<UIManager>
         saveUI.gameObject.SetActive(false);
         playUI.gameObject.SetActive(false);
 
-        // For debug
+        // For debug, until something is done in load and can change the GameState
         StartCoroutine(ChangeGameStateRequestDelayed(GameManager.GameState.play));
     }
 
+    /// <summary>
+    /// ShowSaveMenu method activates the Save UI and hides all the others
+    /// </summary>
     void ShowSaveUI()
     {
         startMenu.gameObject.SetActive(false);
@@ -148,10 +175,15 @@ public class UIManager : Singleton<UIManager>
         saveUI.gameObject.SetActive(true);
         playUI.gameObject.SetActive(false);
 
-        // For debug
+        // For debug, until something is done in load and can change the GameState
         StartCoroutine(ChangeGameStateRequestDelayed(GameManager.GameState.pause));
     }
 
+    /// <summary>
+    /// Coroutine for debug to change the GameState after 5 seconds
+    /// </summary>
+    /// <param name="req">GameState requested to change to</param>
+    /// <returns></returns>
     IEnumerator ChangeGameStateRequestDelayed(GameManager.GameState req)
     {
         yield return new WaitForSeconds(5f);
@@ -159,6 +191,9 @@ public class UIManager : Singleton<UIManager>
     }
     #endregion
 
+    /// <summary>
+    /// Actions on each Canvas to switch from a GameState to another
+    /// </summary>
     #region Canvas Actions
     void StartMenu()
     {
