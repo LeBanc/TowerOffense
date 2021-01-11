@@ -77,13 +77,15 @@ public class SquadSave
     }
 
     /// <summary>
-    /// LoadSquad create a Squad from a SquadSave
+    /// Load create a Squad from a SquadSave
     /// </summary>
     /// <returns>The Squad created from SquadSave data</returns>
-    public Squad LoadSquad()
+    public Squad Load()
     {
         Color _color = new Color(colorR, colorG, colorB);
-        return new Squad(iD,_color,squadTypePath,soldier1,soldier2,soldier3,soldier4,range,posChoice,isEngaged);
+        Squad _squad = ScriptableObject.CreateInstance("Squad") as Squad;
+        _squad.LoadData(iD, _color, squadTypePath, soldier1, soldier2, soldier3, soldier4, range, posChoice, isEngaged);
+        return _squad;
     }
 
 }

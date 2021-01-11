@@ -14,10 +14,11 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   soldierType: 1
   soldierLevel: 2
-  prefab: {fileID: 7775684171843242171, guid: 8cb6299af0adcab41a42da1618286ec3, type: 3}
-  shortRangeAttack: 3
-  middleRangeAttack: 3
-  longRangeAttack: 2
+  typeName: Marine
+  prefab: {fileID: 7775684171843242171, guid: a94ed999e9085c8449fefeb00d29a8bd, type: 3}
+  shortRangeAttack: 7
+  middleRangeAttack: 10
+  longRangeAttack: 3
   shortRangeDefense: 1
   middleRangeDefense: 1
   longRangeDefense: 0
@@ -25,6 +26,7 @@ MonoBehaviour:
   speed: 100
   maxHP: 100
   shootingDelay: 3
+  maxXP: 15000
   shootingSound: {fileID: 8300000, guid: cf5c4803435bf5d4f920a0533150c10d, type: 3}
   capacities: 
   improveTo:

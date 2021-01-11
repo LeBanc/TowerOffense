@@ -14,17 +14,19 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   soldierType: 3
   soldierLevel: 1
-  prefab: {fileID: 7775684171843242171, guid: 8cb6299af0adcab41a42da1618286ec3, type: 3}
-  shortRangeAttack: 1
-  middleRangeAttack: 2
-  longRangeAttack: 0
+  typeName: Specialist
+  prefab: {fileID: 7775684171843242171, guid: a94ed999e9085c8449fefeb00d29a8bd, type: 3}
+  shortRangeAttack: 6
+  middleRangeAttack: 7
+  longRangeAttack: 1
   shortRangeDefense: 0
-  middleRangeDefense: 0
+  middleRangeDefense: 1
   longRangeDefense: 0
   explosiveDefense: 0
   speed: 110
   maxHP: 100
   shootingDelay: 3
+  maxXP: 1000
   shootingSound: {fileID: 8300000, guid: cf5c4803435bf5d4f920a0533150c10d, type: 3}
   capacities: 00000000
   improveTo:

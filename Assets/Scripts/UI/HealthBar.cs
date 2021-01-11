@@ -1,4 +1,5 @@
-﻿using UnityEngine;
+﻿using UnityEditor.SceneManagement;
+using UnityEngine;
 using UnityEngine.UI;
 
 /// <summary>
@@ -28,7 +29,7 @@ public class HealthBar : MonoBehaviour
     /// </summary>
     private void Awake()
     {
-        bar = GetComponent<Image>();
+        if(bar == null) bar = GetComponent<Image>();
         if (bar == null) Debug.LogError("[HealthBar] Cannot find Image component!");
     }
 
@@ -41,9 +42,17 @@ public class HealthBar : MonoBehaviour
     {
         source = _t;
         maxWidth = _maxW;
-        bar.color = green;
-        bar.rectTransform.SetSizeWithCurrentAnchors(RectTransform.Axis.Horizontal, maxWidth);
-        bar.rectTransform.SetSizeWithCurrentAnchors(RectTransform.Axis.Vertical, height);
+        if(bar == null) bar = GetComponent<Image>();
+        if (bar == null)
+        {
+            Debug.LogError("[HealthBar] Cannot find Image component!");
+        }
+        else
+        {
+            bar.color = green;
+            bar.rectTransform.SetSizeWithCurrentAnchors(RectTransform.Axis.Horizontal, maxWidth);
+            bar.rectTransform.SetSizeWithCurrentAnchors(RectTransform.Axis.Vertical, height);
+        }  
     }
 
     /// <summary>
@@ -51,7 +60,7 @@ public class HealthBar : MonoBehaviour
     /// </summary>
     public void Hide()
     {
-        bar.enabled = false;
+        if(bar != null) bar.enabled = false;
     }
 
     /// <summary>
@@ -68,7 +77,10 @@ public class HealthBar : MonoBehaviour
     public void Remove()
     {
         OnRemove?.Invoke(this);
-        if(gameObject != null) Destroy(gameObject);
+        if (gameObject != null)
+        {
+            Destroy(gameObject);
+        }
     }
 
     /// <summary>

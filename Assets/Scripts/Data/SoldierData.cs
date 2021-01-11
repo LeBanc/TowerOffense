@@ -38,6 +38,7 @@ public class SoldierData : ScriptableObject
     [Header("Type and Level")]
     public SoldierType soldierType;
     public int soldierLevel;
+    public string typeName;
 
     // The Prefab that will be instantiate in 3D city view
     [Header("Soldier 3D prefab")]
@@ -60,6 +61,7 @@ public class SoldierData : ScriptableObject
     public int speed;
     public int maxHP;
     public float shootingDelay;
+    public int maxXP;
 
     [Header("Sounds")]
     // Sound when shooting
@@ -72,5 +74,4 @@ public class SoldierData : ScriptableObject
     [Header("Improve to")]
     // List of SoldierData the soldier can evolved into
     public List<SoldierData> improveTo;
-
 }

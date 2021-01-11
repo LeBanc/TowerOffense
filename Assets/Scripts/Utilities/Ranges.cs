@@ -7,16 +7,16 @@ using UnityEngine;
 public static class Ranges
 {
     /// <summary>
-    /// GetNearsestSoldier searches for the nearest Soldier in the prefered ranges order
+    /// GetNearsestSoldier searches for the nearest Soldier or Turret in the prefered ranges order
     /// </summary>
     /// <param name="_source">Transform source (tower or whatever)</param>
     /// <param name="_shortRangeCoeff">short range coefficient for sort order (attack or defense value)</param>
     /// <param name="_middleRangeCoeff">middle range coefficient for sort order (attack or defense value)</param>
     /// <param name="_longRangeCoeff">long range coefficient for sort order (attack or defense value)</param>
     /// <returns>Returns the nearest soldier in preferred range and null if no soldier available</returns>
-    public static SoldierUnit GetNearestSoldier(Transform _source, int _shortRangeCoeff, int _middleRangeCoeff, int _longRangeCoeff)
+    public static Shootable GetNearestSoldier(Transform _source, int _shortRangeCoeff, int _middleRangeCoeff, int _longRangeCoeff)
     {
-        SoldierUnit _result = null;
+        Shootable _result = null;
         if(_shortRangeCoeff >= _middleRangeCoeff && _shortRangeCoeff >= _longRangeCoeff)
         {
             _result = GetNearestSoldierInRange(_source, PlayManager.ShortRange);
@@ -57,15 +57,15 @@ public static class Ranges
     }
 
     /// <summary>
-    /// GetNearestSoldierInRange search for the nearest soldier within a range
+    /// GetNearestSoldierInRange search for the nearest soldier or turret within a range
     /// </summary>
     /// <param name="_source">Transform source (tower or whatever)</param>
     /// <param name="_rangeMax">float for max range</param>
     /// <param name="_rangeMin">float for min range (optional)</param>
     /// <returns>Returns the transform of the nearest soldier or the source transform if no soldier found</returns>
-    private static SoldierUnit GetNearestSoldierInRange(Transform _source, float _rangeMax, float _rangeMin = 0f)
+    private static Shootable GetNearestSoldierInRange(Transform _source, float _rangeMax, float _rangeMin = 0f)
     {
-        List<SoldierUnit> _targets = new List<SoldierUnit>();
+        List<Shootable> _targets = new List<Shootable>();
         Ray _ray;
         RaycastHit _hit;
         Collider[] _foundTransforms;
@@ -79,9 +79,17 @@ public static class Ranges
                     _ray = new Ray(_source.position, (c.transform.position - _source.position).normalized);
                     if (Physics.Raycast(_ray, out _hit))
                     {
-                        if (_hit.collider.gameObject == c.gameObject && !_soldier.IsWounded()) _targets.Add(_soldier);
+                        if (_hit.collider.gameObject == c.gameObject && !_soldier.IsWounded) _targets.Add(_soldier);
                     }
-                }                    
+                }
+                if (c.TryGetComponent<Turret>(out Turret _turret))
+                {
+                    _ray = new Ray(_source.position, (c.transform.position - _source.position).normalized);
+                    if (Physics.Raycast(_ray, out _hit))
+                    {
+                        if (_hit.collider.gameObject == c.gameObject) _targets.Add(_turret);
+                    }
+                }
             }
         }
 
@@ -97,82 +105,90 @@ public static class Ranges
                         _ray = new Ray(_source.position, (c.transform.position - _source.position).normalized);
                         if (Physics.Raycast(_ray, out _hit))
                         {
-                            if (_hit.collider.gameObject == c.gameObject) _targets.Add(_soldier);
+                            if (_hit.collider.gameObject == c.gameObject) _targets.Remove(_soldier);
+                        }
+                    }
+                    else if (c.TryGetComponent<Turret>(out Turret _turret))
+                    {
+                        _ray = new Ray(_source.position, (c.transform.position - _source.position).normalized);
+                        if (Physics.Raycast(_ray, out _hit))
+                        {
+                            if (_hit.collider.gameObject == c.gameObject) _targets.Remove(_turret);
                         }
                     }
                 }
             }
         }
-        return GetNearestInList<SoldierUnit>(_source, _targets);
+        return GetNearestInList<Shootable>(_source, _targets);
     }
 
     /// <summary>
-    /// GetNearestTower searches for the nearest Tower in the prefered ranges order
+    /// GetNearestEnemy searches for the nearest Enemy in the prefered ranges order
     /// </summary>
     /// <param name="_source">Transform source (squad, soldier, etc.)</param>
     /// <param name="_shortRangeCoeff">int for short range coefficient (attack or defense)</param>
     /// <param name="_middleRangeCoeff">int for middle range coefficient (attack or defense)</param>
     /// <param name="_longRangeCoeff">int for long range coefficient (attack or defense)</param>
-    /// <returns>Returns the nearest tower in preferred range and null if no tower available</returns>
-    public static Tower GetNearestTower(Transform _source, int _shortRangeCoeff, int _middleRangeCoeff, int _longRangeCoeff)
+    /// <returns>Returns the nearest enemy in preferred range and null if no tower available</returns>
+    public static Enemy GetNearestEnemy(Transform _source, int _shortRangeCoeff, int _middleRangeCoeff, int _longRangeCoeff)
     {
-        Tower _result = null;
+        Enemy _result = null;
         if (_shortRangeCoeff >= _middleRangeCoeff && _shortRangeCoeff >= _longRangeCoeff && _shortRangeCoeff > 0)
         {
-            _result = GetNearestTowerInRange(_source, PlayManager.ShortRange);
+            _result = GetNearestEnemyInRange(_source, PlayManager.ShortRange);
             if (_result == null && _middleRangeCoeff >= _longRangeCoeff && _middleRangeCoeff > 0)
             {
-                _result = GetNearestTowerInRange(_source, PlayManager.MiddleRange, PlayManager.ShortRange);
-                if (_result == null && _longRangeCoeff > 0) _result = GetNearestTowerInRange(_source, PlayManager.LongRange, PlayManager.MiddleRange);
+                _result = GetNearestEnemyInRange(_source, PlayManager.MiddleRange, PlayManager.ShortRange);
+                if (_result == null && _longRangeCoeff > 0) _result = GetNearestEnemyInRange(_source, PlayManager.LongRange, PlayManager.MiddleRange);
             }
         }
         else if (_middleRangeCoeff >= _longRangeCoeff && _middleRangeCoeff >= 0 && _middleRangeCoeff > 0)
         {
-            _result = GetNearestTowerInRange(_source, PlayManager.MiddleRange, PlayManager.ShortRange);
+            _result = GetNearestEnemyInRange(_source, PlayManager.MiddleRange, PlayManager.ShortRange);
             if (_result == null && _shortRangeCoeff >= _longRangeCoeff && _shortRangeCoeff > 0)
             {
-                _result = GetNearestTowerInRange(_source, PlayManager.ShortRange);
-                if (_result == null && _longRangeCoeff > 0) _result = GetNearestTowerInRange(_source, PlayManager.LongRange, PlayManager.MiddleRange);
+                _result = GetNearestEnemyInRange(_source, PlayManager.ShortRange);
+                if (_result == null && _longRangeCoeff > 0) _result = GetNearestEnemyInRange(_source, PlayManager.LongRange, PlayManager.MiddleRange);
             }
         }
         else if(_longRangeCoeff > 0)
         {
-            _result = GetNearestTowerInRange(_source, PlayManager.LongRange, PlayManager.MiddleRange);
+            _result = GetNearestEnemyInRange(_source, PlayManager.LongRange, PlayManager.MiddleRange);
             if (_result == null && _shortRangeCoeff >= _middleRangeCoeff && _shortRangeCoeff > 0)
             {
-                _result = GetNearestTowerInRange(_source, PlayManager.ShortRange);
-                if (_result == null && _middleRangeCoeff > 0) _result = GetNearestTowerInRange(_source, PlayManager.MiddleRange, PlayManager.ShortRange);
+                _result = GetNearestEnemyInRange(_source, PlayManager.ShortRange);
+                if (_result == null && _middleRangeCoeff > 0) _result = GetNearestEnemyInRange(_source, PlayManager.MiddleRange, PlayManager.ShortRange);
             }
         }
         return _result;
     }
 
     /// <summary>
-    /// GetNearestTowerInRange search for the nearest tower within a range
+    /// GetNearestEnemyInRange search for the nearest Enemy within a range
     /// </summary>
     /// <param name="_source">Transform source (squad, soldier or whatever)</param>
     /// <param name="_rangeMax">float for max range</param>
     /// <param name="_rangeMin">float for min range (optional)</param>
-    /// <returns>Returns the transform of the nearest tower or the source transform if no soldier found</returns>
-    private static Tower GetNearestTowerInRange(Transform _source, float _rangeMax, float _rangeMin = 0f)
+    /// <returns>Returns the transform of the nearest Enemy or the source transform if no soldier found</returns>
+    private static Enemy GetNearestEnemyInRange(Transform _source, float _rangeMax, float _rangeMin = 0f)
     {
-        List<Tower> _targets = new List<Tower>();
+        List<Enemy> _targets = new List<Enemy>();
         Ray _ray;
         RaycastHit _hit;
         Collider[] _foundTransforms;
-        _foundTransforms = Physics.OverlapSphere(_source.position, _rangeMax, LayerMask.GetMask("Buildings"));
+        _foundTransforms = Physics.OverlapSphere(_source.position, _rangeMax, LayerMask.GetMask("Enemies"));
         if (_foundTransforms.Length > 0)
         {
             foreach (Collider c in _foundTransforms)
             {
-                if(c.TryGetComponent<Tower>(out Tower _tower))
+                if(c.TryGetComponent<Enemy>(out Enemy _enemy))
                 {
-                    if (!_tower.IsDestroyed())
+                    if (!_enemy.IsDestroyed())
                     {
                         _ray = new Ray(_source.position, (c.transform.position - _source.position).normalized);
-                        if (Physics.Raycast(_ray, out _hit, Mathf.Infinity, LayerMask.GetMask(new string[] { "Buildings", "Terrain" })))
+                        if (Physics.Raycast(_ray, out _hit, Mathf.Infinity, LayerMask.GetMask(new string[] { "Enemies", "Buildings", "Terrain" })))
                         {
-                            if (_hit.collider.gameObject == c.gameObject && _tower.IsActive()) _targets.Add(_tower);
+                            if (_hit.collider.gameObject == c.gameObject && _enemy.IsActive()) _targets.Add(_enemy);
                         }
                     }
                 }
@@ -181,23 +197,33 @@ public static class Ranges
 
         if (_rangeMin > 0f && _rangeMin < _rangeMax)
         {
-            _foundTransforms = Physics.OverlapSphere(_source.position, _rangeMin, LayerMask.GetMask("Buildings"));
+            _foundTransforms = Physics.OverlapSphere(_source.position, _rangeMin, LayerMask.GetMask("Enemies"));
             if (_foundTransforms.Length > 0)
             {
                 foreach (Collider c in _foundTransforms)
                 {
-                    if (c.TryGetComponent<Tower>(out Tower _tower))
+                    if (c.TryGetComponent<Enemy>(out Enemy _enemy))
                     {
                         _ray = new Ray(_source.position, (c.transform.position - _source.position).normalized);
-                        if (Physics.Raycast(_ray, out _hit, Mathf.Infinity, LayerMask.GetMask(new string[] { "Buildings", "Terrain" })))
+                        if (Physics.Raycast(_ray, out _hit, Mathf.Infinity, LayerMask.GetMask(new string[] { "Enemies", "Buildings", "Terrain" })))
                         {
-                            if (_hit.collider.gameObject == c.gameObject) _targets.Remove(_tower);
+                            if (_hit.collider.gameObject == c.gameObject) _targets.Remove(_enemy);
                         }
                     }
                 }
             }
         }
-        return GetNearestInList<Tower>(_source, _targets);
+        return GetNearestInList<Enemy>(_source, _targets);
+    }
+
+    /// <summary>
+    /// GetNearestSquad searches in the SquadUnit list of the PlayManager which SquadUnit is the nearest
+    /// </summary>
+    /// <param name="_source">Transform of the source</param>
+    /// <returns>Nearest SquadUnit</returns>
+    public static SquadUnit GetNearestSquad(Transform _source)
+    {
+        return GetNearestInList<SquadUnit>(_source, PlayManager.squadUnitList);
     }
 
     /// <summary>
@@ -206,7 +232,7 @@ public static class Ranges
     /// <param name="_source">Transform source</param>
     /// <param name="_list">List of T</param>
     /// <returns>Returns the transform that is nearer from the source than the other</returns>
-    private static T GetNearestInList<T>(Transform _source, List<T> _list) where T : MonoBehaviour
+    public static T GetNearestInList<T>(Transform _source, List<T> _list) where T : MonoBehaviour
     {
         if (_list.Count == 0) return default(T);
 
@@ -237,30 +263,42 @@ public static class Ranges
         {
             Ray _ray = new Ray(_source.position, (_target.position - _source.position).normalized);
             RaycastHit _hit;
-            if (Physics.Raycast(_ray, out _hit, Mathf.Infinity, LayerMask.GetMask(new string[] { "Buildings", "Terrain" })))
+            if (Physics.Raycast(_ray, out _hit, Mathf.Infinity, LayerMask.GetMask(new string[] { "Enemies", "Buildings", "Terrain", "Soldiers" })))
             {
-                if (_hit.transform == _target) return true;
+                if (_hit.transform == _target || _hit.transform == _target.parent) return true;
             }
         }
         return false;
     }
 
-    public static bool IsShootableMiddle<T>(Transform _source, T _target) where T : MonoBehaviour
+    public static bool IsShootableShort<T>(Transform _source, T _target) where T : Shootable
     {
-        return IsShootable(_source, _target.transform, PlayManager.ShortRange);
-            
+        bool _res = false;
+        foreach(Transform _t in _target.hitList)
+        {
+            _res = _res || IsShootable(_source, _t, PlayManager.ShortRange);
+        }
+        return _res;
     }
 
-    public static bool IsShootableLong<T>(Transform _source, T _target) where T : MonoBehaviour
+    public static bool IsShootableMiddle<T>(Transform _source, T _target) where T : Shootable
     {
-        return IsShootable(_source, _target.transform, PlayManager.MiddleRange, PlayManager.ShortRange);
-
+        bool _res = false;
+        foreach (Transform _t in _target.hitList)
+        {
+            _res = _res || IsShootable(_source, _t, PlayManager.MiddleRange, PlayManager.ShortRange);
+        }
+        return _res;
     }
 
-    public static bool IsShootableShort<T>(Transform _source, T _target) where T : MonoBehaviour
+    public static bool IsShootableLong<T>(Transform _source, T _target) where T : Shootable
     {
-        return IsShootable(_source, _target.transform, PlayManager.LongRange, PlayManager.MiddleRange);
-
+        bool _res = false;
+        foreach (Transform _t in _target.hitList)
+        {
+            _res = _res || IsShootable(_source, _t, PlayManager.LongRange, PlayManager.MiddleRange);
+        }
+        return _res;
     }
 
     /// <summary>
@@ -277,18 +315,33 @@ public static class Ranges
         return (_distance <= _rangeMax +5f && _distance > _rangeMin + 5f);
     }
 
-    public static bool IsInShortRange<T>(Transform _source, T _target) where T : MonoBehaviour
+    public static bool IsInShortRange<T>(Transform _source, T _target) where T : Shootable
     {
-        return IsInRange(_source, _target.transform, PlayManager.ShortRange);
+        bool _res = false;
+        foreach (Transform _t in _target.hitList)
+        {
+            _res = _res || IsInRange(_source, _t, PlayManager.ShortRange);
+        }
+        return _res;
     }
 
-    public static bool IsInMiddleRange<T>(Transform _source, T _target) where T : MonoBehaviour
+    public static bool IsInMiddleRange<T>(Transform _source, T _target) where T : Shootable
     {
-        return IsInRange(_source, _target.transform, PlayManager.MiddleRange,PlayManager.ShortRange);
+        bool _res = false;
+        foreach (Transform _t in _target.hitList)
+        {
+            _res = _res || IsInRange(_source, _t, PlayManager.MiddleRange, PlayManager.ShortRange);
+        }
+        return _res;
     }
 
-    public static bool IsInLongRange<T>(Transform _source, T _target) where T : MonoBehaviour
+    public static bool IsInLongRange<T>(Transform _source, T _target) where T : Shootable
     {
-        return IsInRange(_source, _target.transform, PlayManager.LongRange,PlayManager.MiddleRange);
+        bool _res = false;
+        foreach (Transform _t in _target.hitList)
+        {
+            _res = _res || IsInRange(_source, _t, PlayManager.LongRange, PlayManager.MiddleRange);
+        }
+        return _res;
     }
 }

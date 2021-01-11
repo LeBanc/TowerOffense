@@ -14,17 +14,19 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   soldierType: 2
   soldierLevel: 1
-  prefab: {fileID: 7775684171843242171, guid: 8cb6299af0adcab41a42da1618286ec3, type: 3}
-  shortRangeAttack: 1
-  middleRangeAttack: 1
+  typeName: Defense soldier
+  prefab: {fileID: 7775684171843242171, guid: a94ed999e9085c8449fefeb00d29a8bd, type: 3}
+  shortRangeAttack: 6
+  middleRangeAttack: 6
   longRangeAttack: 0
-  shortRangeDefense: 1
-  middleRangeDefense: 1
+  shortRangeDefense: 2
+  middleRangeDefense: 2
   longRangeDefense: 1
   explosiveDefense: 0
   speed: 90
   maxHP: 110
   shootingDelay: 3
+  maxXP: 5000
   shootingSound: {fileID: 8300000, guid: cf5c4803435bf5d4f920a0533150c10d, type: 3}
   capacities: 
   improveTo:

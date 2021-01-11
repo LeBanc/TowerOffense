@@ -44,6 +44,19 @@ public class DayLight : MonoBehaviour
         morningQuaternion = Quaternion.Euler(morningAngle.x, morningAngle.y, morningAngle.z);
         noonQuaternion = Quaternion.Euler(noonAngle.x, noonAngle.y, noonAngle.z);
         eveningQuaternion = Quaternion.Euler(eveningAngle.x, eveningAngle.y, eveningAngle.z);
+
+        // Subscribe to PlayManager events
+        PlayManager.OnEndDay += Night;
+    }
+
+    /// <summary>
+    /// OnDestroy, unsubscribes events
+    /// </summary>
+    private void OnDestroy()
+    {
+        PlayManager.OnEndDay -= Night;
+        GameManager.PlayUpdate -= LightUpdate;
+
     }
 
     /// <summary>

@@ -6,11 +6,12 @@
 public class TerrainHighlight : MonoBehaviour
 {
     /// <summary>
-    /// On Start, subscribe to PlayUpdate event
+    /// On Start, subscribe to PlayManager events
     /// </summary>
     private void Start()
     {
-        GameManager.PlayUpdate += GridHighlightUpdate;
+        PlayManager.OnLoadSquadsOnNewDay += delegate { Activate(true); };
+        PlayManager.OnEndDay += delegate { Activate(false); };
     }
 
     /// <summary>
@@ -20,6 +21,24 @@ public class TerrainHighlight : MonoBehaviour
     {
         // Remove the Highlight from PlayUpdate
         GameManager.PlayUpdate -= GridHighlightUpdate;
+    }
+
+    /// <summary>
+    /// Activate method activates and deactivates the TerrainHighlight by subscribing/unsubscribing to the PlayUpdate
+    /// </summary>
+    /// <param name="_active">Active or deactive boolean</param>
+    public void Activate(bool _active)
+    {
+        if (_active)
+        {
+            gameObject.SetActive(true);
+            GameManager.PlayUpdate += GridHighlightUpdate;
+        }
+        else
+        {
+            GameManager.PlayUpdate -= GridHighlightUpdate;
+            gameObject.SetActive(false);
+        }
     }
 
     /// <summary>

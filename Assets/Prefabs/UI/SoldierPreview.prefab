@@ -1486,7 +1486,7 @@ GameObject:
   - component: {fileID: 8180213058656265399}
   - component: {fileID: 8180213058656265398}
   m_Layer: 5
-  m_Name: SoldierName
+  m_Name: SoldierType
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -1540,10 +1540,10 @@ MonoBehaviour:
       m_Calls: []
   m_FontData:
     m_Font: {fileID: 10102, guid: 0000000000000000e000000000000000, type: 0}
-    m_FontSize: 20
+    m_FontSize: 18
     m_FontStyle: 0
     m_BestFit: 1
-    m_MinSize: 2
+    m_MinSize: 1
     m_MaxSize: 20
     m_Alignment: 3
     m_AlignByGeometry: 0
@@ -1551,7 +1551,7 @@ MonoBehaviour:
     m_HorizontalOverflow: 0
     m_VerticalOverflow: 0
     m_LineSpacing: 1
-  m_Text: Soldier Name
+  m_Text: Soldier Type
 --- !u!1 &8180213058658930538
 GameObject:
   m_ObjectHideFlags: 0
@@ -1820,8 +1820,8 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   soldierImage: {fileID: 8583315279222975448}
-  soldierLevel: {fileID: 8180213059720008439}
-  soldierName: {fileID: 8180213058656265398}
+  soldierName: {fileID: 8180213059720008439}
+  soldierType: {fileID: 8180213058656265398}
   healthBar: {fileID: 3470541299922965434}
   experienceBar: {fileID: 1148479582050937144}
   attackShortValue: {fileID: 6077930387399971005}
@@ -2006,7 +2006,7 @@ GameObject:
   - component: {fileID: 8180213059720008436}
   - component: {fileID: 8180213059720008439}
   m_Layer: 5
-  m_Name: SoldierLevel
+  m_Name: SoldierName
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -2060,18 +2060,18 @@ MonoBehaviour:
       m_Calls: []
   m_FontData:
     m_Font: {fileID: 10102, guid: 0000000000000000e000000000000000, type: 0}
-    m_FontSize: 20
+    m_FontSize: 18
     m_FontStyle: 0
-    m_BestFit: 0
-    m_MinSize: 2
-    m_MaxSize: 40
+    m_BestFit: 1
+    m_MinSize: 1
+    m_MaxSize: 20
     m_Alignment: 3
     m_AlignByGeometry: 0
     m_RichText: 1
     m_HorizontalOverflow: 0
     m_VerticalOverflow: 0
     m_LineSpacing: 1
-  m_Text: Soldier Level
+  m_Text: Rank and Name
 --- !u!1 &8180213059851443371
 GameObject:
   m_ObjectHideFlags: 0

@@ -1,4 +1,5 @@
-﻿using UnityEngine;
+﻿using System;
+using UnityEngine;
 
 /// <summary>
 /// Soldier is the class that represents the soldier with all its data
@@ -34,7 +35,17 @@ public class Soldier : ScriptableObject
     private int[] defenseBonuses = new int[4];
     private int speedBonus;
 
+    // Squad attached to
+    private Squad squad;
+
     // private ??? friendships; => to be implemented
+
+    // Events
+    public delegate void SoldierEventHandler();
+    public event SoldierEventHandler OnNameChange;
+    public event SoldierEventHandler OnImageChange;
+    public event SoldierEventHandler OnDataChange;
+
 
     #region Properties access
     public int ID
@@ -64,7 +75,7 @@ public class Soldier : ScriptableObject
 
     public int MaxXP
     {
-        get { return PlayManager.data.experienceMaxAmount[data.soldierLevel]; }
+        get { return data.maxXP; }
     }
 
     public int CurrentHP
@@ -75,7 +86,7 @@ public class Soldier : ScriptableObject
 
     public int CurrentXP
     {
-        set { currentHP = value; }
+        set { currentXP = value; }
         get { return currentXP; }
     }
 
@@ -165,13 +176,18 @@ public class Soldier : ScriptableObject
         get { return speedBonus; }
     }
 
+    public Squad Squad
+    {
+        get { return squad; }
+    }
+
     #endregion
 
     /// <summary>
-    /// Soldier constructor from a SoldierData
+    /// InitData initializes a new Soldier ScriptableObject from a SoldierData
     /// </summary>
     /// <param name="_newData">SoldierData (type)</param>
-    public Soldier(SoldierData _newData)
+    public void InitData(SoldierData _newData)
     {
         // Gets values from PlayManager
         iD = PlayManager.GetFreeSoldierID();
@@ -186,10 +202,11 @@ public class Soldier : ScriptableObject
 
         // Sets default value
         currentXP = 0;
+        squad = null;
     }
 
     /// <summary>
-    /// Soldier constructor from dedicated data (from save file)
+    /// LoadData loads soldier data from dedicated data (from save file)
     /// </summary>
     /// <param name="_ID">iD number</param>
     /// <param name="_NAME">Name</param>
@@ -197,7 +214,7 @@ public class Soldier : ScriptableObject
     /// <param name="_DATA">Data name</param>
     /// <param name="_HP">HP current value</param>
     /// <param name="_XP">XP current value</param>
-    public Soldier(int _ID, string _NAME, string _IMAGE, string _DATA, int _HP, int _XP)
+    public void LoadData(int _ID, string _NAME, string _IMAGE, string _DATA, int _HP, int _XP)
     {
         iD = _ID;
         soldierName = _NAME;
@@ -207,41 +224,7 @@ public class Soldier : ScriptableObject
         data = Resources.Load("SoldierData/" + dataPath) as SoldierData;
         currentHP = _HP;
         currentXP = _XP;
-    }
-
-    /// <summary>
-    /// Soldier empty constructor
-    /// </summary>
-    public Soldier()
-    {
-        iD = 0;
-        soldierName = "";
-        imagePath = "";
-        image = null;
-        dataPath = "";
-        data = null;
-        currentHP = 0;
-        currentXP = 0;
-    }
-
-    /// <summary>
-    /// Evolve method changes the SoldierData
-    /// </summary>
-    /// <param name="_newData"></param>
-    public void Evolve(SoldierData _newData)
-    {
-        data = _newData;
-        dataPath = data.name;
-        if (currentHP > MaxHP) currentHP = MaxHP;
-    }
-
-    /// <summary>
-    /// Rename method changes the Soldier name
-    /// </summary>
-    /// <param name="_newName"></param>
-    public void Rename(string _newName)
-    {
-        soldierName = _newName;
+        squad = null;
     }
 
     /// <summary>
@@ -288,4 +271,185 @@ public class Soldier : ScriptableObject
     {
         isDead = true;
     }
+
+    /// <summary>
+    /// AddToSquad sets the soldier's squad
+    /// </summary>
+    /// <param name="_squad">Squad to select</param>
+    public void AddToSquad(Squad _squad)
+    {
+        squad = _squad;
+    }
+
+    /// <summary>
+    /// RemoveFromSquad clears the squad value of this Soldier
+    /// </summary>
+    public void RemoveFromSquad()
+    {
+        if(squad != null) squad.RemoveSoldier(this);
+        squad = null;
+    }
+
+    /// <summary>
+    /// ChangeName methods changes the soldier's name
+    /// </summary>
+    /// <param name="_name">New name</param>
+    public void ChangeName(string _name)
+    {
+        soldierName = _name;
+        OnNameChange?.Invoke();
+    }
+
+    /// <summary>
+    /// ChangeImage method changes the soldier's sprite
+    /// </summary>
+    /// <param name="_sprite">New sprite</param>
+    public void ChangeImage(Sprite _sprite)
+    {
+        image = _sprite;
+        OnImageChange?.Invoke();
+    }
+
+    /// <summary>
+    /// Evolve method changes the SoldierData
+    /// </summary>
+    /// <param name="_newData"></param>
+    public void Evolve(SoldierData _newData)
+    {
+        // Get the MaxHP of the current type
+        int oldMaxHP = MaxHP;
+
+        // Substract the XP cost of the level gained
+        currentXP = currentXP - data.maxXP;
+        
+        // Set new data
+        data = _newData;
+        dataPath = data.name;
+
+        // Reset XP if max level
+        if (data.maxXP == 0) currentXP = 0;
+        
+        // Set life proportionnaly of the MaxHP change
+        currentHP = Mathf.Max(1,(currentHP * MaxHP) / oldMaxHP);
+
+        OnDataChange?.Invoke();
+    }
+
+    #region Sort methods
+
+    /// <summary>
+    /// SortByID method compares two soldiers and returns an int depending of soldiers'ID
+    /// </summary>
+    /// <param name="x">First soldier</param>
+    /// <param name="y">Second soldier</param>
+    /// <returns>-1 if lower, 0 if equal and 1 if greater (x compare to y)</returns>
+    public static int SortByID(Soldier x, Soldier y)
+    {
+        if(x == null)
+        {
+            if(y == null) return 0; // If both are null, they are equals
+            return 1; // x is null so it is greater than y
+        }
+        if (y == null) return -1; // y is null so x is lower than y
+
+        return x.ID.CompareTo(y.ID);
+    }
+
+    /// <summary>
+    /// SortByName method compares two soldiers and returns an int depending of soldiers'Name
+    /// </summary>
+    /// <param name="x">First soldier</param>
+    /// <param name="y">Second soldier</param>
+    /// <returns>-1 if lower, 0 if equal and 1 if greater (x compare to y)</returns>
+    public static int SortByName(Soldier x, Soldier y)
+    {
+        if (x == null)
+        {
+            if (y == null) return 0; // If both are null, they are equals
+            return 1; // x is null so it is greater than y
+        }
+        if (y == null) return -1; // y is null so x is lower than y
+
+        return x.Name.CompareTo(y.Name);
+    }
+
+    /// <summary>
+    /// SortByType method compares two soldiers and returns an int depending of soldiers'Type
+    /// </summary>
+    /// <param name="x">First soldier</param>
+    /// <param name="y">Second soldier</param>
+    /// <returns>-1 if lower, 0 if equal and 1 if greater (x compare to y)</returns>
+    public static int SortByType(Soldier x, Soldier y)
+    {
+        if (x == null)
+        {
+            if (y == null) return 0; // If both are null, they are equals
+            return 1; // x is null so it is greater than y
+        }
+        if (y == null) return -1; // y is null so x is lower than y
+
+        return x.data.soldierType.CompareTo(y.data.soldierType);
+    }
+
+    /// <summary>
+    /// SortByLevelLower method compares two soldiers and returns an int depending of soldiers'Level
+    /// </summary>
+    /// <param name="x">First soldier</param>
+    /// <param name="y">Second soldier</param>
+    /// <returns>-1 if lower, 0 if equal and 1 if greater (x compare to y)</returns>
+    public static int SortByLevelLower(Soldier x, Soldier y)
+    {
+        if (x == null)
+        {
+            if (y == null) return 0; // If both are null, they are equals
+            return 1; // x is null so it is greater than y
+        }
+        if (y == null) return -1; // y is null so x is lower than y
+
+        return x.data.soldierLevel.CompareTo(y.data.soldierLevel);
+    }
+
+    /// <summary>
+    /// SortByLevelGreater method compares two soldiers and returns an int depending of soldiers'Level
+    /// </summary>
+    /// <param name="x">First soldier</param>
+    /// <param name="y">Second soldier</param>
+    /// <returns>1 if lower, 0 if equal and -1 if greater (x compare to y)</returns>
+    public static int SortByLevelGreater(Soldier x, Soldier y)
+    {
+        if (x == null)
+        {
+            if (y == null) return 0; // If both are null, they are equals
+            return 1; // x is null so it is greater than y
+        }
+        if (y == null) return -1; // y is null so x is lower than y
+
+        return (-1)*x.data.soldierLevel.CompareTo(y.data.soldierLevel);
+    }
+
+    /// <summary>
+    /// SortBySquad method compares two soldiers and returns an int depending of soldiers'Squad
+    /// </summary>
+    /// <param name="x">First soldier</param>
+    /// <param name="y">Second soldier</param>
+    /// <returns>1 if lower, 0 if equal and -1 if greater (x compare to y)</returns>
+    public static int SortBySquad(Soldier x, Soldier y)
+    {
+        if (x == null)
+        {
+            if (y == null) return 0; // If both are null, they are equals
+            return 1; // x is null so it is greater than y
+        }
+        if (y == null) return -1; // y is null so x is lower than y
+
+        if(x.squad == null)
+        {
+            if(y.squad == null) return 0;
+            return 1;
+        }
+        if (y.squad == null) return 1;
+
+        return x.squad.ID.CompareTo(y.squad.ID);
+    }
+    #endregion
 }

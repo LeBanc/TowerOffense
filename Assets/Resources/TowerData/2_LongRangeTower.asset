@@ -1,0 +1,29 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: b4d157a2922a5104c9ce295a4eace444, type: 3}
+  m_Name: 2_LongRangeTower
+  m_EditorClassIdentifier: 
+  towerLevel: 2
+  towerType: LongRange2
+  spawnSoldier: 1
+  shortRangeAttack: 0
+  middleRangeAttack: 8
+  longRangeAttack: 48
+  explosiveAttack: 0
+  shortRangeDefense: 1
+  middleRangeDefense: 1
+  longRangeDefense: 2
+  explosiveDefense: 0
+  maxHP: 800
+  shootingDelay: 8
+  spawnDelay: 30
+  shootingSound: {fileID: 8300000, guid: 22c9457266bef2b4dafef3e208d657ee, type: 3}

@@ -17,9 +17,27 @@ MonoBehaviour:
   longRange: 50
   baseAttackTime: 45
   baseHealAmount: 30
+  ranks:
+  - Soldier
+  - Private
+  - Corporal
+  - Sergeant
+  playerRank: Major
   squadPrefab: {fileID: 16989649490458422, guid: 4115a4419e61bb34a9a08f353b0cc578,
     type: 3}
   defaultSquadType: {fileID: 11400000, guid: 3ba13929eb5df914f93a858a1f8a067e, type: 2}
+  buildingPrefab: {fileID: 2133285659921738435, guid: ad41d2318e39bad44b672be779ccf16b,
+    type: 3}
+  turretBasePrefab: {fileID: 6257947811021738995, guid: 963d8db33f330e64b87269a7f965d0d6,
+    type: 3}
+  explosivesPrefab: {fileID: 6113052276021851623, guid: 862ae5b7527d68b41bc739cd68cfb68b,
+    type: 3}
+  towerPrefab: {fileID: 8749437313307577339, guid: 09db6afe7623d554cbaa68ebeb6a178a,
+    type: 3}
+  hqCandidatePrefab: {fileID: 740958671378340033, guid: 282c9b5c6fc444a488fd7af350e85062,
+    type: 3}
+  turretPrefab: {fileID: 6257947811021738995, guid: ceb8473b5a5b8a147b4d73afcf6671c5,
+    type: 3}
   squadColors:
   - {r: 1, g: 0.84705883, b: 0, a: 1}
   - {r: 0.14901961, g: 0.49803922, b: 0, a: 1}

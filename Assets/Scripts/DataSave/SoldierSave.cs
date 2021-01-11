@@ -47,11 +47,13 @@ public class SoldierSave
     }
 
     /// <summary>
-    /// LoadSoldier create a Soldier from a SquadSave
+    /// Load create a Soldier from a SquadSave
     /// </summary>
     /// <returns>The Soldier created from SoldierSave data</returns>
-    public Soldier LoadSoldier()
+    public Soldier Load()
     {
-        return new Soldier(iD, soldierName, imagePath, dataPath, currentHP, currentXP);
+        Soldier _soldier = ScriptableObject.CreateInstance("Soldier") as Soldier;
+        _soldier.LoadData(iD, soldierName, imagePath, dataPath, currentHP, currentXP);
+        return _soldier;
     }
 }

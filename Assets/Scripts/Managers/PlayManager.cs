@@ -1,5 +1,7 @@
-﻿using System.Collections.Generic;
+﻿using System.Collections;
+using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.AI;
 
 /// <summary>
 /// PlayManager is the manager of the "Play" gamestate
@@ -9,18 +11,23 @@ public class PlayManager : Singleton<PlayManager>
 {
     //User defined Game Data
     public GameData gameData;
+    public NavMeshSurface soldierNavMeshSurface;
+    public NavMeshSurface squadNavMeshSurface;
 
     // Play mode properties
     public static GameData data;
-    
+    public static NavMeshSurface soldierNav;
+    public static NavMeshSurface squadNav;
+
     // Level properties
     public static HQ hq;
     public static DayLight dayLight;
     public static Vector3 hqPos;
     public static List<Tower> towerList = new List<Tower>();
-    public static List<Vector3> towerPosList = new List<Vector3>();
     public static List<GameObject> buildingList = new List<GameObject>();
-    public static List<Vector3> buildingPosList = new List<Vector3>();
+    public static List<Turret> turretList = new List<Turret>();
+    public static List<TurretBase> turretBaseList = new List<TurretBase>();
+    public static List<HQCandidate> hqCandidateList = new List<HQCandidate>();
 
     // HQ properties
     public static int coins;
@@ -34,8 +41,13 @@ public class PlayManager : Singleton<PlayManager>
 
     // Attack properties
     public static List<SquadUnit> squadUnitList;
+    public static List<EnemySoldier> enemyList = new List<EnemySoldier>();
+    public static List<Explosives> explosivesList = new List<Explosives>();
+    private static int attackXP;
+    private static int attackCoins;
 
     public static int infirmaryLevel = 0;
+    public static int radioLevel = 0;
 
     #region Properties access
     public static float LongRange
@@ -57,22 +69,33 @@ public class PlayManager : Singleton<PlayManager>
     {
         get { return data.squadPrefab; }
     }
-
     #endregion
 
     #region Events
     public delegate void PlayManagerEvents();
-    public static event PlayManagerEvents LoadSquadsOnNewDay;
-    public static event PlayManagerEvents RetreatAll;
+    public static event PlayManagerEvents OnLoadSquadsOnNewDay;
+    public static event PlayManagerEvents OnRetreatAll;
+    public static event PlayManagerEvents OnEndDay;
+    public static event PlayManagerEvents OnCoinsUpdate;
+    public static event PlayManagerEvents OnLoadGame;
+
+    public delegate HealthBar PlayManagerHealthBarEvents(Transform _t, float _maxW);
+    public static event PlayManagerHealthBarEvents OnNewHealthBarAdded;
 
     /// <summary>
     /// NewDay event is used to launch a new day and instantiate the squads
     /// </summary>
     public void NewDayButton()
     {
-        // At the attack launch, hide HQ canvas and show City canvas
-        FindObjectOfType<PlayUI>().ShowHQCanvas(false);
-        FindObjectOfType<PlayUI>().ShowCityCanvas(true);
+        // If an engaged squad is not full, display an error message and stop
+        foreach(Squad _squad in squadList)
+        {
+            if(_squad.isEngaged && !_squad.IsFull())
+            {
+                UIManager.InitErrorMessage("At least one of the engaged squads has not four soldiers assigned!");
+                return;
+            }
+        }
 
         // Get how many doctor stayed in the HQ and add 1 to the heal amount for each one of them
         int med = 0;
@@ -93,11 +116,12 @@ public class PlayManager : Singleton<PlayManager>
         // Set the attack time as base attack time + unlocked bons (TBD)
         hq.AttackTime = data.baseAttackTime;
         // Initialize sun light at morning
-        dayLight.Morning(data.baseAttackTime);
+        dayLight.Morning(data.baseAttackTime + radioLevel * 15f);
 
         // Launch a new day
-        LoadSquadsOnNewDay?.Invoke();
-        day++;
+        OnLoadSquadsOnNewDay?.Invoke();
+        attackXP = 0;
+        attackCoins = 0;
     }
 
     /// <summary>
@@ -114,22 +138,25 @@ public class PlayManager : Singleton<PlayManager>
     /// </summary>
     public static void EndOfAttack()
     {
-        RetreatAll?.Invoke();
+        OnRetreatAll?.Invoke();
         NormalSpeed();
-        day++;
     }
 
+    /// <summary>
+    /// RemoveSquadUnit method deletes a SquadUnit from the City
+    /// </summary>
+    /// <param name="_su">SquadUnit to remove</param>
     public static void RemoveSquadUnit(SquadUnit _su)
     {
         squadUnitList.Remove(_su);
         if(squadUnitList.Count <= 0)
         {
+            // Increment day count
+            day++;
             // Switch to HQ
-            hq.EndDayAtHQ();
-            dayLight.Night();
-            FindObjectOfType<PlayUI>().ShowHQCanvas(true);
-            FindObjectOfType<PlayUI>().ShowCityCanvas(false);
-            FindObjectOfType<PlayUI>().ResetCityCanvas();
+            OnEndDay?.Invoke();
+            // Reset the enemy list
+            enemyList.Clear();
         }
     }
 
@@ -142,45 +169,46 @@ public class PlayManager : Singleton<PlayManager>
 
         // Data initialization
         data = gameData;
+        soldierNav = soldierNavMeshSurface;
+        squadNav = squadNavMeshSurface;
+
+        // Default value
         nextSoldierID = 0;
         nextSquadID = 0;
         defaultSquadType = data.defaultSquadType;
 
-
         // Lists initialization
         towerList = new List<Tower>();
-        towerPosList = new List<Vector3>();
+        //towerPosList = new List<Vector3>();
         buildingList = new List<GameObject>();
-        buildingPosList = new List<Vector3>();
+        //buildingPosList = new List<Vector3>();
         squadList = new List<Squad>();
         soldierList = new List<Soldier>();
         soldierIDList = new List<int>();
         squadUnitList = new List<SquadUnit>();
 
-        LoadFromScene();
+        // Subscribe to events
+        OnEndDay += AutoSaveGame;
+        OnEndDay += SetXP;
+        OnEndDay += delegate { AddCoins(attackCoins); } ;
     }
 
     /// <summary>
-    /// Load method actually gets all the data needed by the PlayManager from scene
-    /// The method is part loading from scene, part creating default elements
-    /// This is still a work in progress
+    /// OnDestroy, unsubscribe from events and destroy the singleton
     /// </summary>
-    public void LoadFromScene()
+    protected override void OnDestroy()
     {
-        // Load Level
-        day = 0;
-        coins = 1000;
-        // Load HQ
-        GameObject _hq = GameObject.Find("HQ");
-        if (_hq == null)
-        {
-            Debug.LogError("[PlayManager] Cannot find HQ GameObject!");
-        }
-        else
-        {
-            hq = _hq.GetComponent<HQ>();
-            hqPos = GridAdjustment.GetGridCoordinates(new Vector3(hq.transform.position.x,0f,hq.transform.position.z));
-        }
+        OnEndDay -= SetXP;
+        OnEndDay -= delegate { AddCoins(attackCoins); };
+        OnEndDay -= AutoSaveGame;
+        base.OnDestroy();
+    }
+
+    /// <summary>
+    /// LoadFromEmptyScene loads the light from the scene
+    /// </summary>
+    public static void LoadFromEmptyScene()
+    {
         // Load DayLight
         GameObject _dayLight = GameObject.Find("Directional Day Light");
         if (_dayLight == null)
@@ -191,6 +219,26 @@ public class PlayManager : Singleton<PlayManager>
         {
             dayLight = _dayLight.GetComponent<DayLight>();
         }
+
+        // Load HQ
+        GameObject _hq = GameObject.Find("HQ");
+        if (_hq == null)
+        {
+            Debug.LogError("[PlayManager] Cannot find HQ GameObject!");
+        }
+        else
+        {
+            hq = _hq.GetComponent<HQ>();
+            hqPos = GridAdjustment.GetGridCoordinates(new Vector3(hq.transform.position.x, 0f, hq.transform.position.z));
+        }
+    }
+
+    /// <summary>
+    /// LoadFromScene method gets all the data needed by the PlayManager from scene
+    /// The method is part loading from scene, part creating default elements
+    /// </summary>
+    public static void LoadFromScene()
+    {       
         // Load towers
         Tower[] _tArray = FindObjectsOfType<Tower>();
         if(_tArray.Length > 0)
@@ -201,25 +249,57 @@ public class PlayManager : Singleton<PlayManager>
         {
             Debug.LogError("[PlayManager] Cannot find Tower GameObjects!");
         }
+
         // Load buildings
+        GameObject _build = GameObject.Find("Buildings");
+        if (_build == null)
+        {
+            Debug.LogError("[PlayManager] Cannot find Buildings GameObject!");
+        }
+        else
+        {
+            for(int i=0;i < _build.transform.childCount; i++)
+            {
+                buildingList.Add(_build.transform.GetChild(i).gameObject);
+            }
+        }
 
+        // Init HQ data
+        day = 1;
+        coins = 0;
+        infirmaryLevel = 0;
+        radioLevel = 0;
 
-        // Load HQ data
         // Create soldiers
-        for (int i = 0; i < 5; i++)
+        for (int i = 0; i < 8; i++)
         {
             soldierIDList.Add(nextSoldierID);
-            soldierList.Add(new Soldier(Resources.Load("SoldierData/0_Basic_SoldierData") as SoldierData));
+            Soldier _soldier = ScriptableObject.CreateInstance("Soldier") as Soldier;
+            _soldier.InitData(Resources.Load("SoldierData/0_Basic_SoldierData") as SoldierData);
+            soldierList.Add(_soldier);
         }
         // Create 1st squad and adding soldiers to it
-        squadList.Add(new Squad());
+        Squad _squad = ScriptableObject.CreateInstance("Squad") as Squad;
+        _squad.InitData();
+        squadList.Add(_squad);
         squadList[0].ChangeSoldier(1, soldierList[0]);
         squadList[0].ChangeSoldier(2, soldierList[1]);
         squadList[0].ChangeSoldier(3, soldierList[2]);
         squadList[0].ChangeSoldier(4, soldierList[3]);
         squadList[0].isEngaged = true;
 
-        FindObjectOfType<PlayUI>().ShowHQCanvas(true);
+        OnLoadGame?.Invoke();
+    }
+
+    /// <summary>
+    /// SetNewHQPosition method changes the destination of all retreating SquadUnit
+    /// </summary>
+    public static void SetNewHQPosition()
+    {
+        foreach(SquadUnit _su in squadUnitList)
+        {
+            if (_su.IsRetreating) _su.SetDestination(hqPos);
+        }
     }
 
     /// <summary>
@@ -281,17 +361,17 @@ public class PlayManager : Singleton<PlayManager>
     public static HealthBar AddHealthBar(Transform _t, float _maxW = 50f)
     {
         // This has to changed once the UIManager is set up
-        return FindObjectOfType<PlayUI>().cityCanvas.AddHealthBar(_t, _maxW);
+        return OnNewHealthBarAdded?.Invoke(_t, _maxW);
+        //return playUI.cityCanvas.AddHealthBar(_t, _maxW);
     }
 
     /// <summary>
     /// Reduce the game speed (slow motion effect)
     /// </summary>
-    /// <param name="isSelected">Bool to enable slow speed</param>
-    public static void SlowSpeed(bool isSelected)
+    public static void SlowSpeed()
     {
         // There is a boolean because the method is called by events and can be activated with false value
-        if(isSelected) Time.timeScale = 0.5f;
+        Time.timeScale = 0.5f;
     }
 
     /// <summary>
@@ -303,52 +383,76 @@ public class PlayManager : Singleton<PlayManager>
     }
 
     /// <summary>
+    /// AddXP method adds to attackXP the amount of XP to add
+    /// </summary>
+    /// <param name="_xp">Amount to add</param>
+    public static void AddXP(int _xp)
+    {
+        attackXP += _xp;
+    }
+
+    /// <summary>
+    /// SetXP method distributes XP to all living soldiers and extra XP to soldiers that attacked the last round
+    /// </summary>
+    private void SetXP()
+    {
+        foreach(Soldier _soldier in soldierList)
+        {
+            if (!_soldier.IsDead() && _soldier.MaxXP != 0)
+            {
+                _soldier.CurrentXP += attackXP / 2;
+                if(_soldier.Squad != null)
+                {
+                    if (_soldier.Squad.isEngaged) _soldier.CurrentXP += attackXP / 2 + attackXP % 2;
+                }
+            }
+        }
+    }
+
+    /// <summary>
+    /// AddAttackCoins method adds to attackCoins the amount of coins to add
+    /// </summary>
+    /// <param name="_coins">Amount to add</param>
+    public static void AddAttackCoins(int _coins)
+    {
+        attackCoins += _coins;
+    }
+
+    /// <summary>
+    /// AddCoins method adds the amount of coins to the main coins value
+    /// </summary>
+    /// <param name="_coins">Amount to add</param>
+    public static void AddCoins(int _coins)
+    {
+        coins += _coins;
+        OnCoinsUpdate?.Invoke();
+    }
+
+    /// <summary>
     /// AutoSaveGame method saves the Game data into AutoSave.xml file
     /// </summary>
     public void AutoSaveGame()
     {
+        StartCoroutine(AutoSaveSequence());
+    }
+
+    IEnumerator AutoSaveSequence()
+    {
+        float startTime = Time.time;
+        GameManager.ChangeGameStateRequest(GameManager.GameState.save);
         new DataSave().AutoSaveGame();
+        while (Time.time < startTime + 1f)
+        {
+            yield return null;
+        }
+        GameManager.ChangeGameStateRequest(GameManager.GameState.play);
     }
 
     /// <summary>
-    /// LoadAutoSaveData loads the Game data from AutoSave.xml file
+    /// InitAfterLoad loads calls and event to init all things needed to be init
     /// </summary>
-    public void LoadAutoSavedData()
+    public static void InitAfterLoad()
     {
-        LoadDataSave(DataSave.LoadAutoSavedGame());
-    }
-
-    /// <summary>
-    /// LoadDataSave loads GameData from a DataSave
-    /// </summary>
-    /// <param name="_save">DataSave to load data from</param>
-    private void LoadDataSave(DataSave _save)
-    {
-        // Global data
-        coins = _save.coins;
-        day = _save.day;
-        infirmaryLevel = _save.infirmary;
-
-        // Load Soldiers
-        soldierList.Clear();
-        soldierIDList.Clear();
-        foreach (SoldierSave _soldierSave in _save.soldierList)
-        {
-            Soldier _soldier = _soldierSave.LoadSoldier();
-            soldierList.Add(_soldier);
-            soldierIDList.Add(_soldier.ID);
-        }
-        nextSoldierID = soldierList.Count;
-
-        // Load Squads
-        squadList.Clear();
-        foreach (SquadSave _squadSave in _save.squadList)
-        {
-            Squad _squad = _squadSave.LoadSquad();
-            squadList.Add(_squad);
-        }
-        nextSquadID = squadList.Count;
-
-        FindObjectOfType<PlayUI>().UpdateHQCanvas();
+        OnLoadGame?.Invoke();
     }
 }

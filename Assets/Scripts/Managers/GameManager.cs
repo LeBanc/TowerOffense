@@ -1,6 +1,8 @@
 ﻿using System.Collections.Generic;
+using System.Collections;
 using UnityEngine;
 using UnityEngine.SceneManagement;
+using UnityEditor;
 
 public class GameManager : Singleton<GameManager>
 {
@@ -10,6 +12,7 @@ public class GameManager : Singleton<GameManager>
     #region GameState
     public enum GameState
     {
+        init,
         start,
         load,
         play,
@@ -18,10 +21,10 @@ public class GameManager : Singleton<GameManager>
     }
 
     [SerializeField] // For development, when not starting the game from Main Menu
-    private GameState debugFirstGameState = GameState.start;
+    private bool debugBeginInPlayMode = false;
 
     private static GameState currentGameState;
-    private static GameState previousGameState;
+    //private static GameState previousGameState;
     private static GameState nextGameState;
 
     public static GameState CurrentGameState
@@ -41,15 +44,20 @@ public class GameManager : Singleton<GameManager>
 
     // Events for GameState change
     public static event GameStateEventHandler OnStartToLoad;
+
     public static event GameStateEventHandler OnLoadToPlay;
-    public static event GameStateEventHandler OnPlayToStart;
+
     public static event GameStateEventHandler OnPlayToPause;
-    public static event GameStateEventHandler OnPlayToLoad;
+    public static event GameStateEventHandler OnPlayToSave;
+    public static event GameStateEventHandler OnPlayToStart;
+
     public static event GameStateEventHandler OnPauseToSave;
     public static event GameStateEventHandler OnPauseToPlay;
     public static event GameStateEventHandler OnPauseToLoad;
     public static event GameStateEventHandler OnPauseToStart;
+
     public static event GameStateEventHandler OnSaveToPause;
+    public static event GameStateEventHandler OnSaveToPlay;
 
     // Events called in GameState to Update components
     public static event GameStateEventHandler StartUpdate;
@@ -129,6 +137,59 @@ public class GameManager : Singleton<GameManager>
         AsyncOperation ao = SceneManager.UnloadSceneAsync(sceneName);
         _unloadOperations.Add(ao);
     }
+
+    public void StartNewGame()
+    {
+        if (!SceneManager.GetSceneByName("Test").IsValid() && !SceneManager.GetSceneByName("EmptyScene").IsValid()) LoadLevel("Test");
+        Instance.StartCoroutine(LoadingSequence(0));
+    }
+
+    public void ContinueGame()
+    {
+        if (!SceneManager.GetSceneByName("Test").IsValid() && !SceneManager.GetSceneByName("EmptyScene").IsValid()) LoadLevel("EmptyScene");
+        Instance.StartCoroutine(LoadingSequence(1));
+    }
+
+    public static void LoadGame(string _fileName)
+    {
+        if (!SceneManager.GetSceneByName("Test").IsValid() && !SceneManager.GetSceneByName("EmptyScene").IsValid()) Instance.LoadLevel("EmptyScene");
+        Instance.StartCoroutine(Instance.LoadingSequence(2,_fileName));
+    }
+
+    private IEnumerator LoadingSequence(int _loadingType, string _fileName = "")
+    {
+        float startTime = Time.time;
+
+        ChangeGameStateRequest(GameState.load);
+        while(_loadOperations[_loadOperations.Count-1].progress < 1f)
+        {
+            yield return null;
+        }
+        PlayManager.LoadFromEmptyScene();
+        if(_loadingType == 0)
+        {
+            PlayManager.LoadFromScene();
+        }
+        else if(_loadingType == 1)
+        {
+            DataSave.LoadAutoSavedGame();
+            PlayManager.InitAfterLoad();
+        }
+        else
+        {
+            DataSave.LoadSavedGame(_fileName);
+            PlayManager.InitAfterLoad();
+        }
+
+        // Small pause if the loading take less than 2 seconds, just to see the loading screen
+        while(Time.time < startTime +2f)
+        {
+            yield return null;
+        }
+        ChangeGameStateRequest(GameState.play);
+    }
+
+    
     #endregion
 
     /// <summary>
@@ -136,9 +197,9 @@ public class GameManager : Singleton<GameManager>
     /// </summary>
     void Start()
     {
-        previousGameState = debugFirstGameState;
-        currentGameState = debugFirstGameState;
-        nextGameState = debugFirstGameState;
+        //previousGameState = GameState.init;
+        currentGameState = GameState.init;
+        nextGameState = GameState.init;
         _instanciatedManagers = new List<GameObject>();
         InstantiateManagers();
     }
@@ -150,11 +211,13 @@ public class GameManager : Singleton<GameManager>
     void Update()
     {
         // Change state if needed
-        if (currentGameState != nextGameState) ChangeGameState();
+        if (currentGameState != nextGameState || currentGameState == GameState.init) ChangeGameState();
 
         // Basic state machine
         switch (GameManager.currentGameState)
         {
+            case GameState.init:
+                break;
             case GameState.start:
                 StartUpdate?.Invoke();
                 break;
@@ -184,6 +247,10 @@ public class GameManager : Singleton<GameManager>
     {
         switch (GameManager.currentGameState)
         {
+            case GameState.init:
+                if(debugBeginInPlayMode == true){ OnLoadToPlay?.Invoke(); currentGameState = GameState.play; nextGameState = GameState.play; }
+                else { OnPlayToStart?.Invoke(); currentGameState = GameState.start; nextGameState = GameState.start; }
+                break;
             case GameState.start:
                 if (nextGameState == GameState.load) { OnStartToLoad?.Invoke(); currentGameState = nextGameState; }
                 else { Debug.LogError("[GameManager] Cannot transition from Start to " + nextGameState); nextGameState = currentGameState; }
@@ -194,8 +261,8 @@ public class GameManager : Singleton<GameManager>
                 break;
             case GameState.play:
                 if (nextGameState == GameState.pause) {OnPlayToPause?.Invoke(); currentGameState = nextGameState; }
+                else if (nextGameState == GameState.save) { OnPlayToSave?.Invoke(); currentGameState = nextGameState; }
                 else if (nextGameState == GameState.start) {OnPlayToStart?.Invoke(); currentGameState = nextGameState; }
-                else if (nextGameState == GameState.load) { OnPlayToLoad?.Invoke(); currentGameState = nextGameState; }
                 else {Debug.LogError("[GameManager] Cannot transition from Play to " + nextGameState); nextGameState = currentGameState; }
                 break;
             case GameState.pause:
@@ -207,6 +274,7 @@ public class GameManager : Singleton<GameManager>
                 break;
             case GameState.save:
                 if (nextGameState == GameState.pause) {OnSaveToPause?.Invoke(); currentGameState = nextGameState; }
+                if (nextGameState == GameState.play) {OnSaveToPlay?.Invoke(); currentGameState = nextGameState; }
                 else {Debug.LogError("[GameManager] Cannot transition from Save to " + nextGameState); nextGameState = currentGameState; }
                 break;
             default:
@@ -223,5 +291,18 @@ public class GameManager : Singleton<GameManager>
         base.OnDestroy();
 
         ClearInstantiatedManagers();
+    }
+
+    public void QuitGame()
+    {
+#if UNITY_EDITOR
+        UnityEditor.EditorApplication.isPlaying = false;
+#endif
+        Application.Quit();
+    }
+
+    public static void QuitGameStatic()
+    {
+        Instance.QuitGame();
     }
 }

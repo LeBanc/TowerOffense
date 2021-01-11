@@ -18,7 +18,7 @@ MonoBehaviour:
   soldier2SpritePosition: {x: -50, y: 0, z: 0}
   soldier3SpritePosition: {x: 50, y: 0, z: 0}
   soldier4SpritePosition: {x: 0, y: -50, z: 0}
-  soldier1Position: {x: 0, y: 0, z: 3}
-  soldier2Position: {x: -3, y: 0, z: 0}
-  soldier3Position: {x: 3, y: 0, z: 0}
-  soldier4Position: {x: 0, y: 0, z: -3}
+  soldier1Position: {x: 0, y: 0, z: 2}
+  soldier2Position: {x: -2, y: 0, z: 0}
+  soldier3Position: {x: 2, y: 0, z: 0}
+  soldier4Position: {x: 0, y: 0, z: -2}

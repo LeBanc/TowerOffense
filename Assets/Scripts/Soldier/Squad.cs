@@ -108,15 +108,7 @@ public class Squad : ScriptableObject
     #endregion
 
     /// <summary>
-    /// Constructor to create a new squad
-    /// </summary>
-    public Squad()
-    {
-        this.Setup();
-    }
-
-    /// <summary>
-    /// Constructor to create a new squad from data (save file)
+    /// LoadData sets the squad data from dedicated data (save file)
     /// </summary>
     /// <param name="_ID">Squad iD</param>
     /// <param name="_COLOR">Squad color</param>
@@ -128,15 +120,15 @@ public class Squad : ScriptableObject
     /// <param name="_RANGE">Squad preferred range</param>
     /// <param name="_POS">Squad position choice</param>
     /// <param name="_ENGAGED">Squad engaged boolean</param>
-    public Squad(int _ID, Color _COLOR, string _SQUADTYPE, int _SOLDIER1ID, int _SOLDIER2ID, int _SOLDIER3ID, int _SOLDIER4ID, PreferedRange _RANGE, PositionChoice _POS, bool _ENGAGED)
+    public void LoadData(int _ID, Color _COLOR, string _SQUADTYPE, int _SOLDIER1ID, int _SOLDIER2ID, int _SOLDIER3ID, int _SOLDIER4ID, PreferedRange _RANGE, PositionChoice _POS, bool _ENGAGED)
     {
         iD = _ID;
         color = _COLOR;
         squadType = Resources.Load("SquadData/" + _SQUADTYPE) as SquadData;
-        soldierList[0] = PlayManager.soldierList[PlayManager.soldierIDList.FindIndex(x => x == _SOLDIER1ID)];
-        soldierList[1] = PlayManager.soldierList[PlayManager.soldierIDList.FindIndex(x => x == _SOLDIER2ID)];
-        soldierList[2] = PlayManager.soldierList[PlayManager.soldierIDList.FindIndex(x => x == _SOLDIER3ID)];
-        soldierList[3] = PlayManager.soldierList[PlayManager.soldierIDList.FindIndex(x => x == _SOLDIER4ID)];
+        ChangeSoldier(1, PlayManager.soldierList[PlayManager.soldierIDList.FindIndex(x => x == _SOLDIER1ID)]);
+        ChangeSoldier(2, PlayManager.soldierList[PlayManager.soldierIDList.FindIndex(x => x == _SOLDIER2ID)]);
+        ChangeSoldier(3, PlayManager.soldierList[PlayManager.soldierIDList.FindIndex(x => x == _SOLDIER3ID)]);
+        ChangeSoldier(4, PlayManager.soldierList[PlayManager.soldierIDList.FindIndex(x => x == _SOLDIER4ID)]);
         range = _RANGE;
         ComputeSquadValues();
         UpdatePosChoice(_POS);
@@ -152,9 +144,9 @@ public class Squad : ScriptableObject
     }
 
     /// <summary>
-    /// Setup method sets up the squad data with default value
+    /// InitData method sets up the squad data with default value
     /// </summary>
-    public void Setup()
+    public void InitData()
     {
         iD = PlayManager.GetFreeSquadID();
         color = PlayManager.GetSquadColor(iD);
@@ -239,6 +231,20 @@ public class Squad : ScriptableObject
         else if (defMiddleRange >= defShortRange) return PreferedRange.MiddleRange;
         else return PreferedRange.ShortRange;
     }
+
+    /// <summary>
+    /// GetSoldierIndex method searches if the soldier is part of the squad and return its index
+    /// </summary>
+    /// <param name="_soldier">Soldier to find</param>
+    /// <returns>Index at which the soldier is, 0 if not in the squad</returns>
+    public int GetSoldierIndex(Soldier _soldier)
+    {
+        if (_soldier == soldierList[0]) return 1;
+        if (_soldier == soldierList[1]) return 2;
+        if (_soldier == soldierList[2]) return 3;
+        if (_soldier == soldierList[3]) return 4;
+        return 0;
+    }
     
     /// <summary>
     /// ChangeSoldier method update a soldier of the squad and invoke the right event
@@ -250,25 +256,117 @@ public class Squad : ScriptableObject
         switch (_number)
         {
             case 1: // Change soldier 1
-                soldierList[0] = _soldier;
+                // If the slot is not null, removes the attached soldier from it
+                if(soldierList[0] != null) soldierList[0].RemoveFromSquad();
+                if(_soldier != null)
+                {
+                    // Remove the selected soldier to its previous squad
+                    _soldier.RemoveFromSquad();
+                    // Add the soldier to this squad
+                    soldierList[0] = _soldier;
+                    soldierList[0].AddToSquad(this);
+                    // Add soldier events for refreshing squad data
+                    soldierList[0].OnNameChange += RefreshSquad;
+                    soldierList[0].OnImageChange += RefreshSquad;
+                    soldierList[0].OnDataChange += RefreshSquad;
+                }
                 OnSoldier1Change?.Invoke();
                 break;
             case 2: // Change soldier 2
-                soldierList[1] = _soldier;
+                if (soldierList[1] != null) soldierList[1].RemoveFromSquad();
+                if(_soldier != null)
+                {
+                    _soldier.RemoveFromSquad();
+                    soldierList[1] = _soldier;
+                    soldierList[1].AddToSquad(this);
+                    // Add soldier events for refreshing squad data
+                    soldierList[1].OnNameChange += RefreshSquad;
+                    soldierList[1].OnImageChange += RefreshSquad;
+                    soldierList[1].OnDataChange += RefreshSquad;
+                }
                 OnSoldier2Change?.Invoke();
                 break;
             case 3: // Change soldier 3
-                soldierList[2] = _soldier;
+                if (soldierList[2] != null) soldierList[2].RemoveFromSquad();
+                if(_soldier != null)
+                {
+                    _soldier.RemoveFromSquad();
+                    soldierList[2] = _soldier;
+                    soldierList[2].AddToSquad(this);
+                    // Add soldier events for refreshing squad data
+                    soldierList[2].OnNameChange += RefreshSquad;
+                    soldierList[2].OnImageChange += RefreshSquad;
+                    soldierList[2].OnDataChange += RefreshSquad;
+                }
                 OnSoldier3Change?.Invoke();
                 break;
             case 4: // Change soldier 4
-                soldierList[3] = _soldier;
+                if (soldierList[3] != null) soldierList[3].RemoveFromSquad();
+                if(_soldier != null)
+                {
+                    _soldier.RemoveFromSquad();
+                    soldierList[3] = _soldier;
+                    soldierList[3].AddToSquad(this);
+                    // Add soldier events for refreshing squad data
+                    soldierList[3].OnNameChange += RefreshSquad;
+                    soldierList[3].OnImageChange += RefreshSquad;
+                    soldierList[3].OnDataChange += RefreshSquad;
+                }
                 OnSoldier4Change?.Invoke();
                 break;
             default: // if _number is not between 1 to 4 (inclusive), display an error
                 Debug.LogError("[Squad] Trying to change a soldier not between 1st and 4th position (inclusive)");
                 break;
         }
+        // Compute new value after soldier change
+        ComputeSquadValues();
+        // Update position choice (to compute new preferred range id needed)
+        UpdatePosChoice(posChoice);
+    }
+
+    /// <summary>
+    /// RemoveSoldier removes a dedicated soldier of the squad
+    /// </summary>
+    /// <param name="_toRemove">Soldier to remove</param>
+    public void RemoveSoldier(Soldier _toRemove)
+    {
+        switch (GetSoldierIndex(_toRemove))
+        {
+            case 1:
+                soldierList[0] = null;
+                OnSoldier1Change?.Invoke();
+                break;
+            case 2:
+                soldierList[1] = null;
+                OnSoldier2Change?.Invoke();
+                break;
+            case 3:
+                soldierList[2] = null;
+                OnSoldier3Change?.Invoke();
+                break;
+            case 4:
+                soldierList[3] = null;
+                OnSoldier4Change?.Invoke();
+                break;
+            default:
+                break;
+        }
+
+        // Remove soldier events for refreshing squad data
+        _toRemove.OnNameChange -= RefreshSquad;
+        _toRemove.OnImageChange -= RefreshSquad;
+        _toRemove.OnDataChange -= RefreshSquad;
+    }
+
+    /// <summary>
+    /// RefreshSquad method shall be used to refresh squad data after soldier level up
+    /// </summary>
+    public void RefreshSquad()
+    {
+        OnSoldier1Change?.Invoke();
+        OnSoldier2Change?.Invoke();
+        OnSoldier3Change?.Invoke();
+        OnSoldier4Change?.Invoke();
         // Compute new value after soldier change
         ComputeSquadValues();
         // Update position choice (to compute new preferred range id needed)
@@ -363,5 +461,14 @@ public class Squad : ScriptableObject
         // Add Squad to CityCanvas => To be changed when updating UIManager
         FindObjectOfType<CityCanvas>().AddSquad(_su);
         return _su;
+    }
+
+    /// <summary>
+    /// IsFull method returns true if the Squad has 4 soldiers attached to it and false otherwise
+    /// </summary>
+    /// <returns>True if full</returns>
+    public bool IsFull()
+    {
+        return (soldierList[0] != null && soldierList[1] != null && soldierList[2] != null && soldierList[3] != null);
     }
 }

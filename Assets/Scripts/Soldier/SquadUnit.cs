@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.AI;
 
@@ -22,9 +23,10 @@ public class SquadUnit : MonoBehaviour
     private SoldierUnit soldier4;
 
     // Target components
-    private Tower target;
+    private Enemy target;
     private bool protectionStance = false;
     private float maxStopRange;
+    private HQCandidate hqCandidate;
 
     // Destination components
     private bool fixedDestination = false;
@@ -34,13 +36,14 @@ public class SquadUnit : MonoBehaviour
     // private bool isSelected = false;
 
     // Events
-    public delegate void SquadTargetEventHandler(Tower _target);
+    public delegate void SquadTargetEventHandler(Enemy _target);
     public event SquadTargetEventHandler OnTargetChange;
 
     public delegate void SquadUnitEventHandler();
-    public event SquadUnitEventHandler Unselect;
+    public event SquadUnitEventHandler OnUnselection;
     public event SquadUnitEventHandler OnDeath;
     public event SquadUnitEventHandler OnHQBack;
+    public event SquadUnitEventHandler OnActionDone;
 
     #region Properties access
     public Vector3 Destination
@@ -50,6 +53,10 @@ public class SquadUnit : MonoBehaviour
     public int ID
     {
         get { return squad.ID; }
+    }
+    public bool IsRetreating
+    {
+        get { return retreatActive; }
     }
 
     public SoldierUnit Soldier1
@@ -67,6 +74,11 @@ public class SquadUnit : MonoBehaviour
     public SoldierUnit Soldier4
     {
         get { return soldier4; }
+    }
+    public float Speed
+    {
+        set { navAgent.speed = value; }
+        get { return navAgent.speed; }
     }
 
     public Squad Squad
@@ -129,15 +141,16 @@ public class SquadUnit : MonoBehaviour
     {
         // Unlinks event
         GameManager.PlayUpdate -= SquadUpdate;
-        Unselect = null;
+        OnUnselection = null;
+        OnActionDone = null;
     }
 
     /// <summary>
     /// CreateSoldier methods creates a soldier ans returns its Soldier component
     /// </summary>
     /// <param name="_name">Name of the gameobject</param>
-    /// <param name="_prefab">Prefab of soldier to instanciate</param>
     /// <param name="_position">Relative position where to instanciate the soldier</param>
+    /// <param name="_soldier">Soldier from which instantiate the SoldierUnit</param>
     /// <returns></returns>
     private SoldierUnit CreateSoldier(string _name, Vector3 _position, Soldier _soldier)
     {
@@ -163,13 +176,36 @@ public class SquadUnit : MonoBehaviour
     }
 
     /// <summary>
-    /// Select method is used to select the squad and trigged its Move action
+    /// Unselct method unselects the SquadUnit and call the OnUnselection event
     /// </summary>
-    /// <param name="select">Boolean to choose if the SquadUnit is selected or not</param>
-    /*
-    public void Select(bool select)
+    public void Unselect()
     {
-        if (select)
+        OnUnselection?.Invoke();
+        //OnActionDone = null;
+    }
+
+    /// <summary>
+    /// OnActionSelected method is used to enable or disable the SquadUnselection method when the Squad is selected
+    /// </summary>
+    /// <param name="_isOn"></param>
+    public void OnActionSelected(bool _isOn)
+    {
+        if(_isOn)
+        {
+            GameManager.PlayUpdate += SquadUnselection;
+        }
+        else
+        {
+            GameManager.PlayUpdate -= SquadUnselection;
+        }
+    }
+
+    /// <summary>
+    /// OnMoveActionSelected method trigged the Move action of this SquadUnit
+    /// </summary>
+    public void OnMoveActionSelected(bool _isOn)
+    {
+        if(_isOn)
         {
             GameManager.PlayUpdate += SquadMoveSelection;
         }
@@ -178,56 +214,50 @@ public class SquadUnit : MonoBehaviour
             GameManager.PlayUpdate -= SquadMoveSelection;
         }
     }
-    */
-
-    /// <summary>
-    /// OnMoveActionSelected method trigged the Move action of this SquadUnit
-    /// </summary>
-    public void OnMoveActionSelected()
-    {
-        GameManager.PlayUpdate += SquadMoveSelection;
-        Unselect += OnMoveActionUnselected;
-    }
-
-    /// <summary>
-    /// OnMoveActionUnselected method untrigged the Move action of this SquadUnit
-    /// </summary>
-    public void OnMoveActionUnselected()
-    {
-        GameManager.PlayUpdate -= SquadMoveSelection;
-        Unselect -= OnMoveActionUnselected;
-    }
 
     /// <summary>
     /// OnBuildHQSelected method trigged the BuildHQ action of this SquadUnit
     /// </summary>
-    public void OnBuildHQSelected()
+    public void OnBuildHQSelected(bool _isOn)
     {
-
-    }
-
-    /// <summary>
-    /// OnBuildHQUnselected method untrigged the BuildHQ action of this SquadUnit
-    /// </summary>
-    public void OnBuildHQUnselected()
-    {
-
+        if(_isOn)
+        {
+            GameManager.PlayUpdate += SquadBuildHQSelection;
+        }
+        else
+        {
+            GameManager.PlayUpdate -= SquadBuildHQSelection;
+        }
     }
 
     /// <summary>
     /// OnBuildTurretSelected method trigged the BuildTurret action of this SquadUnit
     /// </summary>
-    public void OnBuildTurretSelected()
+    public void OnBuildTurretSelected(bool _isOn)
     {
-
+        if (_isOn)
+        {
+            GameManager.PlayUpdate += SquadBuildTurretSelection;
+        }
+        else
+        {
+            GameManager.PlayUpdate -= SquadBuildTurretSelection;
+        }
     }
 
     /// <summary>
-    /// OnBuildTurretUnselected method untrigged the BuildTurret action of this SquadUnit
+    /// OnExplosivesSelected method trigged the Explosive action of this SquadUnit
     /// </summary>
-    public void OnBuildTurretUnselected()
+    public void OnExplosivesSelected(bool _isOn)
     {
-
+        if (_isOn)
+        {
+            GameManager.PlayUpdate += SquadBuildExplosivesSelection;
+        }
+        else
+        {
+            GameManager.PlayUpdate -= SquadBuildExplosivesSelection;
+        }
     }
 
     /// <summary>
@@ -240,15 +270,15 @@ public class SquadUnit : MonoBehaviour
         Soldier3.Heal(25);
         Soldier4.Heal(25);
 
-        Unselect?.Invoke();
+        Unselect();
     }
 
     #region Target
     /// <summary>
     /// SetTarget method set the target of the SquadUnit
     /// </summary>
-    /// <param name="_t">Tower that will be the new target</param>
-    public void SetTarget(Tower _t)
+    /// <param name="_t">Enemy that will be the new target</param>
+    public void SetTarget(Enemy _t)
     {
         // Clear the current target if there is one
         if (target != null) ClearTarget();
@@ -276,8 +306,8 @@ public class SquadUnit : MonoBehaviour
     /// <summary>
     /// FaceTarget method is used to rotate the squad toward its target
     /// </summary>
-    /// <param name="_target"></param>
-    private void FaceTarget(Tower _target)
+    /// <param name="_target">Current target (Enemy)</param>
+    private void FaceTarget(Enemy _target)
     {
         // Gets the projection on XZ plane of the vector between target and squad positions
         Vector3 _diff = _target.transform.position - transform.position;
@@ -291,15 +321,28 @@ public class SquadUnit : MonoBehaviour
     }
     #endregion
 
+    /// <summary>
+    /// SquadUnselection method unselect the SqaudUnit when the Cancel button is trigged
+    /// </summary>
+    private void SquadUnselection()
+    {
+        if (Input.GetMouseButtonDown(1))
+        {
+            Unselect();
+        }
+    }
+
+    /// <summary>
+    /// SquadMoveSelection method is used to select a SquadUnit destination
+    /// </summary>
     private void SquadMoveSelection()
     {
         // For now a target is defined by the player with mouse click on terrain or active tower
         if (Input.GetMouseButtonDown(0))
         {
-
             RaycastHit hit;
             Ray ray = mainCamera.ScreenPointToRay(Input.mousePosition);
-            if (Physics.Raycast(ray, out hit, Mathf.Infinity, LayerMask.GetMask(new string[] { "Buildings", "Terrain", "Soldiers" })))
+            if (Physics.Raycast(ray, out hit, Mathf.Infinity, LayerMask.GetMask(new string[] { "Enemies", "Buildings", "Terrain", "Soldiers" })))
             {
                 // If the player click on a tower
                 if (hit.collider.TryGetComponent<Tower>(out Tower tower))
@@ -322,64 +365,289 @@ public class SquadUnit : MonoBehaviour
                         }
                         else
                         {
-                            navAgent.SetDestination(tower.transform.position);
+                            SetDestination(tower.transform.position);
                             fixedDestination = false;
                         }
 
                         // Unselect the squad
-                        Unselect?.Invoke();
+                        Unselect();
                     }
+                }
+                else if (hit.collider.TryGetComponent<EnemySoldier>(out EnemySoldier enemy))
+                {
+                    // Resets protectionStance to allow the rotation towards new target and sets squad target and destination
+                    protectionStance = false;
+                    // Set tower as new target for squad and its soldiers
+                    SetTarget(enemy);
+                    navAgent.SetDestination(enemy.transform.position);
+                    fixedDestination = false;
+                    // Unselect the squad
+                    Unselect();
                 }
                 else if (hit.collider.gameObject.CompareTag("Soldiers"))
                 {
-                    if (hit.collider.TryGetComponent<SoldierUnit>(out SoldierUnit _soldier))
+                    if (hit.collider.TryGetComponent<Turret>(out Turret _turret))
                     {
-                        navAgent.SetDestination(GridAdjustment.GetGridCoordinates(hit.point));
+                        SetDestination(GetNearestCellFromList(_turret.GetAvailablePositions()));
                         fixedDestination = true;
-                        if (_soldier.Squad.Destination.x == GridAdjustment.GetGridCoordinates(hit.point).x && _soldier.Squad.Destination.z == GridAdjustment.GetGridCoordinates(hit.point).z)
-                        {
-                            // Move the other squad
-                            _soldier.Squad.MoveAfterReplaced();
-                        }
-                        Unselect?.Invoke();
+                        Unselect();
+                    }
+                    else if (hit.collider.TryGetComponent<SoldierUnit>(out SoldierUnit _soldier))
+                    {
+                        SetDestination(hit.point);
+                        fixedDestination = true;
+                        Unselect();
                     }
                     else if (hit.collider.transform.parent != null)
                     {
                         if (hit.collider.transform.parent.TryGetComponent<SquadUnit>(out SquadUnit _squadUnit))
                         {
-                            navAgent.SetDestination(GridAdjustment.GetGridCoordinates(hit.point));
+                            SetDestination(hit.point);
                             fixedDestination = true;
+                            Unselect();
+                        }
+                    }
+                }
+                else if(hit.collider.TryGetComponent<HQCandidate>(out HQCandidate _candidate))
+                {
+                    SetDestination(GetNearestCellFromList(_candidate.GetAvailablePositions()));
+                    //fixedDestination = true;
+                    Unselect();
+                }
+                else if (hit.collider.TryGetComponent<TurretBase>(out TurretBase _turretBase))
+                {
+                    SetDestination(GetNearestCellFromList(_turretBase.GetAvailablePositions()));
+                    //fixedDestination = true;
+                    Unselect();
+                }
+                else if (hit.collider.gameObject.CompareTag("Terrain"))
+                {
+                    bool foundEnemy = false;
+                    // To allow to click on the same cell as an enemy and to select the enemy instead of the terrain
+                    foreach (EnemySoldier _enemy in PlayManager.enemyList)
+                    {
+                        if (GridAdjustment.IsSameOnGrid(_enemy.transform.position, hit.point))
+                        {
+                            // Resets protectionStance to allow the rotation towards new target and sets squad target and destination
+                            protectionStance = false;
+                            // Set tower as new target for squad and its soldiers
+                            SetTarget(_enemy);
+                            navAgent.SetDestination(_enemy.transform.position);
+                            fixedDestination = false;
+                            // Unselect the squad
+                            Unselect();
+                            foundEnemy = true;
+                        }
+                    }
+
+                    if (!foundEnemy)
+                    {
+                        // If the object hit was the terrain, sets squad destination
+                        SetDestination(hit.point);
+                        fixedDestination = true;
+                        foreach (SquadUnit _squadUnit in PlayManager.squadUnitList)
+                        {
+                            if (_squadUnit == this) continue;
                             if (_squadUnit.Destination.x == GridAdjustment.GetGridCoordinates(hit.point).x && _squadUnit.Destination.z == GridAdjustment.GetGridCoordinates(hit.point).z)
                             {
                                 // Move the other squad
                                 _squadUnit.MoveAfterReplaced();
                             }
-                            Unselect?.Invoke();
                         }
-                    }
-                }
-                else if (hit.collider.gameObject.CompareTag("Terrain"))
-                {
-                    // If the object hit was the terrain, sets squad destination
-                    navAgent.SetDestination(GridAdjustment.GetGridCoordinates(hit.point));
-                    fixedDestination = true;
-                    foreach (SquadUnit _squadUnit in PlayManager.squadUnitList)
-                    {
-                        if (_squadUnit == this) continue;
-                        if (_squadUnit.Destination.x == GridAdjustment.GetGridCoordinates(hit.point).x && _squadUnit.Destination.z == GridAdjustment.GetGridCoordinates(hit.point).z)
-                        {
-                            // Move the other squad
-                            _squadUnit.MoveAfterReplaced();
-                        }
-                    }
-                    Unselect?.Invoke();
+                        Unselect();
+                    }                    
                 }
             }
         }
+    }
 
-        if (Input.GetKeyDown(KeyCode.Escape))
+    /// <summary>
+    /// SquadBuildHQSelection method is used to build a new HQ on a HQCandidate
+    /// </summary>
+    private void SquadBuildHQSelection()
+    {
+        // For now a target is defined by the player with mouse click on destroyed tower
+        if (Input.GetMouseButtonDown(0))
         {
-            Unselect?.Invoke();
+            RaycastHit hit;
+            Ray ray = mainCamera.ScreenPointToRay(Input.mousePosition);
+            if (Physics.Raycast(ray, out hit, Mathf.Infinity, LayerMask.GetMask(new string[] { "Buildings" })))
+            {
+                // If the player click on a HQCandidate
+                if (hit.collider.TryGetComponent<HQCandidate>(out HQCandidate _candidate))
+                {
+                    if(!_candidate.IsBuilding)
+                    {
+                        hqCandidate = _candidate;
+                        hqCandidate.StartBuilding();
+                        OnActionDone?.Invoke();                        
+                    }
+                    SetDestination(GetNearestCellFromList(_candidate.GetAvailablePositions()));
+                    fixedDestination = true;
+                    Unselect();
+                }
+            }
+        }
+    }
+
+    /// <summary>
+    /// SquadBuildTurretSelection method is used to build a new turret
+    /// </summary>
+    private void SquadBuildTurretSelection()
+    {
+        // For now a target is defined by the player with mouse click on destroyed tower
+        if (Input.GetMouseButtonDown(0))
+        {
+            RaycastHit hit;
+            Ray ray = mainCamera.ScreenPointToRay(Input.mousePosition);
+            if (Physics.Raycast(ray, out hit, Mathf.Infinity, LayerMask.GetMask(new string[] { "Terrain", "Buildings", "Enemies", "Soldiers" })))
+            {
+                // If the player clicked on a enemy or a building => Nothing
+
+                // If the player clicked on a SquadUnit or a Soldier => build and move the SquadUnit clicked
+                if(hit.collider.CompareTag("Soldiers"))
+                {
+                    GameObject _turret = Instantiate(PlayManager.data.turretBasePrefab, GridAdjustment.GetGridCoordinates(hit.point), Quaternion.identity);
+                    _turret.transform.parent = GameObject.Find("Turrets").transform;
+                    SetDestination(GetNearestCellFromList(_turret.GetComponent<TurretBase>().GetAvailablePositions()));
+                    fixedDestination = true;
+
+                    if (hit.collider.TryGetComponent<SquadUnit>(out SquadUnit _squad))
+                    {
+                        _squad.MoveAfterReplaced();
+                    }
+                    else if(hit.collider.TryGetComponent<SoldierUnit>(out SoldierUnit _soldier))
+                    {
+                        _soldier.Squad.MoveAfterReplaced();
+                    }
+                    OnActionDone?.Invoke();
+                    Unselect();
+                }
+
+                // If the player clicked on the terrain => build if empty (no enemy soldier)
+                if (hit.collider.CompareTag("Terrain"))
+                {
+                    bool foundEnemy = false;
+                    // If an enemy is on the spot => do nothing
+                    foreach (EnemySoldier _enemy in PlayManager.enemyList)
+                    {
+                        if (GridAdjustment.IsSameOnGrid(_enemy.transform.position, hit.point))
+                        {
+                            foundEnemy = true;
+                        }
+                    }
+                    
+                    if(!foundEnemy)
+                    {
+                        GameObject _turret = Instantiate(PlayManager.data.turretBasePrefab, GridAdjustment.GetGridCoordinates(hit.point), Quaternion.identity);
+                        SetDestination(GetNearestCellFromList(_turret.GetComponent<TurretBase>().GetAvailablePositions()));
+                        fixedDestination = true;
+                        // If an squad is on the spot => Move the squad
+                        foreach (SquadUnit _squad in PlayManager.squadUnitList)
+                        {
+                            if (GridAdjustment.IsSameOnGrid(_squad.Destination, hit.point))
+                            {
+                                _squad.MoveAfterReplaced();
+                            }
+                        }
+                        OnActionDone?.Invoke();
+                        Unselect();
+                    }
+                }
+            }
+        }
+    }
+
+    /// <summary>
+    /// SquadBuildExplosivesSelection method is used to build new explosives on a Tower
+    /// </summary>
+    private void SquadBuildExplosivesSelection()
+    {
+        // For now a target is defined by the player with mouse click on destroyed tower
+        if (Input.GetMouseButtonDown(0))
+        {
+            RaycastHit hit;
+            Ray ray = mainCamera.ScreenPointToRay(Input.mousePosition);
+            if (Physics.Raycast(ray, out hit, Mathf.Infinity, LayerMask.GetMask(new string[] { "Enemies" })))
+            {
+                // If the player click on a Tower
+                if (hit.collider.TryGetComponent<Tower>(out Tower _tower))
+                {
+                    if(_tower.IsActive())
+                    {
+
+                        // Build a new list of vector with the 4 adjacent cells of the tower if they are accessible (in ShortT=Range list)
+                        List<Vector3> _towerWalls = new List<Vector3>();
+                        if(_tower.ShortRangeCells.Contains(GridAdjustment.GetGridCoordinates(_tower.transform.position + Vector3.right *10f)))
+                        {
+                            _towerWalls.Add(GridAdjustment.GetGridCoordinates(_tower.transform.position + Vector3.right * 10f));
+                        }
+                        if (_tower.ShortRangeCells.Contains(GridAdjustment.GetGridCoordinates(_tower.transform.position + Vector3.right * -10f)))
+                        {
+                            _towerWalls.Add(GridAdjustment.GetGridCoordinates(_tower.transform.position + Vector3.right * -10f));
+                        }
+                        if (_tower.ShortRangeCells.Contains(GridAdjustment.GetGridCoordinates(_tower.transform.position + Vector3.forward * 10f)))
+                        {
+                            _towerWalls.Add(GridAdjustment.GetGridCoordinates(_tower.transform.position + Vector3.forward * 10f));
+                        }
+                        if (_tower.ShortRangeCells.Contains(GridAdjustment.GetGridCoordinates(_tower.transform.position + Vector3.forward * -10f)))
+                        {
+                            _towerWalls.Add(GridAdjustment.GetGridCoordinates(_tower.transform.position + Vector3.forward * -10f));
+                        }
+
+                        // Get the nearest cell from this list
+                        Vector3 _dest = GetNearestCellFromList(_towerWalls);
+
+                        // Test witch cell is chosen to rotate the explosives
+                        Quaternion _q = Quaternion.identity;
+                        if ((_dest - _tower.transform.position).x > 5f)
+                        {
+                            _q = Quaternion.Euler(0f, -90f, 0f);
+                        }
+                        else if ((_dest - _tower.transform.position).x < -5f)
+                        {
+                            _q = Quaternion.Euler(0f, 90f, 0f);
+                        }
+                        else if ((_dest - _tower.transform.position).z > 5f)
+                        {
+                            _q = Quaternion.Euler(0f, 180f, 0f);
+                        }
+
+                        // Instantiate and setup the explosives prefab
+                        GameObject _explosives = Instantiate(PlayManager.data.explosivesPrefab, _dest, _q);
+                        _explosives.GetComponent<Explosives>().SetTarget(_tower);
+
+                        // Set the squad destination and unselect
+                        SetDestination(_dest);
+                        fixedDestination = true;
+                        // If an squad is on the spot => Move the squad
+                        foreach (SquadUnit _squad in PlayManager.squadUnitList)
+                        {
+                            if (GridAdjustment.IsSameOnGrid(_squad.Destination, hit.point))
+                            {
+                                _squad.MoveAfterReplaced();
+                            }
+                        }
+
+                        OnActionDone?.Invoke();
+                        Unselect();
+                    }                    
+                }
+            }
+        }
+    }
+
+    /// <summary>
+    /// SetDestination method set a new destination for the SquadUnit
+    /// </summary>
+    /// <param name="_destination">Destination for the SquadUnit (Vector3)</param>
+    public void SetDestination(Vector3 _destination)
+    {
+        navAgent.SetDestination(GridAdjustment.GetGridCoordinates(_destination));
+        foreach(SquadUnit _squad in PlayManager.squadUnitList)
+        {
+            if (_squad == this) continue;
+            if (!_squad.IsRetreating && GridAdjustment.IsSameOnGrid(_squad.Destination, _destination)) _squad.MoveAfterReplaced();
         }
     }
 
@@ -392,7 +660,7 @@ public class SquadUnit : MonoBehaviour
         // If there is no target defined, search for the nearest in range tower
         if (target == null)
         {
-            Tower _t = Ranges.GetNearestTower(this.transform, 1, 1, 0);
+            Enemy _t = Ranges.GetNearestEnemy(this.transform, 1, 1, 0);
             if (_t != null)
             {
                 SetTarget(_t);
@@ -416,7 +684,7 @@ public class SquadUnit : MonoBehaviour
 
                 if (!fixedDestination && (GridAdjustment.GetGridCoordinates(target.transform.position) - GridAdjustment.GetGridCoordinates(transform.position)).magnitude <= maxStopRange)
                 {
-                    navAgent.SetDestination(GridAdjustment.GetGridCoordinates(transform.position));
+                    SetDestination(transform.position);
                     fixedDestination = true;
                 }
 
@@ -430,7 +698,7 @@ public class SquadUnit : MonoBehaviour
                 {
                     protectionStance = false;
                     target = null;
-                    OnTargetChange(target);
+                    OnTargetChange?.Invoke(target);
                 }
             }
         }
@@ -444,20 +712,19 @@ public class SquadUnit : MonoBehaviour
             soldier4.SetDestination(transform.position + squadData.soldier4Position.x * transform.right + squadData.soldier4Position.y * transform.up + squadData.soldier4Position.z * transform.forward);
         }
 
-        // If the retreat has been commanded and the SquadUnit is near teh HQ, gets back in
+        // If the retreat has been commanded and the SquadUnit is near the HQ, gets back in
         if (retreatActive)
         {
-            if((transform.position - PlayManager.hqPos).magnitude <= 15f)
+            if ((transform.position - PlayManager.hqPos).magnitude <= 15f)
             {
                 BackToHQ();
             }
         }
-
     }
 
     #region Move
     /// <summary>
-    /// GetDestinationFromTower method returns the position to which the SquadUnit will attack the selected target
+    /// GetDestinationFromTower method returns the position to which the SquadUnit will attack the targeted tower
     /// </summary>
     /// <param name="_tower">Tower to attack</param>
     /// <returns>Vector3 to go to</returns>
@@ -469,14 +736,12 @@ public class SquadUnit : MonoBehaviour
         List<Vector3> _shRange = new List<Vector3>(_tower.ShortRangeCells);
 
         // Remove the other SquadUnit destination from the lists
-        Vector3 _squadPos;
         foreach (SquadUnit _su in PlayManager.squadUnitList)
         {
             if (_su == this) continue;
-            _squadPos = new Vector3(_su.Destination.x - _tower.transform.position.x,0f, _su.Destination.z - _tower.transform.position.z);
-            if (_lgRange.Contains(_squadPos)) _lgRange.Remove(_squadPos);
-            if (_mdRange.Contains(_squadPos)) _mdRange.Remove(_squadPos);
-            if (_shRange.Contains(_squadPos)) _shRange.Remove(_squadPos);
+            _lgRange.Remove(GridAdjustment.GetGridCoordinates(_su.Destination));
+            _mdRange.Remove(GridAdjustment.GetGridCoordinates(_su.Destination));
+            _shRange.Remove(GridAdjustment.GetGridCoordinates(_su.Destination));
         }
 
         // Get the destination taking into account the Squad preferred range
@@ -484,35 +749,35 @@ public class SquadUnit : MonoBehaviour
         switch (squad.PrefRange)
         {
             case Squad.PreferedRange.LongRange:
-                _result = GetNearestCellFromList(_tower.transform, _lgRange);
+                _result = GetNearestCellFromList(_lgRange);
                 if (_result.Equals(Vector3.zero))
                 {
-                    _result = GetNearestCellFromList(_tower.transform, _mdRange);
+                    _result = GetNearestCellFromList(_mdRange);
                     if (_result.Equals(Vector3.zero))
                     {
-                        _result = GetNearestCellFromList(_tower.transform, _shRange);
+                        _result = GetNearestCellFromList(_shRange);
                     }
                 }
                 break;
             case Squad.PreferedRange.MiddleRange:
-                _result = GetNearestCellFromList(_tower.transform, _mdRange);
+                _result = GetNearestCellFromList(_mdRange);
                 if (_result.Equals(Vector3.zero))
                 {
-                    _result = GetNearestCellFromList(_tower.transform, _lgRange);
+                    _result = GetNearestCellFromList(_lgRange);
                     if (_result.Equals(Vector3.zero))
                     {
-                        _result = GetNearestCellFromList(_tower.transform, _shRange);
+                        _result = GetNearestCellFromList(_shRange);
                     }
                 }
                 break;
             case Squad.PreferedRange.ShortRange:
-                _result = GetNearestCellFromList(_tower.transform, _shRange);
+                _result = GetNearestCellFromList(_shRange);
                 if (_result.Equals(Vector3.zero))
                 {
-                    _result = GetNearestCellFromList(_tower.transform, _mdRange);
+                    _result = GetNearestCellFromList(_mdRange);
                     if (_result.Equals(Vector3.zero))
                     {
-                        _result = GetNearestCellFromList(_tower.transform, _lgRange);
+                        _result = GetNearestCellFromList(_lgRange);
                     }
                 }
                 break;
@@ -520,29 +785,26 @@ public class SquadUnit : MonoBehaviour
         // If there is no result, display an error
         if (_result.Equals(Vector3.zero))Debug.LogError("[SquadUnit] No destination found for target " + _tower);
 
-        // Adjust result to the grid and returns it
-        _result += GridAdjustment.GetGridCoordinates(_tower.transform.position);
         return _result;
     }
 
     /// <summary>
     /// GetNearestCellFromList method returns from a list the cell the nearest to the target
     /// </summary>
-    /// <param name="_target">Target transform</param>
     /// <param name="_cellList">Cells (Vector3) list</param>
     /// <returns></returns>
-    private Vector3 GetNearestCellFromList(Transform _target, List<Vector3> _cellList)
+    private Vector3 GetNearestCellFromList(List<Vector3> _cellList)
     {
         float _distance = Mathf.Infinity;
         Vector3 _result = new Vector3();
 
         // For each Vector3 in the list: Check if distance is smaller than _distance and set the _result if it is
-        foreach(Vector3 _vect in _cellList)
+        foreach(Vector3 _cell in _cellList)
         {
-            if((_target.position + _vect - transform.position).magnitude < _distance)
+            if((_cell - transform.position).magnitude < _distance)
             {
-                _distance = (_target.position + _vect - transform.position).magnitude;
-                _result = _vect;
+                _distance = (_cell - transform.position).magnitude;
+                _result = _cell;
             }
         }
         return _result;
@@ -574,7 +836,7 @@ public class SquadUnit : MonoBehaviour
         int k = 0;
         List<Vector3> list = new List<Vector3>();
         bool found = false;
-        bool doNotAdd = false;
+        Vector3 _pos = Vector3.zero;
         // While no destination has been found in a circle of 5 cells around the position
         while (!found && k<5)
         {
@@ -582,96 +844,84 @@ public class SquadUnit : MonoBehaviour
             for (int i = 0; i <= k; i++)
             {
                 int j = k - i;
-                doNotAdd = false;
-                //  i /  j
-                Vector3 _pos = GridAdjustment.GetGridCoordinates(Destination + new Vector3(i * 10f, 0f, j * 10f)) + 20f*Vector3.up;
-                Ray _ray = new Ray(_pos, -Vector3.up);
-                RaycastHit _hit;
-                if (Physics.Raycast(_ray, out _hit, Mathf.Infinity, LayerMask.GetMask("Terrain", "Buildings")))
+               //  i /  j
+                _pos = GridAdjustment.GetGridCoordinates(Destination + new Vector3(i * 10f, 0f, j * 10f));
+                if(PositionIsEmpty(_pos))
                 {
-                    // If the cell is empty (no tower, no buildings)
-                    if (_hit.collider.gameObject.CompareTag("Terrain"))
-                    {
-                        // Check if it is already a destination of another squad
-                        for (int s = 0; s < PlayManager.squadUnitList.Count; s++)
-                        {
-                            if (_pos.x == PlayManager.squadUnitList[s].Destination.x && _pos.z == PlayManager.squadUnitList[s].Destination.z) doNotAdd = true;
-                        }
-                        
-                        // If the position is not already in the list and is not the destination of another squad, add it to the list of empty destination
-                        if (!list.Contains(GridAdjustment.GetGridCoordinates(_hit.point)) && !doNotAdd)
-                        {
-                            list.Add(GridAdjustment.GetGridCoordinates(_hit.point));
-                            found = true;
-                        }
-                    }
+                    if(!list.Contains(GridAdjustment.GetGridCoordinates(_pos)))list.Add(GridAdjustment.GetGridCoordinates(_pos));
+                    found = true;
                 }
-                doNotAdd = false;
+
                 //  i / -j
                 _pos = GridAdjustment.GetGridCoordinates(Destination + new Vector3(i * 10f, 0f, -j * 10f)) + 20f * Vector3.up;
-                _ray = new Ray(_pos, -Vector3.up);
-                if (Physics.Raycast(_ray, out _hit, Mathf.Infinity, LayerMask.GetMask("Terrain", "Buildings")))
+                if (PositionIsEmpty(_pos))
                 {
-                    if (_hit.collider.gameObject.CompareTag("Terrain"))
-                    {
-                        for (int s = 0; s < PlayManager.squadUnitList.Count; s++)
-                        {
-                            if (_pos.x == PlayManager.squadUnitList[s].Destination.x && _pos.z == PlayManager.squadUnitList[s].Destination.z) doNotAdd = true;
-                        }
-
-                        if (!list.Contains(GridAdjustment.GetGridCoordinates(_hit.point)) && !doNotAdd)
-                        {
-                            list.Add(GridAdjustment.GetGridCoordinates(_hit.point));
-                            found = true;
-                        }
-                    }
+                    if (!list.Contains(GridAdjustment.GetGridCoordinates(_pos))) list.Add(GridAdjustment.GetGridCoordinates(_pos));
+                    found = true;
                 }
-                doNotAdd = false;
+
                 // -i /  j
                 _pos = GridAdjustment.GetGridCoordinates(Destination + new Vector3(-i * 10f, 0f, j * 10f)) + 20f * Vector3.up;
-                _ray = new Ray(_pos, -Vector3.up);
-                if (Physics.Raycast(_ray, out _hit, Mathf.Infinity, LayerMask.GetMask("Terrain", "Buildings")))
+                if (PositionIsEmpty(_pos))
                 {
-                    if (_hit.collider.gameObject.CompareTag("Terrain"))
-                    {
-                        for (int s = 0; s < PlayManager.squadUnitList.Count; s++)
-                        {
-                            if (_pos.x == PlayManager.squadUnitList[s].Destination.x && _pos.z == PlayManager.squadUnitList[s].Destination.z) doNotAdd = true;
-                        }
-
-                        if (!list.Contains(GridAdjustment.GetGridCoordinates(_hit.point)) && !doNotAdd)
-                        {
-                            list.Add(GridAdjustment.GetGridCoordinates(_hit.point));
-                            found = true;
-                        }
-                    }
+                    if (!list.Contains(GridAdjustment.GetGridCoordinates(_pos))) list.Add(GridAdjustment.GetGridCoordinates(_pos));
+                    found = true;
                 }
-                doNotAdd = false;
+
                 // -i / -j
                 _pos = GridAdjustment.GetGridCoordinates(Destination + new Vector3(-i * 10f, 0f, -j * 10f)) + 20f * Vector3.up;
-                _ray = new Ray(_pos, -Vector3.up);
-                if (Physics.Raycast(_ray, out _hit, Mathf.Infinity, LayerMask.GetMask("Terrain", "Buildings")))
+                if (PositionIsEmpty(_pos))
                 {
-                    if (_hit.collider.gameObject.CompareTag("Terrain"))
-                    {
-                        for (int s = 0; s < PlayManager.squadUnitList.Count; s++)
-                        {
-                            if (_pos.x == PlayManager.squadUnitList[s].Destination.x && _pos.z == PlayManager.squadUnitList[s].Destination.z) doNotAdd = true;
-                        }
-
-                        if (!list.Contains(GridAdjustment.GetGridCoordinates(_hit.point)) && !doNotAdd)
-                        {
-                            list.Add(GridAdjustment.GetGridCoordinates(_hit.point));
-                            found = true;
-                        }
-                    }
+                    if (!list.Contains(GridAdjustment.GetGridCoordinates(_pos))) list.Add(GridAdjustment.GetGridCoordinates(_pos));
+                    found = true;
                 }
-                doNotAdd = false;
             }
         }
 
         // Return a random destination from the list (destinations at the same distance of the current point)
-        return list[Random.Range(0, list.Count)];
+        return list[UnityEngine.Random.Range(0, list.Count)];
+    }
+
+    /// <summary>
+    /// PositionIsEmpty method is used to know if the input position is available for a squad movement
+    /// The position is empty if there is no building, tower, HQ, explosives, enemy soldier on it and if it is not a destination from another squad
+    /// </summary>
+    /// <param name="_pos">Position (Vector3)</param>
+    /// <returns>True if empty, false otherwise</returns>
+    private bool PositionIsEmpty(Vector3 _pos)
+    {
+        Ray _ray = new Ray(_pos + 20f * Vector3.up, -Vector3.up);
+        RaycastHit _hit;
+        // Position is empty if there is no Buildings, HQ, Turret or Tower (terrain is hit)
+        if (Physics.Raycast(_ray, out _hit, Mathf.Infinity, LayerMask.GetMask("Terrain", "Buildings", "Enemies", "Soldiers")))
+        {
+            if (_hit.collider.gameObject.CompareTag("Terrain"))
+            {
+                // If the position is already a SquadUnit destination, position is not considered as empty
+                foreach (SquadUnit _squad in PlayManager.squadUnitList)
+                {
+                    if (_squad == this) continue;
+                    if (GridAdjustment.IsSameOnGrid(_squad.Destination, _pos)) return false;
+                }
+
+                // If the position is the position of an explosives (from SoldierUnit), it is not empty
+                foreach (Explosives _explosives in PlayManager.explosivesList)
+                {
+                    if (GridAdjustment.IsSameOnGrid(_explosives.transform.position, _pos)) return false;
+                }
+
+                // If the position is the position of an enemy soldier, it is not empty
+                foreach (EnemySoldier _enemy in PlayManager.enemyList)
+                {
+                    if (GridAdjustment.IsSameOnGrid(_enemy.transform.position, _pos)) return false;
+                }
+
+                // If the position is Terrain, not explosives, not enemy soldier and not another Squad destination : it is empty
+                return true;
+            }
+        }
+        // If nothing is hit by the raycast or anything else than the terrain is hit, position is not empty
+        return false;
     }
     #endregion
 
@@ -680,10 +930,10 @@ public class SquadUnit : MonoBehaviour
     /// </summary>
     public void Retreat()
     {
-        navAgent.SetDestination(PlayManager.hqPos);
+        navAgent.SetDestination(GridAdjustment.GetGridCoordinates(PlayManager.hqPos));
         fixedDestination = true;
         retreatActive = true;
-        Unselect?.Invoke();
+        Unselect();
     }
 
     /// <summary>
@@ -711,6 +961,6 @@ public class SquadUnit : MonoBehaviour
     /// </summary>
     public void CheckDeath()
     {
-        if (soldier1.HP <= 0 && soldier2.HP <= 0 && soldier3.HP <= 0 && soldier4.HP <= 0) Die();
+        if (soldier1.IsWounded && soldier2.IsWounded && soldier3.IsWounded && soldier4.IsWounded) Die();
     }
 }

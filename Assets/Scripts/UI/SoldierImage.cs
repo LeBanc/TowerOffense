@@ -1,6 +1,4 @@
-﻿using System.Collections;
-using System.Collections.Generic;
-using UnityEngine;
+﻿using UnityEngine;
 using UnityEngine.UI;
 
 /// <summary>
@@ -42,7 +40,7 @@ public class SoldierImage : MonoBehaviour
                     border.color = Color.blue;
                     break;
                 case SoldierData.SoldierType.Special:
-                    border.color = Color.green;
+                    border.color = new Color(0f, 0.5f, 0.05f, 1f);
                     break;
                 default:
                     border.color = Color.gray;

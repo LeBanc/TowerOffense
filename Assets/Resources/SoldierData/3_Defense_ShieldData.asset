@@ -14,17 +14,19 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   soldierType: 2
   soldierLevel: 3
-  prefab: {fileID: 7775684171843242171, guid: 8cb6299af0adcab41a42da1618286ec3, type: 3}
-  shortRangeAttack: 0
-  middleRangeAttack: 2
+  typeName: Adv. Shielded soldier
+  prefab: {fileID: 7775684171843242171, guid: a94ed999e9085c8449fefeb00d29a8bd, type: 3}
+  shortRangeAttack: 5
+  middleRangeAttack: 6
   longRangeAttack: 0
-  shortRangeDefense: 3
-  middleRangeDefense: 5
-  longRangeDefense: 3
+  shortRangeDefense: 6
+  middleRangeDefense: 6
+  longRangeDefense: 2
   explosiveDefense: 2
   speed: 90
   maxHP: 110
   shootingDelay: 3
+  maxXP: 0
   shootingSound: {fileID: 8300000, guid: cf5c4803435bf5d4f920a0533150c10d, type: 3}
   capacities: 
   improveTo: []

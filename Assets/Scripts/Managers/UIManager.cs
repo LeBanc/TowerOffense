@@ -1,14 +1,28 @@
-﻿using System.Collections;
+﻿using System;
+using System.Collections;
+using UnityEditor;
 using UnityEngine;
+using UnityEngine.UI;
+using UnityEngine.EventSystems;
 
 public class UIManager : Singleton<UIManager>
 {
     // Public Canvas, one for each GameManager GameState
     public Canvas startMenu;
     public Canvas pauseMenu;
-    public Canvas loadUI;
-    public Canvas saveUI;
+    public Canvas loadingUI;
+    public Canvas savingUI;
     public Canvas playUI;
+    public Canvas loadMenu;
+    public Canvas saveMenu;
+    public ConfirmMessageCanvas confirmMessage;
+    public ErrorMessageCanvas errorMessage;
+
+    private Selectable startMenuLastSelected;
+    private Selectable pauseMenuLastSelected;
+    private Selectable playUILastSelected;
+    private Selectable loadMenuLastSelected;
+    private Selectable saveMenuLastSelected;
 
     /// <summary>
     /// At Start, checks for missing UI Canvas and subscribes to GameManager events
@@ -24,36 +38,55 @@ public class UIManager : Singleton<UIManager>
         {
             Debug.LogError("[UIManager] No Pause Menu Canvas has been assigned");
         }
-        else if (loadUI == null)
-        {
-            Debug.LogError("[UIManager] No Load UI Canvas has been assigned");
-        }
-        else if (saveUI == null)
-        {
-            Debug.LogError("[UIManager] No Save UI Canvas has been assigned");
-        }
-        else if (playUI == null)
+         else if (playUI == null)
         {
             Debug.LogError("[UIManager] No Play UI Canvas has been assigned");
+        }
+        else if (savingUI == null)
+        {
+            Debug.LogError("[UIManager] No Saving UI Canvas has been assigned");
+        }
+        else if (loadingUI == null)
+        {
+            Debug.LogError("[UIManager] No Loading UI Canvas has been assigned");
         }
         else
         {
             // Subscribe to all GameManager events to change and upadte UI
-            GameManager.OnStartToLoad += ShowLoadUI;
+            GameManager.OnStartToLoad += ShowLoadingUI;
+            GameManager.OnStartToLoad += HideStartMenu;
+            GameManager.OnStartToLoad += HideLoadMenu;
+
             GameManager.OnLoadToPlay += ShowPlayUI;
-            GameManager.OnPlayToStart += ShowStartMenu;
+            GameManager.OnLoadToPlay += HideLoadingUI;
+
             GameManager.OnPlayToPause += ShowPauseMenu;
-            GameManager.OnPauseToPlay += ShowPlayUI;
+
+            GameManager.OnPlayToSave += ShowSavingUI;
+
+            GameManager.OnPlayToStart += ShowStartMenu;
+            GameManager.OnPlayToStart += HidePlayUI;
+
+            GameManager.OnPauseToPlay += HidePauseMenu;
+
             GameManager.OnPauseToStart += ShowStartMenu;
-            GameManager.OnPauseToLoad += ShowLoadUI;
-            GameManager.OnPauseToSave += ShowSaveUI;
-            GameManager.OnSaveToPause += ShowPauseMenu;
+            GameManager.OnPauseToStart += HidePauseMenu;
+
+            GameManager.OnPauseToLoad += ShowLoadingUI;
+            GameManager.OnPauseToLoad += HidePauseMenu;
+            GameManager.OnPauseToLoad += HideLoadMenu;
+
+            GameManager.OnPauseToSave += ShowSavingUI;
+            GameManager.OnPauseToSave += HideSaveMenu;
+
+            GameManager.OnSaveToPause += HideSavingUI;
+            GameManager.OnSaveToPlay += HideSavingUI;
 
             GameManager.StartUpdate += StartMenu;
-            GameManager.LoadUpdate += LoadUI;
+            GameManager.LoadUpdate += LoadingUI;
             GameManager.PlayUpdate += PlayUI;
             GameManager.PauseUpdate += PauseMenu;
-            GameManager.SaveUpdate += SaveUI;
+            GameManager.SaveUpdate += SavingUI;
 
             // Initialize UI from current GameState
             InitializeUI();
@@ -68,127 +101,319 @@ public class UIManager : Singleton<UIManager>
         base.OnDestroy();
 
         // Unsubscribe from GameManager events
-        GameManager.OnStartToLoad -= ShowLoadUI;
+        GameManager.OnStartToLoad -= ShowLoadingUI;
+        GameManager.OnStartToLoad -= HideStartMenu;
         GameManager.OnLoadToPlay -= ShowPlayUI;
-        GameManager.OnPlayToStart -= ShowStartMenu;
+        GameManager.OnLoadToPlay -= HideLoadingUI;
         GameManager.OnPlayToPause -= ShowPauseMenu;
-        GameManager.OnPauseToPlay -= ShowPlayUI;
+        GameManager.OnPlayToSave -= ShowSavingUI;
+        GameManager.OnPlayToStart -= ShowStartMenu;
+        GameManager.OnPlayToStart -= HidePlayUI;
+        GameManager.OnPauseToPlay -= HidePauseMenu;
         GameManager.OnPauseToStart -= ShowStartMenu;
-        GameManager.OnPauseToLoad -= ShowLoadUI;
-        GameManager.OnPauseToSave -= ShowSaveUI;
-        GameManager.OnSaveToPause -= ShowPauseMenu;
+        GameManager.OnPauseToStart -= HidePauseMenu;
+        GameManager.OnPauseToLoad -= ShowLoadingUI;
+        GameManager.OnPauseToLoad -= HidePauseMenu;
+        GameManager.OnPauseToSave -= ShowSavingUI;
+        GameManager.OnSaveToPause -= HideSavingUI;
+        GameManager.OnSaveToPlay -= HideSavingUI;
+
         GameManager.StartUpdate -= StartMenu;
-        GameManager.LoadUpdate -= LoadUI;
+        GameManager.LoadUpdate -= LoadingUI;
         GameManager.PlayUpdate -= PlayUI;
         GameManager.PauseUpdate -= PauseMenu;
-        GameManager.SaveUpdate -= SaveUI;
+        GameManager.SaveUpdate -= SavingUI;
+        
+        GameManager.OnStartToLoad -= HideLoadMenu;
+        GameManager.OnPauseToLoad -= HideLoadMenu;
+        GameManager.OnPauseToSave -= HideSaveMenu;
     }
 
     #region Show dedicate Canvas Methods
     /// <summary>
-    /// InitializeUI method shows the first Canvas depending on the current GameState (the first)
+    /// InitializeUI method hides all the canvases
     /// </summary>
     void InitializeUI()
     {
-        switch (GameManager.CurrentGameState)
-        {
-            case GameManager.GameState.start:
-                ShowStartMenu();
-                break;
-            case GameManager.GameState.load:
-                ShowLoadUI();
-                break;
-            case GameManager.GameState.play:
-                ShowPlayUI();
-                break;
-            case GameManager.GameState.pause:
-                ShowPauseMenu();
-                break;
-            case GameManager.GameState.save:
-                ShowSaveUI();
-                break;
-            default:
-                ShowStartMenu();
-                break;
-        }
+        startMenu.gameObject.SetActive(true);
+        pauseMenu.gameObject.SetActive(true);
+        loadingUI.gameObject.SetActive(true);
+        savingUI.gameObject.SetActive(true);
+        playUI.gameObject.SetActive(true);
+        loadMenu.gameObject.SetActive(true);
+        saveMenu.gameObject.SetActive(true);
+
+    HideStartMenu();
+        HideLoadingUI();
+        HidePlayUI();
+        HidePauseMenu();
+        HideSavingUI();
+        HideLoadMenu();
+        HideSaveMenu();
     }
 
     /// <summary>
-    /// ShowStartMenu method activates the Start Menu and hides all the others
+    /// ShowStartMenu method activates the Start Menu
     /// </summary>
     void ShowStartMenu()
     {
-        startMenu.gameObject.SetActive(true);
-        pauseMenu.gameObject.SetActive(false);
-        loadUI.gameObject.SetActive(false);
-        saveUI.gameObject.SetActive(false);
-        playUI.gameObject.SetActive(false);
+        startMenu.enabled = true;
+
+        // Select default selectable
+        if (startMenu.TryGetComponent<DefaultSelectable>(out DefaultSelectable _default))
+        {
+            _default.defaultSelectable.Select();
+        }
+    }
+    /// <summary>
+    /// HideStartMenu method hides the Start Menu
+    /// </summary>
+    void HideStartMenu()
+    {
+        startMenu.enabled = false;
     }
 
     /// <summary>
-    /// ShowPauseMenu method activates the Pause Menu and hides all the others
+    /// ShowPauseMenu method activates the Pause Menu
     /// </summary>
     void ShowPauseMenu()
     {
-        startMenu.gameObject.SetActive(false);
-        pauseMenu.gameObject.SetActive(true);
-        loadUI.gameObject.SetActive(false);
-        saveUI.gameObject.SetActive(false);
-        playUI.gameObject.SetActive(false);
+        pauseMenu.enabled=true;
+
+        // Select default selectable
+        if (pauseMenu.TryGetComponent<DefaultSelectable>(out DefaultSelectable _default))
+        {
+            _default.defaultSelectable.Select();
+        }
+    }
+    /// <summary>
+    /// HidePauseMenu method hides the Pause Menu
+    /// </summary>
+    void HidePauseMenu()
+    {
+        pauseMenu.enabled=false;
     }
 
     /// <summary>
-    /// ShowPlayUI method activates the Play UI and hides all the others
+    /// ShowPlayUI method activates the Play UI
     /// </summary>
     void ShowPlayUI()
     {
-        startMenu.gameObject.SetActive(false);
-        pauseMenu.gameObject.SetActive(false);
-        loadUI.gameObject.SetActive(false);
-        saveUI.gameObject.SetActive(false);
-        playUI.gameObject.SetActive(true);
+        playUI.enabled=true;
+
+        // Selection of default selectable is done by PlayUI dedicated canvas components
+    }
+    /// <summary>
+    /// HidePlayUI method hides the Play UI
+    /// </summary>
+    void HidePlayUI()
+    {
+        playUI.enabled=false;
     }
 
     /// <summary>
-    /// ShowLoadUI method activates the Load UI and hides all the others
+    /// ShowLoadUI method activates the Loading UI
     /// </summary>
-    void ShowLoadUI()
+    void ShowLoadingUI()
     {
-        startMenu.gameObject.SetActive(false);
-        pauseMenu.gameObject.SetActive(false);
-        loadUI.gameObject.SetActive(true);
-        saveUI.gameObject.SetActive(false);
-        playUI.gameObject.SetActive(false);
-
-        // For debug, until something is done in load and can change the GameState
-        StartCoroutine(ChangeGameStateRequestDelayed(GameManager.GameState.play));
+        loadingUI.enabled=true;
+    }
+    /// <summary>
+    /// HideLoadingUI method hides the Loading UI
+    /// </summary>
+    void HideLoadingUI()
+    {
+        loadingUI.enabled=false;
     }
 
     /// <summary>
-    /// ShowSaveMenu method activates the Save UI and hides all the others
+    /// ShowSavingUI method activates the Saving UI
     /// </summary>
-    void ShowSaveUI()
+    void ShowSavingUI()
     {
-        startMenu.gameObject.SetActive(false);
-        pauseMenu.gameObject.SetActive(false);
-        loadUI.gameObject.SetActive(false);
-        saveUI.gameObject.SetActive(true);
-        playUI.gameObject.SetActive(false);
-
-        // For debug, until something is done in load and can change the GameState
-        StartCoroutine(ChangeGameStateRequestDelayed(GameManager.GameState.pause));
+        savingUI.enabled=true;
+        savingUI.GetComponent<SaveAnimation>().StartAnimation();
+    }
+    /// <summary>
+    /// HideSavingUI method hides the Saving UI
+    /// </summary>
+    void HideSavingUI()
+    {
+        savingUI.GetComponent<SaveAnimation>().StopAnimation();
+        savingUI.enabled=false;
     }
 
     /// <summary>
-    /// Coroutine for debug to change the GameState after 5 seconds
+    /// ShowLoadMenu method activates the Load menu
     /// </summary>
-    /// <param name="req">GameState requested to change to</param>
-    /// <returns></returns>
-    IEnumerator ChangeGameStateRequestDelayed(GameManager.GameState req)
+    public void ShowLoadMenu()
     {
-        yield return new WaitForSeconds(5f);
-        GameManager.ChangeGameStateRequest(req);
+        if(EventSystem.current.currentSelectedGameObject != null)
+        {
+            if (startMenu.enabled) startMenuLastSelected = EventSystem.current.currentSelectedGameObject.GetComponent<Selectable>();
+            if (pauseMenu.enabled) pauseMenuLastSelected = EventSystem.current.currentSelectedGameObject.GetComponent<Selectable>();
+        }       
+
+        loadMenu.enabled = true;
+        loadMenu.GetComponentInChildren<LoadSaveMenu>().SetupLoadMenu();
+
     }
+    /// <summary>
+    /// HideLoadMenu method hides the Load Menu
+    /// </summary>
+    public void HideLoadMenu()
+    {
+        loadMenu.enabled = false;
+        if (pauseMenu.enabled && pauseMenuLastSelected != null) pauseMenuLastSelected.Select();
+        if (startMenu.enabled && startMenuLastSelected != null) startMenuLastSelected.Select();
+    }
+
+    /// <summary>
+    /// ShowSaveMenu method activates the Save Menu
+    /// </summary>
+    public void ShowSaveMenu()
+    {
+        if (EventSystem.current.currentSelectedGameObject != null)
+        {
+            if (pauseMenu.enabled) pauseMenuLastSelected = EventSystem.current.currentSelectedGameObject.GetComponent<Selectable>();
+        }            
+
+        saveMenu.enabled = true;
+        saveMenu.GetComponentInChildren<LoadSaveMenu>().SetupSaveMenu();
+    }
+    /// <summary>
+    /// HideSaveMenu method hides the Save Menu
+    /// </summary>
+    public void HideSaveMenu()
+    {
+        saveMenu.enabled = false;
+        if (pauseMenu.enabled && pauseMenuLastSelected != null) pauseMenuLastSelected.Select();
+    }
+    #endregion
+
+    #region Message Canvas
+    public static void InitConfirmMessage(string _message, Action _callback, Sprite _sprite = null)
+    {
+        if (EventSystem.current.currentSelectedGameObject != null)
+        {
+            if (Instance.loadMenu.enabled)
+            {
+                Instance.loadMenuLastSelected = EventSystem.current.currentSelectedGameObject.GetComponent<Selectable>();
+            }
+            else if (Instance.saveMenu.enabled)
+            {
+                Instance.saveMenuLastSelected = EventSystem.current.currentSelectedGameObject.GetComponent<Selectable>();
+            }
+            else if (Instance.startMenu.enabled)
+            {
+                Instance.startMenuLastSelected = EventSystem.current.currentSelectedGameObject.GetComponent<Selectable>();
+            }
+            else if (Instance.pauseMenu.enabled)
+            {
+                Instance.pauseMenuLastSelected = EventSystem.current.currentSelectedGameObject.GetComponent<Selectable>();
+            }
+            else if (Instance.playUI.enabled) Instance.playUILastSelected = EventSystem.current.currentSelectedGameObject.GetComponent<Selectable>();
+        }            
+
+        Instance.confirmMessage.Show(_message, _callback, _sprite);
+    }
+
+    public static void HideConfirmMessage()
+    {
+        Instance.confirmMessage.Hide();
+
+        if(Instance.saveMenu.enabled && Instance.saveMenuLastSelected != null)
+        {
+            Instance.saveMenuLastSelected.Select();
+        }
+        else if(Instance.loadMenu.enabled && Instance.loadMenuLastSelected != null)
+        {
+            Instance.loadMenuLastSelected.Select();
+        }
+        else if(Instance.pauseMenu.enabled && Instance.pauseMenuLastSelected != null)
+        {
+            Instance.pauseMenuLastSelected.Select();
+        }
+        else if(Instance.startMenu.enabled && Instance.startMenuLastSelected != null)
+        {
+            Instance.startMenuLastSelected.Select();
+        }
+        else if(Instance.playUI.enabled && Instance.playUILastSelected != null)
+        {
+            Instance.playUILastSelected.Select();
+        }
+    }
+
+    public static void InitErrorMessage(string _message, Sprite _sprite = null)
+    {
+        if (EventSystem.current.currentSelectedGameObject != null)
+        {
+            if (Instance.loadMenu.enabled)
+            {
+                Instance.loadMenuLastSelected = EventSystem.current.currentSelectedGameObject.GetComponent<Selectable>();
+            }
+            else if (Instance.saveMenu.enabled)
+            {
+                Instance.saveMenuLastSelected = EventSystem.current.currentSelectedGameObject.GetComponent<Selectable>();
+            }
+            else if (Instance.startMenu.enabled)
+            {
+                Instance.startMenuLastSelected = EventSystem.current.currentSelectedGameObject.GetComponent<Selectable>();
+            }
+            else if (Instance.pauseMenu.enabled)
+            {
+                Instance.pauseMenuLastSelected = EventSystem.current.currentSelectedGameObject.GetComponent<Selectable>();
+            }
+            else if (Instance.playUI.enabled) Instance.playUILastSelected = EventSystem.current.currentSelectedGameObject.GetComponent<Selectable>();
+        }            
+
+        Instance.errorMessage.Show(_message, _sprite);
+    }
+
+    public static void HideErrorMessage()
+    {
+        Instance.errorMessage.Hide();
+
+        if (Instance.saveMenu.enabled && Instance.saveMenuLastSelected != null)
+        {
+            Instance.saveMenuLastSelected.Select();
+        }
+        else if (Instance.loadMenu.enabled && Instance.loadMenuLastSelected != null)
+        {
+            Instance.loadMenuLastSelected.Select();
+        }
+        else if (Instance.pauseMenu.enabled && Instance.pauseMenuLastSelected != null)
+        {
+            Instance.pauseMenuLastSelected.Select();
+        }
+        else if (Instance.startMenu.enabled && Instance.startMenuLastSelected != null)
+        {
+            Instance.startMenuLastSelected.Select();
+        }
+        else if (Instance.playUI.enabled && Instance.playUILastSelected != null)
+        {
+            Instance.playUILastSelected.Select();
+        }
+    }
+    #endregion
+
+    #region Pause Menu Quit actions
+    public void ResumeGame()
+    {
+        GameManager.ChangeGameStateRequest(GameManager.GameState.play);
+        if (playUILastSelected != null) playUILastSelected.Select();
+    }
+    
+    public void QuitToStartMenu()
+    {
+        InitConfirmMessage("All data not saved will be loss, are you sure you want to go back to the main menu?", delegate { GameManager.ChangeGameStateRequest(GameManager.GameState.start); });
+    }
+
+    public void QuitGame()
+    {
+        InitConfirmMessage("All data not saved will be loss, are you sure you want to quit to desktop?", delegate { GameManager.QuitGameStatic(); });
+    }
+
     #endregion
 
     /// <summary>
@@ -197,50 +422,87 @@ public class UIManager : Singleton<UIManager>
     #region Canvas Actions
     void StartMenu()
     {
-        if (Input.GetKeyDown(KeyCode.Space)) GameManager.ChangeGameStateRequest(GameManager.GameState.load);
-        DebugModeShortcuts();
+        if (Input.GetKeyDown(KeyCode.Escape))
+        {
+            if (confirmMessage.IsShown)
+            {
+                HideConfirmMessage();
+            }
+            else if (errorMessage.IsShown)
+            {
+                HideErrorMessage();
+            }
+            else if (saveMenu.enabled == true)
+            {
+                HideSaveMenu();
+            }
+            else if (loadMenu.enabled == true)
+            {
+                HideLoadMenu();
+            }
+            else
+            {
+                InitConfirmMessage("Are you sure you want to quit to desktop?", delegate { GameManager.QuitGameStatic(); });
+            }            
+        }
     }
 
     void PauseMenu()
     {
-        if (Input.GetKeyDown(KeyCode.R)) GameManager.ChangeGameStateRequest(GameManager.GameState.load);
-        else if (Input.GetKeyDown(KeyCode.Q)) GameManager.ChangeGameStateRequest(GameManager.GameState.start);
-        else if (Input.GetKeyDown(KeyCode.S)) GameManager.ChangeGameStateRequest(GameManager.GameState.save);
-        else if (Input.GetKeyDown(KeyCode.Escape)) GameManager.ChangeGameStateRequest(GameManager.GameState.play);
-        DebugModeShortcuts();
+        if (Input.GetKeyDown(KeyCode.Escape))
+        {
+            if(confirmMessage.IsShown)
+            {
+                HideConfirmMessage();
+            }
+            else if (errorMessage.IsShown)
+            {
+                HideErrorMessage();
+            }
+            else if(saveMenu.enabled == true)
+            {
+                HideSaveMenu();
+            }
+            else if(loadMenu.enabled == true)
+            {
+                HideLoadMenu();
+            }
+            else
+            {
+                GameManager.ChangeGameStateRequest(GameManager.GameState.play);
+                if (playUILastSelected != null) playUILastSelected.Select();
+            }            
+        }
     }
 
     void PlayUI()
     {
-        if (Input.GetKeyDown(KeyCode.Q)) GameManager.ChangeGameStateRequest(GameManager.GameState.start);
-        else if (Input.GetKeyDown(KeyCode.Escape)) GameManager.ChangeGameStateRequest(GameManager.GameState.pause);
-        DebugModeShortcuts();
+        if (Input.GetKeyDown(KeyCode.Escape))
+        {
+            if(confirmMessage.IsShown)
+            {
+                HideConfirmMessage();
+            }
+            else if (errorMessage.IsShown)
+            {
+                HideErrorMessage();
+            }
+            else
+            {
+                if (EventSystem.current.currentSelectedGameObject != null) playUILastSelected = EventSystem.current.currentSelectedGameObject.GetComponent<Selectable>();
+                GameManager.ChangeGameStateRequest(GameManager.GameState.pause);
+            }
+        }            
     }
 
-    void LoadUI()
+    void LoadingUI()
     {
-        DebugModeShortcuts();
+        
     }
 
-    void SaveUI()
+    void SavingUI()
     {
-        DebugModeShortcuts();
+        
     }
-
-    void DebugModeShortcuts()
-    {
-        if (Input.GetKeyDown(KeyCode.Alpha1)) GameManager.ChangeGameStateRequest(GameManager.GameState.start);
-        if (Input.GetKeyDown(KeyCode.Alpha2)) GameManager.ChangeGameStateRequest(GameManager.GameState.load);
-        if (Input.GetKeyDown(KeyCode.Alpha3)) GameManager.ChangeGameStateRequest(GameManager.GameState.play);
-        if (Input.GetKeyDown(KeyCode.Alpha4)) GameManager.ChangeGameStateRequest(GameManager.GameState.pause);
-        if (Input.GetKeyDown(KeyCode.Alpha5)) GameManager.ChangeGameStateRequest(GameManager.GameState.save);
-    }
-
     #endregion
-
-
-
-
-
-
 }

@@ -14,17 +14,19 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   soldierType: 2
   soldierLevel: 3
-  prefab: {fileID: 7775684171843242171, guid: 8cb6299af0adcab41a42da1618286ec3, type: 3}
-  shortRangeAttack: 1
-  middleRangeAttack: 0
+  typeName: Adv. Tank
+  prefab: {fileID: 7775684171843242171, guid: a94ed999e9085c8449fefeb00d29a8bd, type: 3}
+  shortRangeAttack: 8
+  middleRangeAttack: 3
   longRangeAttack: 0
-  shortRangeDefense: 7
-  middleRangeDefense: 3
-  longRangeDefense: 1
-  explosiveDefense: 2
+  shortRangeDefense: 8
+  middleRangeDefense: 4
+  longRangeDefense: 0
+  explosiveDefense: 3
   speed: 100
   maxHP: 110
   shootingDelay: 3
+  maxXP: 0
   shootingSound: {fileID: 8300000, guid: cf5c4803435bf5d4f920a0533150c10d, type: 3}
   capacities: 
   improveTo: []

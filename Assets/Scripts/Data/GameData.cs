@@ -15,15 +15,26 @@ public class GameData: ScriptableObject
     public float longRange = 50f;
 
     [Header("Time of the attack phase")]
-    public float baseAttackTime = 90f;
+    public float baseAttackTime = 45f;
 
     [Header("Basic amounts")]
     public int baseHealAmount = 30;
-    public int[] experienceMaxAmount = { 50, 100, 200, 400 };
+
+    [Header("Soldier ranks")]
+    public string[] ranks = new string[4];
+    public string playerRank;
 
     [Header("First squad")]
     public GameObject squadPrefab;
     public SquadData defaultSquadType;
+
+    [Header("Prefabs")]
+    public GameObject buildingPrefab;
+    public GameObject turretBasePrefab;
+    public GameObject explosivesPrefab;
+    public GameObject towerPrefab;
+    public GameObject hqCandidatePrefab;
+    public GameObject turretPrefab;
 
     [Header("Lists of resources")]
     public List<Color> squadColors;
