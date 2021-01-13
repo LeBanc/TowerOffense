@@ -12,7 +12,7 @@ GameObject:
   - component: {fileID: 6345969123247285617}
   - component: {fileID: 2613289744963618860}
   m_Layer: 5
-  m_Name: Capacity2Value
+  m_Name: Capability2Value
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -77,7 +77,7 @@ MonoBehaviour:
     m_HorizontalOverflow: 0
     m_VerticalOverflow: 0
     m_LineSpacing: 1
-  m_Text: 'Second Capacity
+  m_Text: 'Second Capability
 
 '
 --- !u!1 &914839448423247531
@@ -92,7 +92,7 @@ GameObject:
   - component: {fileID: 844250349775010707}
   - component: {fileID: 6277199390458814138}
   m_Layer: 5
-  m_Name: Capacity3Value
+  m_Name: Capability3Value
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -157,7 +157,7 @@ MonoBehaviour:
     m_HorizontalOverflow: 0
     m_VerticalOverflow: 0
     m_LineSpacing: 1
-  m_Text: Third Capacity
+  m_Text: Third Capability
 --- !u!1 &2267201383441387519
 GameObject:
   m_ObjectHideFlags: 0
@@ -404,7 +404,7 @@ GameObject:
   - component: {fileID: 8381979981869210988}
   - component: {fileID: 9154810361018478209}
   m_Layer: 5
-  m_Name: Capacity1Value
+  m_Name: Capability1Value
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -469,7 +469,7 @@ MonoBehaviour:
     m_HorizontalOverflow: 0
     m_VerticalOverflow: 0
     m_LineSpacing: 1
-  m_Text: First Capacity
+  m_Text: First Capability
 --- !u!1 &3940752171525588082
 GameObject:
   m_ObjectHideFlags: 0
@@ -1570,7 +1570,7 @@ GameObject:
   - component: {fileID: 4701465800911870503}
   - component: {fileID: 1072014813542310543}
   m_Layer: 5
-  m_Name: Capacity4Value
+  m_Name: Capability4Value
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -1635,7 +1635,7 @@ MonoBehaviour:
     m_HorizontalOverflow: 0
     m_VerticalOverflow: 0
     m_LineSpacing: 1
-  m_Text: Fourth Capacity
+  m_Text: Fourth Capability
 --- !u!1 &6700903974415468839
 GameObject:
   m_ObjectHideFlags: 0
@@ -1648,7 +1648,7 @@ GameObject:
   - component: {fileID: 7700335139137321679}
   - component: {fileID: 2347835079134224969}
   m_Layer: 5
-  m_Name: CapacitiesLabel
+  m_Name: CapabilitiesLabel
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -1713,7 +1713,7 @@ MonoBehaviour:
     m_HorizontalOverflow: 0
     m_VerticalOverflow: 0
     m_LineSpacing: 1
-  m_Text: Capacities
+  m_Text: Capabilities
 --- !u!1 &7566759195344869798
 GameObject:
   m_ObjectHideFlags: 0
