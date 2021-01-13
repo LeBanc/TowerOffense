@@ -1,12 +1,15 @@
-﻿
-using UnityEngine;
+﻿using UnityEngine;
 
+/// <summary>
+/// Enemy class is a Shootable for enemies
+/// </summary>
 public class Enemy : Shootable
 {
-    // state
+    // Enemy state
     protected bool active = true;
     protected bool destroyed = false;
 
+    // Enemy events
     public event ShootableEventHandler OnDestruction;
 
     /// <summary>
@@ -29,6 +32,9 @@ public class Enemy : Shootable
         shootingDelay = shootingDataDuration;
     }    
 
+    /// <summary>
+    /// Setup method subscribes the DestroyEnemy method to OnHPDown event
+    /// </summary>
     public virtual void Setup()
     {
         OnHPDown += DestroyEnemy;

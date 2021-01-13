@@ -1,7 +1,9 @@
-﻿using System.Collections;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using UnityEngine;
 
+/// <summary>
+/// Turret class is a Shootable for turrets
+/// </summary>
 public class Turret : Shootable
 {
     // private bool for destroyed state

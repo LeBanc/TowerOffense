@@ -1,6 +1,4 @@
-﻿using System.Collections;
-using System.Collections.Generic;
-using UnityEngine;
+﻿using UnityEngine;
 
 /// <summary>
 /// DayLight class is used to rotate and change color of the Sun during an attack
@@ -116,8 +114,5 @@ public class DayLight : MonoBehaviour
             dayLight.intensity = Mathf.Lerp(noonIntensity, eveningIntensity, Mathf.Pow(_delta, 5f));
             transform.rotation = Quaternion.Lerp(noonQuaternion, eveningQuaternion, Mathf.Pow(_delta, 2f));
         }
-
-
     }
-
 }

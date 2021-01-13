@@ -116,6 +116,10 @@ public class HQCCSoldierSelection : MonoBehaviour
         CreateSoldierList(_soldiers);
     }
 
+    /// <summary>
+    /// ChangeSelection method selects the chosen item
+    /// </summary>
+    /// <param name="_item">Item to select (SoldierSelectionItem)</param>
     private void ChangeSelection(SoldierSelectionItem _item)
     {
         if(selectedItem != _item)
@@ -125,6 +129,9 @@ public class HQCCSoldierSelection : MonoBehaviour
         }        
     }
 
+    /// <summary>
+    /// Validate method is the method used when the "Validate/OK" button is clicked/validated. It set the selected soldier as the new soldier
+    /// </summary>
     public void Validate()
     {
         squad.ChangeSoldier(position, selectedItem.Soldier);

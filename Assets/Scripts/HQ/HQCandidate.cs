@@ -1,9 +1,13 @@
-﻿using System.Collections;
-using System.Collections.Generic;
-using UnityEngine;
+﻿using UnityEngine;
 
+/// <summary>
+/// HQCandidate class is a Buildable for any candidate place to build a new HQ
+/// </summary>
 public class HQCandidate : Buildable
 {
+    /// <summary>
+    /// At Start, init the HQCandidate in the PlayManager list
+    /// </summary>
     protected override void Start()
     {
         base.Start();

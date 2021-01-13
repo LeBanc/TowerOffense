@@ -3,25 +3,35 @@ using UnityEditor;
 using System;
 using Boo.Lang;
 
+/// <summary>
+/// FighSimulationWindow is an Editor Window to simulate a fight between Squads and Towers
+/// </summary>
 public class FightSimulationWindow : EditorWindow
 {
+
+    // Window data
     float _space = 20f;
     Vector2 scrollPosition;
 
+    // Calculation inputs
     List<SquadSimulator> squadsList = new List<SquadSimulator>();
     List<TowerSimulator> towersList = new List<TowerSimulator>();
     List<EnemySimulator> enemyList = new List<EnemySimulator>();
 
+    // Results of fight simulation
     List<string> results = new List<string>();
 
+    // Fight parameters
     int totalDayTime = 45;
     int initialTravelTime = 10;
     int towerTravelTime = 0;
     int healAmount = 15;
 
+    // Sort tools
     bool sortByDef = true;
     bool sortByHP = true;
 
+    // UI styles
     GUIStyle redText = new GUIStyle();
     GUIStyle greenText = new GUIStyle();
     GUIStyle yellowText = new GUIStyle();
@@ -38,23 +48,31 @@ public class FightSimulationWindow : EditorWindow
         window.greenText.normal.textColor = Color.green;
         window.yellowText.normal.textColor = Color.yellow;
 
-
+        // Init base window content
         window.AddSquad();
         window.AddTower();
 
+        // Display the window
         window.Show();
     }
 
+    /// <summary>
+    /// OnGUI method draws the window
+    /// </summary>
     void OnGUI()
     {
+        // Display the squads and the towers on a same row
         GUILayout.BeginHorizontal();
+        // Display all squads on a single column
         GUILayout.BeginVertical();
         GUILayout.Label("Squads Settings", EditorStyles.boldLabel, GUILayout.MaxWidth(300f));
+        // Draw the current squads
         foreach (SquadSimulator _squad in squadsList)
         {
             DoSquad(_squad);
         }
 
+        // Button to add a squad if squads count is below 4
         if(squadsList.Count < 4)
         {
             GUILayout.Space(5f);
@@ -65,14 +83,17 @@ public class FightSimulationWindow : EditorWindow
         }        
         GUILayout.EndVertical();
 
+        // Display all towers on a single column
         GUILayout.BeginVertical();
         GUILayout.Label("Towers Settings", EditorStyles.boldLabel, GUILayout.MaxWidth(300f));
+        // Draw the current towers
         foreach (TowerSimulator _tower in towersList)
         {
             DoTower(_tower);
         }
 
         GUILayout.Space(5f);
+        // Button to add a tower
         if (GUILayout.Button("Add Tower"))
         {
             AddTower();
@@ -83,6 +104,7 @@ public class FightSimulationWindow : EditorWindow
 
         GUILayout.Space(_space);
 
+        // Simulation parameters
         GUILayout.BeginHorizontal();
         GUILayout.BeginVertical();
         GUILayout.Label("City Settings", EditorStyles.boldLabel, GUILayout.MaxWidth(300f));
@@ -101,14 +123,20 @@ public class FightSimulationWindow : EditorWindow
 
         GUILayout.Space(_space);
 
+        // Run button to compute simulation
         if (GUILayout.Button("Compute run"))
         {
             ComputeRun();
         }
+
+        // Draw results
         DoResults();
 
     }
 
+    /// <summary>
+    /// AddSquad method adds a new squad to the simulation
+    /// </summary>
     private void AddSquad()
     {
         SquadSimulator _squad = new SquadSimulator();
@@ -124,6 +152,10 @@ public class FightSimulationWindow : EditorWindow
         squadsList.Add(_squad);
     }
 
+    /// <summary>
+    /// RemoveSquad method removes a Squad from the simulation
+    /// </summary>
+    /// <param name="_squad">Squad to remove</param>
     private void RemoveSquad(SquadSimulator _squad)
     {
         List<SquadSimulator> _list = new List<SquadSimulator>(squadsList);
@@ -135,21 +167,32 @@ public class FightSimulationWindow : EditorWindow
         squadsList = new List<SquadSimulator>(_list);
     }
 
+    /// <summary>
+    /// DoSquad method draws a Squad
+    /// </summary>
+    /// <param name="_squad">SquadSimulator to draw</param>
     private void DoSquad(SquadSimulator _squad)
     {
         EditorGUILayout.BeginHorizontal();
+        // Squad name
         EditorGUILayout.LabelField(_squad.squadName, GUILayout.MaxWidth(277f));
+        // Remove button
         if(GUILayout.Button("-", GUILayout.MaxWidth(20f)))
         {
             RemoveSquad(_squad);
         }
         EditorGUILayout.EndHorizontal();
+
+        // The 4 soldiers
         _squad.soldiers[0].data = EditorGUILayout.ObjectField(_squad.soldiers[0].data, typeof(SoldierData), false, GUILayout.MaxWidth(300f)) as SoldierData;
         _squad.soldiers[1].data = EditorGUILayout.ObjectField(_squad.soldiers[1].data, typeof(SoldierData), false, GUILayout.MaxWidth(300f)) as SoldierData;
         _squad.soldiers[2].data = EditorGUILayout.ObjectField(_squad.soldiers[2].data, typeof(SoldierData), false, GUILayout.MaxWidth(300f)) as SoldierData;
         _squad.soldiers[3].data = EditorGUILayout.ObjectField(_squad.soldiers[3].data, typeof(SoldierData), false, GUILayout.MaxWidth(300f)) as SoldierData;
     }
 
+    /// <summary>
+    /// AddTower method adds a tower to the simulation
+    /// </summary>
     private void AddTower()
     {
         TowerSimulator _tower = new TowerSimulator();
@@ -158,6 +201,10 @@ public class FightSimulationWindow : EditorWindow
         towersList.Add(_tower);
     }
 
+    /// <summary>
+    /// RemoveTower method removes a tower from the simukation
+    /// </summary>
+    /// <param name="_tower">Tower to remove</param>
     private void RemoveTower(TowerSimulator _tower)
     {
         List<TowerSimulator> _list = new List<TowerSimulator>(towersList);
@@ -169,11 +216,18 @@ public class FightSimulationWindow : EditorWindow
         towersList = new List<TowerSimulator>(_list);
     }
 
+    /// <summary>
+    /// DoTower methods draws the tower
+    /// </summary>
+    /// <param name="_tower">Tower to draw</param>
     private void DoTower(TowerSimulator _tower)
     {
         EditorGUILayout.BeginHorizontal();
+        // Tower name
         EditorGUILayout.LabelField(_tower.towerName, GUILayout.MaxWidth(50f));
+        // Tower data selector
         _tower.data = EditorGUILayout.ObjectField(_tower.data, typeof(TowerData), false) as TowerData;
+        // Remove button
         if (GUILayout.Button("-", GUILayout.MaxWidth(20f)))
         {
             RemoveTower(_tower);
@@ -181,8 +235,12 @@ public class FightSimulationWindow : EditorWindow
         EditorGUILayout.EndHorizontal();
     }
 
+    /// <summary>
+    /// DoResults draws the simulation results
+    /// </summary>
     private void DoResults()
     {
+        // if not empty, set the style and print any lines in the results
         if (results.Count > 0)
         {
             scrollPosition = GUILayout.BeginScrollView(scrollPosition, false, true, GUILayout.Width(600));
@@ -211,8 +269,13 @@ public class FightSimulationWindow : EditorWindow
         }
     }
 
+    /// <summary>
+    /// ComputeRun methods computes the results of the simulation
+    /// </summary>
     private void ComputeRun()
     {
+
+        // UI Init and warning
         results.Clear();
         if (squadsList.Count == 0)
         {
@@ -235,6 +298,9 @@ public class FightSimulationWindow : EditorWindow
             }
         }
 
+        // Results computation
+
+        // Data init
         int globalCounter = 0;
         int dayCount = 1;
 
@@ -257,6 +323,7 @@ public class FightSimulationWindow : EditorWindow
         enemyList.Clear();
         SortSoldiers(dayCount);
 
+        // Computation
         while (!allSoldiersDead && !allTowersDestroyed)
         {
             globalCounter++;
@@ -526,6 +593,10 @@ public class FightSimulationWindow : EditorWindow
         }
     }
 
+    /// <summary>
+    /// SortSoldiers methods sorts the soldier with the global sort method chosen
+    /// </summary>
+    /// <param name="_day">Global day parameter to display</param>
     private void SortSoldiers(int _day)
     {
         foreach (SquadSimulator _s in squadsList)
@@ -551,6 +622,9 @@ public class FightSimulationWindow : EditorWindow
     }
 }
 
+/// <summary>
+/// TowerSimulator is a class to simulate a tower
+/// </summary>
 [Serializable]
 public class TowerSimulator
 {
@@ -559,6 +633,9 @@ public class TowerSimulator
     public int towerHP;
 }
 
+/// <summary>
+/// SquadSimulator is a class to simulate a squad
+/// </summary>
 [Serializable]
 public class SquadSimulator
 {
@@ -566,6 +643,9 @@ public class SquadSimulator
     public SoldierSimulator[] soldiers = new SoldierSimulator[4];
 }
 
+/// <summary>
+/// SoldierSimulator is a class to simulate a soldier
+/// </summary>
 [Serializable]
 public class SoldierSimulator
 {
@@ -637,6 +717,9 @@ public class SoldierSimulator
     }
 }
 
+/// <summary>
+/// EnemySimulator is a class to simulate an enemy soldier
+/// </summary>
 [Serializable]
 public class EnemySimulator
 {

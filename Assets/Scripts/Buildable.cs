@@ -1,14 +1,22 @@
-﻿using System.Collections;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using UnityEngine;
 
+/// <summary>
+/// Buildable class is a base class for any Buildable object (object that can be built by soldiers)
+/// </summary>
 public class Buildable : MonoBehaviour
 {
+    // Building state
     protected bool isBuilding = false;
+    // Time after which the Buildable is built
     protected float buildingTime;
+    // Internal counter
     protected float buildingCounter;
+    // Detected builder
     protected SoldierUnit builder;
+    // HealthBar of the buildable
     protected HealthBar healthBar;
+    // Capabilities needed by a soldier to be a builder
     protected SoldierData.Capacities builderCapacity;
 
     public bool IsBuilding
@@ -60,7 +68,7 @@ public class Buildable : MonoBehaviour
     }
 
     /// <summary>
-    /// Hide method is used to hide the TurretBase HealthBar
+    /// Hide method is used to hide the HealthBar
     /// </summary>
     protected virtual void Hide()
     {
@@ -196,6 +204,11 @@ public class Buildable : MonoBehaviour
         return _availableCells;
     }
 
+    /// <summary>
+    /// LoadData method inits the Buildable data
+    /// </summary>
+    /// <param name="_isBuilding">State of the Buildable (bool)</param>
+    /// <param name="_counter">Internal counter of the buildable (float)</param>
     public virtual void LoadData(bool _isBuilding, float _counter)
     {
         isBuilding = _isBuilding;

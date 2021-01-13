@@ -6,8 +6,12 @@ using UnityEngine.AI;
 /// </summary>
 public class EnemySoldier : Enemy
 {
+    // NavAgent of the enemy soldier
     private NavMeshAgent navAgent;
 
+    /// <summary>
+    /// At Start (when spawn), fetches the NavAgent and subscribes to events
+    /// </summary>
     protected override void Start()
     {
         base.Start();
@@ -25,6 +29,9 @@ public class EnemySoldier : Enemy
         PlayManager.OnEndDay += DestroyEnemy;
     }
 
+    /// <summary>
+    /// OnDestroy, unsubscribe from events
+    /// </summary>
     protected override void OnDestroy()
     {
         OnDestruction -= delegate { PlayManager.enemyList.Remove(this); };

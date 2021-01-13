@@ -4,10 +4,13 @@ using UnityEngine;
 using UnityEngine.SceneManagement;
 using UnityEditor;
 
+/// <summary>
+/// GameManager class is the base manager of the game
+/// </summary>
 public class GameManager : Singleton<GameManager>
 {
     /// <summary>
-    /// There are 5 GameStates defined. It is possible know the current GameState and to request a change of GameState
+    /// There are 6 GameStates defined. It is possible know the current GameState and to request a change of GameState
     /// </summary>
     #region GameState
     public enum GameState

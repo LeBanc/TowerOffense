@@ -1,16 +1,24 @@
-﻿using System.Collections;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
 using System.IO;
 using System;
 using System.Linq;
 
+/// <summary>
+/// ContinueButtonInit class setups the availabiliy of the Continue button of the Start menu
+/// It has to be added to the same GameObject as the Button used for "Continue" game
+/// </summary>
 public class ContinueButtonInit : MonoBehaviour
 {
+    // Continue button
     private Button continueButton;
+    // private Dictionary to store file data
     private Dictionary<DataSave.FileData, string> fileDico = new Dictionary<DataSave.FileData, string>();
 
+    /// <summary>
+    /// At Awake, fetches the Button and subscribe to event (for init when changing to Start GameState)
+    /// </summary>
     private void Awake()
     {
         continueButton = GetComponent<Button>();
@@ -20,6 +28,9 @@ public class ContinueButtonInit : MonoBehaviour
         GameManager.OnPlayToStart += InitContinueButton;
     }
 
+    /// <summary>
+    /// OnDestroy, unsubscribe to events
+    /// </summary>
     private void OnDestroy()
     {
         if (continueButton != null) continueButton.onClick.RemoveAllListeners();
@@ -28,6 +39,9 @@ public class ContinueButtonInit : MonoBehaviour
         GameManager.OnPlayToStart -= InitContinueButton;
     }
 
+    /// <summary>
+    /// InitContinueButton method searches for the last file save and, if one is found, set the click Action of the Continue button to a Load method
+    /// </summary>
     private void InitContinueButton()
     {
         // Clear dictionnary

@@ -6,9 +6,11 @@ using System.Xml.Serialization;
 /// </summary>
 public class SquadSave
 {
+    // ID of the squad
     [XmlAttribute("ID")]
     public int iD;
 
+    // Color of the squad (R, G and B values)
     [XmlAttribute("ColorR")]
     public float colorR;
     [XmlAttribute("ColorG")]
@@ -16,9 +18,11 @@ public class SquadSave
     [XmlAttribute("ColorB")]
     public float colorB;
 
+    // Path of the squad type
     [XmlAttribute("Type")]
     public string squadTypePath;
 
+    // Soldiers ID
     [XmlAttribute("Soldier1ID")]
     public int soldier1;
     [XmlAttribute("Soldier2ID")]
@@ -28,12 +32,15 @@ public class SquadSave
     [XmlAttribute("Soldier4ID")]
     public int soldier4;
 
+    // Prefered range computation
     [XmlAttribute("Range")]
     public Squad.PreferedRange range;
 
+    // Manual preferred range
     [XmlAttribute("PosChoice")]
     public Squad.PositionChoice posChoice;
 
+    // Engage state
     [XmlAttribute("Engage")]
     public bool isEngaged;
 

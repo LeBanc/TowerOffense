@@ -1,13 +1,19 @@
-﻿using System.Collections;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using UnityEngine;
 
+/// <summary>
+/// Explosives class is a Buildable for explosives
+/// </summary>
 public class Explosives : Buildable
 {
+    // Delay before explosion
     private float explosionTime = 5f;
+    // Counter for time between building and explosion
     private float explosionCounter;
 
+    // Target od the explosives
     private Tower target;
+    // Damages of the explosives
     private int explosiveDamages = 50;
 
     /// <summary>

@@ -2,7 +2,7 @@
 using UnityEngine.UI;
 
 /// <summary>
-/// ErrorMessageCanvas is the class managing the Error meassage Canvas
+/// ErrorMessageCanvas is the class managing the Error message Canvas
 /// </summary>
 public class ErrorMessageCanvas : MonoBehaviour
 {
@@ -41,7 +41,7 @@ public class ErrorMessageCanvas : MonoBehaviour
     }
 
     /// <summary>
-    /// Show method display the Error Canvas on screen with message and optional sprite
+    /// Show method display the Error Message Canvas on screen with message and optional sprite
     /// </summary>
     /// <param name="_message">Error message to display</param>
     /// <param name="_sprite">Error sprite to display (optional)</param>
@@ -63,7 +63,7 @@ public class ErrorMessageCanvas : MonoBehaviour
     }
 
     /// <summary>
-    /// Hide method hides the Error Canvas
+    /// Hide method hides the Error Message Canvas
     /// </summary>
     public void Hide()
     {

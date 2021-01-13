@@ -1,6 +1,5 @@
 ﻿using System.Collections.Generic;
 using UnityEngine;
-using UnityEngine.EventSystems;
 using UnityEngine.UI;
 
 /// <summary>
@@ -320,23 +319,33 @@ public class SoldierUpgradeCanvas : MonoBehaviour
         GetCapacities(selectedSoldier);
     }
 
+    /// <summary>
+    /// ChangeNameButtonSelection method selects the "ChangeName" button
+    /// </summary>
     private void ChangeNameButtonSelection()
     {
         changeNameButton.Select();
     }
 
+    /// <summary>
+    /// ChangeImageButtonSelection method selects the "ChangeImage" button
+    /// </summary>
     private void ChangeImageButtonSelection()
     {
         changeImageButton.Select();
     }
 
+    /// <summary>
+    /// LevelUpButtonSelection method selects the "LevelUp" button
+    /// </summary>
     private void LevelUpButtonSelection()
     {
+        // If LevelUp button is interactable, selects it
         if(levelupButton.interactable)
         {
             levelupButton.Select();
         }
-        else
+        else // else, selects the ChangeName button
         {
             changeNameButton.Select();
         }

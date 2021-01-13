@@ -1,6 +1,9 @@
 ﻿using UnityEngine;
 using UnityEngine.UI;
 
+/// <summary>
+/// SavePromptNameCanvas defines the Canvas prompted when asking a Save File Name
+/// </summary>
 public class SavePromptNameCanvas : MonoBehaviour
 {
     // public UI elements
@@ -32,6 +35,9 @@ public class SavePromptNameCanvas : MonoBehaviour
         Hide();
     }
 
+    /// <summary>
+    /// Show method inits and displays the SavePromptNameCanvas
+    /// </summary>
     public void Show()
     {
         inputField.text = "New Save Name";

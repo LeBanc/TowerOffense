@@ -294,22 +294,26 @@ public class Tower : Enemy
     /// </summary>
     public void SpawnSoldier()
     {
+        // Get all the available cells around the tower
         List<Vector3> _cells = new List<Vector3>();
         _cells.AddRange(shortRangeCells);
         _cells.AddRange(middleRangeCells);
         _cells.AddRange(longRangeCells);
 
+        // Remove a cell from the list if a squad unit is on it or go at it
         foreach(SquadUnit _squad in PlayManager.squadUnitList)
         {
             _cells.Remove(GridAdjustment.GetGridCoordinates(_squad.transform.position));
             _cells.Remove(GridAdjustment.GetGridCoordinates(_squad.Destination));
         }
 
+        // Remove a cell from the list if there is already a soldier on it
         foreach(EnemySoldier _enemy in PlayManager.enemyList)
         {
             _cells.Remove(GridAdjustment.GetGridCoordinates(_enemy.transform.position));
         }
 
+        // If the list is not empty, get the first cell and spawn a new soldier at it
         if(_cells.Count > 0)
         {
             GameObject _soldierInstance = Instantiate(enemySoldier, _cells[0], Quaternion.identity);

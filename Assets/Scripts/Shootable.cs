@@ -52,6 +52,9 @@ public class Shootable : MonoBehaviour
         if (hitList.Count <= 0) hitList.Add(transform);
     }
 
+    /// <summary>
+    /// OnDestroy, remove the health bar
+    /// </summary>
     protected virtual void OnDestroy()
     {
         if (healthBar != null)
@@ -62,6 +65,10 @@ public class Shootable : MonoBehaviour
     }
 
     #region HealthBar
+    /// <summary>
+    /// SetupHealthBar method adds a health bar above the Shootable
+    /// </summary>
+    /// <param name="_length">Length of the health bar (float)</param>
     protected virtual void SetupHealthBar(float _length = 0f)
     {
         if (_length == 0)

@@ -276,6 +276,10 @@ public class HQLevelUpItem : Button
         }
     }
 
+    /// <summary>
+    /// OnSelect override call the onClick event when the object is selected (for keyboard navigation)
+    /// </summary>
+    /// <param name="eventData"></param>
     public override void OnSelect(BaseEventData eventData)
     {
         base.OnSelect(eventData);

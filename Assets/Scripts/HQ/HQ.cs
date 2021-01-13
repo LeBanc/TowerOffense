@@ -1,11 +1,11 @@
-﻿using System.Runtime.CompilerServices;
-using UnityEngine;
+﻿using UnityEngine;
 
 /// <summary>
 /// HQ class manages the in game HQ
 /// </summary>
 public class HQ : MonoBehaviour
 {
+    // Prefab of an HQCandidate
     public GameObject hqCandidate;
     private static GameObject hqCandidateInstance;
 
@@ -230,6 +230,10 @@ public class HQ : MonoBehaviour
         healDelayCounter = 0f;
     }
 
+    /// <summary>
+    /// InstantiateHQCandidate method instantiates an HQCandidate building at the given position
+    /// </summary>
+    /// <param name="_position">Position where to create the HQQCandidate (Vector3)</param>
     public static void InstantiateHQCandidate(Vector3 _position)
     {
         GameObject _candidate = Instantiate(hqCandidateInstance, _position, Quaternion.identity, GameObject.Find("HQCandidates").transform);

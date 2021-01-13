@@ -1,9 +1,11 @@
-﻿using System.Collections;
-using System.Collections.Generic;
-using UnityEngine;
+﻿using UnityEngine;
 
+/// <summary>
+/// TurretBase class is a Buildable for Turret bases
+/// </summary>
 public class TurretBase : Buildable
 {
+    // Prefab of a turret base
     public GameObject turretPrefab;
 
     /// <summary>

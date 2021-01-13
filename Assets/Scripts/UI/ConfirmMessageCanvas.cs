@@ -1,9 +1,10 @@
-﻿using System.Collections;
-using System.Collections.Generic;
-using UnityEngine;
+﻿using UnityEngine;
 using UnityEngine.UI;
 using System;
 
+/// <summary>
+/// ConfirmMessageCanvas is the class managing the Confirm message Canvas
+/// </summary>
 public class ConfirmMessageCanvas : MonoBehaviour
 {
     // Public elements of the Canvas
@@ -24,7 +25,7 @@ public class ConfirmMessageCanvas : MonoBehaviour
     }
 
     /// <summary>
-    /// On Awake, find the Canvas, suscribe to events and hide the error message
+    /// On Awake, find the Canvas, suscribe to events and hide the confirm message
     /// </summary>
     private void Awake()
     {
@@ -43,7 +44,7 @@ public class ConfirmMessageCanvas : MonoBehaviour
     }
 
     /// <summary>
-    /// Show method display the Error Canvas on screen with message and optional sprite
+    /// Show method display the Confirm Message Canvas on screen with message and optional sprite
     /// </summary>
     /// <param name="_message">Error message to display</param>
     /// <param name="_callback">Callback method to call when clicking OK</param>
@@ -69,7 +70,7 @@ public class ConfirmMessageCanvas : MonoBehaviour
     }
 
     /// <summary>
-    /// Hide method hides the Error Canvas
+    /// Hide method hides the Confirm Message Canvas
     /// </summary>
     public void Hide()
     {

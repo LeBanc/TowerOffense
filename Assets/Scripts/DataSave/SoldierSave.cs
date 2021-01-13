@@ -6,16 +6,25 @@ using System.Xml.Serialization;
 /// </summary>
 public class SoldierSave
 {
+    // Soldier's ID
     [XmlAttribute("ID")]
     public int iD;
+
+    // Soldier's name
     [XmlAttribute("name")]
     public string soldierName;
+
+    // Current HP
     [XmlAttribute("HP")]
+    // Current XP
     public int currentHP;
     [XmlAttribute("XP")]
     public int currentXP;
+
+    // Path of the soldier's avatar
     [XmlAttribute("image")]
     public string imagePath;
+    // Path of the soldier's type
     [XmlAttribute("data")]
     public string dataPath;
 

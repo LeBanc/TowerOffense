@@ -403,6 +403,9 @@ public class HQSquadEdition : MonoBehaviour
         squadRangeSelection.onValueChanged.RemoveAllListeners();
     }
 
+    /// <summary>
+    /// SelectLastButton method select the last selected button of the canvas
+    /// </summary>
     private void SelectLastButton()
     {
         if(lastSelectedButton != null)

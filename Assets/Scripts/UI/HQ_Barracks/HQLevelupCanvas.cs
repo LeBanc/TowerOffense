@@ -1,5 +1,8 @@
 ﻿using UnityEngine;
 
+/// <summary>
+/// HQLevelupCanvas class manages the Level Up Canvas
+/// </summary>
 public class HQLevelupCanvas : MonoBehaviour
 {
     // public UI elements
@@ -126,5 +129,4 @@ public class HQLevelupCanvas : MonoBehaviour
         levelupItem2.selectedBackground.enabled = false;
         levelupItem3.selectedBackground.enabled = true;
     }
-
 }

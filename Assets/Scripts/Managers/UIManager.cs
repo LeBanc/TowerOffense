@@ -1,10 +1,11 @@
 ﻿using System;
-using System.Collections;
-using UnityEditor;
 using UnityEngine;
 using UnityEngine.UI;
 using UnityEngine.EventSystems;
 
+/// <summary>
+/// UIManager is the manager of the UI
+/// </summary>
 public class UIManager : Singleton<UIManager>
 {
     // Public Canvas, one for each GameManager GameState
@@ -143,7 +144,7 @@ public class UIManager : Singleton<UIManager>
         loadMenu.gameObject.SetActive(true);
         saveMenu.gameObject.SetActive(true);
 
-    HideStartMenu();
+        HideStartMenu();
         HideLoadingUI();
         HidePlayUI();
         HidePauseMenu();
@@ -248,6 +249,7 @@ public class UIManager : Singleton<UIManager>
     /// </summary>
     public void ShowLoadMenu()
     {
+        // Save the last selected object on the previous canvas
         if(EventSystem.current.currentSelectedGameObject != null)
         {
             if (startMenu.enabled) startMenuLastSelected = EventSystem.current.currentSelectedGameObject.GetComponent<Selectable>();
@@ -264,6 +266,8 @@ public class UIManager : Singleton<UIManager>
     public void HideLoadMenu()
     {
         loadMenu.enabled = false;
+
+        // Select the last selected object from the previous canvas
         if (pauseMenu.enabled && pauseMenuLastSelected != null) pauseMenuLastSelected.Select();
         if (startMenu.enabled && startMenuLastSelected != null) startMenuLastSelected.Select();
     }
@@ -273,6 +277,7 @@ public class UIManager : Singleton<UIManager>
     /// </summary>
     public void ShowSaveMenu()
     {
+        // Save the last selected object on the previous canvas
         if (EventSystem.current.currentSelectedGameObject != null)
         {
             if (pauseMenu.enabled) pauseMenuLastSelected = EventSystem.current.currentSelectedGameObject.GetComponent<Selectable>();
@@ -287,13 +292,21 @@ public class UIManager : Singleton<UIManager>
     public void HideSaveMenu()
     {
         saveMenu.enabled = false;
+        // Select the last selected object from the previous canvas
         if (pauseMenu.enabled && pauseMenuLastSelected != null) pauseMenuLastSelected.Select();
     }
     #endregion
 
     #region Message Canvas
+    /// <summary>
+    /// InitConfirmMessage method displays the ConfirmMessage window with chosen parameters
+    /// </summary>
+    /// <param name="_message">Message to display (string)</param>
+    /// <param name="_callback">Callback when validating the message - OK button (Action)</param>
+    /// <param name="_sprite">(optionnal) Image to display (Sprite)</param>
     public static void InitConfirmMessage(string _message, Action _callback, Sprite _sprite = null)
     {
+        // Save the last selected object on the previous canvas
         if (EventSystem.current.currentSelectedGameObject != null)
         {
             if (Instance.loadMenu.enabled)
@@ -315,14 +328,20 @@ public class UIManager : Singleton<UIManager>
             else if (Instance.playUI.enabled) Instance.playUILastSelected = EventSystem.current.currentSelectedGameObject.GetComponent<Selectable>();
         }            
 
+        // Init the confirm message window
         Instance.confirmMessage.Show(_message, _callback, _sprite);
     }
 
+    /// <summary>
+    /// HideConfirmMessage method hides the confirm message window
+    /// </summary>
     public static void HideConfirmMessage()
     {
+        // Hide the window/canvas
         Instance.confirmMessage.Hide();
 
-        if(Instance.saveMenu.enabled && Instance.saveMenuLastSelected != null)
+        // Select the last selected object from the previous canvas
+        if (Instance.saveMenu.enabled && Instance.saveMenuLastSelected != null)
         {
             Instance.saveMenuLastSelected.Select();
         }
@@ -344,8 +363,14 @@ public class UIManager : Singleton<UIManager>
         }
     }
 
+    /// <summary>
+    /// InitErrorMessage method init and shows an error message window
+    /// </summary>
+    /// <param name="_message">Message to display (string)</param>
+    /// <param name="_sprite">Image to display (Sprite)</param>
     public static void InitErrorMessage(string _message, Sprite _sprite = null)
     {
+        // Save the last selected object on the previous canvas
         if (EventSystem.current.currentSelectedGameObject != null)
         {
             if (Instance.loadMenu.enabled)
@@ -367,13 +392,19 @@ public class UIManager : Singleton<UIManager>
             else if (Instance.playUI.enabled) Instance.playUILastSelected = EventSystem.current.currentSelectedGameObject.GetComponent<Selectable>();
         }            
 
+        // Display the error message
         Instance.errorMessage.Show(_message, _sprite);
     }
 
+    /// <summary>
+    /// HideErrorMessage method hides the error message window
+    /// </summary>
     public static void HideErrorMessage()
     {
+        // Hide the canvas
         Instance.errorMessage.Hide();
 
+        // Select the last selected object from the previous canvas
         if (Instance.saveMenu.enabled && Instance.saveMenuLastSelected != null)
         {
             Instance.saveMenuLastSelected.Select();
@@ -398,17 +429,26 @@ public class UIManager : Singleton<UIManager>
     #endregion
 
     #region Pause Menu Quit actions
+    /// <summary>
+    /// ResumeGame method is used to go back to play mode state from a button on Pause menu
+    /// </summary>
     public void ResumeGame()
     {
         GameManager.ChangeGameStateRequest(GameManager.GameState.play);
         if (playUILastSelected != null) playUILastSelected.Select();
     }
-    
+
+    /// <summary>
+    /// QuitToStartMenu method is used to go back to start menu from a button on Pause menu
+    /// </summary>
     public void QuitToStartMenu()
     {
         InitConfirmMessage("All data not saved will be loss, are you sure you want to go back to the main menu?", delegate { GameManager.ChangeGameStateRequest(GameManager.GameState.start); });
     }
 
+    /// <summary>
+    /// QuitGame method is used to quit the game from a button on Pause menu
+    /// </summary>
     public void QuitGame()
     {
         InitConfirmMessage("All data not saved will be loss, are you sure you want to quit to desktop?", delegate { GameManager.QuitGameStatic(); });
@@ -416,12 +456,13 @@ public class UIManager : Singleton<UIManager>
 
     #endregion
 
-    /// <summary>
-    /// Actions on each Canvas to switch from a GameState to another
-    /// </summary>
     #region Canvas Actions
+    /// <summary>
+    /// StartMenu method is call at Update when in Start gamestate
+    /// </summary>
     void StartMenu()
     {
+        // On Start menu, Esc. key is used to hide any window (confirm, error, load, save) or to quit the game
         if (Input.GetKeyDown(KeyCode.Escape))
         {
             if (confirmMessage.IsShown)
@@ -447,8 +488,12 @@ public class UIManager : Singleton<UIManager>
         }
     }
 
+    /// <summary>
+    /// PauseMenu method is call at Update when in Pause gamestate
+    /// </summary>
     void PauseMenu()
     {
+        // On Pause menu, Esc. key is used to hide any window (confirm, error, load, save) or to return to play mode
         if (Input.GetKeyDown(KeyCode.Escape))
         {
             if(confirmMessage.IsShown)
@@ -475,8 +520,12 @@ public class UIManager : Singleton<UIManager>
         }
     }
 
+    /// <summary>
+    /// PlayUI method is call at Update when in Play gamestate
+    /// </summary>
     void PlayUI()
     {
+        // On Plau UI, Esc. key is used to hide any window (confirm, error) or to go to pause Menu (via pause gamestate)
         if (Input.GetKeyDown(KeyCode.Escape))
         {
             if(confirmMessage.IsShown)
@@ -495,11 +544,17 @@ public class UIManager : Singleton<UIManager>
         }            
     }
 
+    /// <summary>
+    /// LoadingUI method is call at Update when in Load gamestate
+    /// </summary>
     void LoadingUI()
     {
         
     }
 
+    /// <summary>
+    /// SavingUI method is call at Update when in Save gamestate
+    /// </summary>
     void SavingUI()
     {
         

@@ -69,17 +69,18 @@ public class SoldierSelectionItem : Button
         }        
     }
 
-    public override void OnSelect(BaseEventData eventData)
-    {
-        base.OnSelect(eventData);
-    }
-
+    /// <summary>
+    /// Select override is used to enables the selected image (border)
+    /// </summary>
     public override void Select()
     {
         base.Select();
         selectedImage.enabled = true;
     }
 
+    /// <summary>
+    /// Unselect method hides the item border
+    /// </summary>
     public void Unselect()
     {
         selectedImage.enabled = false;

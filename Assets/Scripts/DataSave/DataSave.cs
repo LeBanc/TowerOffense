@@ -11,41 +11,54 @@ using System;
 [XmlRoot("DataSave")]
 public class DataSave
 {
+
+    // Save file data (name & time)
     [XmlElement("SaveName")]
     public string saveName;
     [XmlElement("Date")]
     public DateTime date;
 
+    // Global HQ data
     [XmlElement("Coins")]
     public int coins;
     [XmlElement("Day")]
     public int day;
+
+    // Facilities data
     [XmlElement("Infirmary")]
     public int infirmary;
     [XmlElement("Radio")]
     public int radio;
 
+    // HQ save data
     [XmlElement("HQ")]
     public HQSave hqSave;
 
+    // Squads save data
     [XmlArray("Squads"), XmlArrayItem("SquadSave")]
     public List<SquadSave> squadList = new List<SquadSave>();
 
+    // Soldiers save data
     [XmlArray("Soldiers"), XmlArrayItem("SoldierSave")]
     public List<SoldierSave> soldierList = new List<SoldierSave>();
 
+    // Towers save data
     [XmlArray("Towers"), XmlArrayItem("TowerSave")]
     public List<TowerSave> towerList = new List<TowerSave>();
 
+    // Turrets save data
     [XmlArray("Turrets"), XmlArrayItem("TurretSave")]
     public List<TurretSave> turretList = new List<TurretSave>();
 
+    // Turret bases save data
     [XmlArray("TurretBases"), XmlArrayItem("TurretBaseSave")]
     public List<TurretBaseSave> turretBaseList = new List<TurretBaseSave>();
 
+    // HQ Candidates save data
     [XmlArray("HQCandidates"), XmlArrayItem("HQCandidateSave")]
     public List<HQCandidateSave> hqCandidateList = new List<HQCandidateSave>();
 
+    // Buildings save data
     [XmlArray("Buildings"), XmlArrayItem("BuildingSave")]
     public List<BuildingSave> buildingList = new List<BuildingSave>();
 
@@ -58,13 +71,16 @@ public class DataSave
     }
 
     /// <summary>
-    /// Save method creates a new DataSave from game data
+    /// Save method inits the DataSave with the input name and the current game data
     /// </summary>
+    /// <param name="_saveName">Name (string) of the save file</param>
     private void Save(string _saveName)
     {
+        // Save Name & Time
         saveName = _saveName;
         date = DateTime.Now;
 
+        // Save single data
         coins = PlayManager.coins;
         day = PlayManager.day;
         infirmary = PlayManager.infirmaryLevel;
@@ -72,6 +88,7 @@ public class DataSave
 
         hqSave = new HQSave(PlayManager.hq);
 
+        // Save list data
         foreach (Squad _squad in PlayManager.squadList)
         {
             squadList.Add(new SquadSave(_squad));
@@ -107,6 +124,7 @@ public class DataSave
             buildingList.Add(new BuildingSave(_building));
         }
     }
+
     /// <summary>
     /// SaveGame method creates a savefile with the _saveName parameter name
     /// </summary>
@@ -151,7 +169,6 @@ public class DataSave
     /// <summary>
     /// LoadAutoSavedGame method creates a DataSave from the AutoSave.xml file
     /// </summary>
-    /// <returns>DataSave with all game data</returns>
     public static void LoadAutoSavedGame()
     {
         LoadSavedGame("AutoSave.save");
@@ -161,15 +178,16 @@ public class DataSave
     /// LoadSavedGame method creates a DataSave from the chosen file and loads it into the PlayManager
     /// </summary>
     /// <param name="_fileName">Save file to load the data from</param>
-    /// <returns>DataSave with all game data</returns>
     public static void LoadSavedGame(string _fileName)
     {
+        // Check if file exists
         if(File.Exists(Path.Combine(Application.persistentDataPath, _fileName)))
         {
+            // DeSerialize the file into data and load them in the game
             var serializer = new XmlSerializer(typeof(DataSave));
             using (var stream = new FileStream(Path.Combine(Application.persistentDataPath, _fileName), FileMode.Open))
             {
-                LoadSavedGame(serializer.Deserialize(stream) as DataSave);
+                LoadData(serializer.Deserialize(stream) as DataSave);
             }
         }
         else
@@ -185,8 +203,10 @@ public class DataSave
     /// <returns>FileData struct with usable file data if the file exists, ("",DateTime.MinValue,0) otherwise</returns>
     public static FileData GetFileData(string _fileName)
     {
+        // Checks if file exists
         if (File.Exists(Path.Combine(Application.persistentDataPath, _fileName)))
         {
+            // If it exists, returns a FileData from the file data
             var serializer = new XmlSerializer(typeof(DataSave));
             using (var stream = new FileStream(Path.Combine(Application.persistentDataPath, _fileName), FileMode.Open))
             {
@@ -197,6 +217,7 @@ public class DataSave
         }
         else
         {
+            // If it doesn't exist, return an empty FileData
             Debug.LogError("[DataSave] The SaveFile doesn't exists!");
             FileData _fileData = new FileData("", DateTime.MinValue, 0);
             return _fileData;
@@ -215,11 +236,20 @@ public class DataSave
             Day = dayCount;
         }
 
+        // Name of the save file
         public string SaveName { get; }
+        // Date & Time of the save file
         public DateTime Date { get; }
+        // Days (game data) past
         public int Day { get; }
     }
 
+    /// <summary>
+    /// SortByDate method is used to sort FileData by their date/time
+    /// </summary>
+    /// <param name="x">First FileData to compare</param>
+    /// <param name="y">Second FileData to compare</param>
+    /// <returns>-1 if x<y, 0 if x==y and 1 if x>y</returns>
     public static int SortByDate(FileData x, FileData y)
     {
         if (x.Date == DateTime.MinValue)
@@ -236,7 +266,7 @@ public class DataSave
     /// LoadSavedGame method loads a DataSave into the PlayManager
     /// </summary>
     /// <param name="_save">DataSave to load</param>
-    public static void LoadSavedGame(DataSave _save)
+    public static void LoadData(DataSave _save)
     {
         // Global data
         PlayManager.coins = _save.coins;

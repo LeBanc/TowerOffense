@@ -205,7 +205,7 @@ public class PlayManager : Singleton<PlayManager>
     }
 
     /// <summary>
-    /// LoadFromEmptyScene loads the light from the scene
+    /// LoadFromEmptyScene loads the data from an empty scene
     /// </summary>
     public static void LoadFromEmptyScene()
     {
@@ -234,7 +234,7 @@ public class PlayManager : Singleton<PlayManager>
     }
 
     /// <summary>
-    /// LoadFromScene method gets all the data needed by the PlayManager from scene
+    /// LoadFromScene method gets all the data needed by the PlayManager from the scene (loaded or created scene for new game)
     /// The method is part loading from scene, part creating default elements
     /// </summary>
     public static void LoadFromScene()
@@ -436,6 +436,9 @@ public class PlayManager : Singleton<PlayManager>
         StartCoroutine(AutoSaveSequence());
     }
 
+    /// <summary>
+    /// AutoSaveSequence is a coroutine to make an autosave and display the save status
+    /// </summary>
     IEnumerator AutoSaveSequence()
     {
         float startTime = Time.time;

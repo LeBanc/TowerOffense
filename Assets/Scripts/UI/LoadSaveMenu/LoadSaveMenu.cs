@@ -5,17 +5,26 @@ using System.IO;
 using System.Linq;
 using UnityEngine;
 
+/// <summary>
+/// LoadSaveMenu class defines the methods of the Load and Save menus
+/// </summary>
 public class LoadSaveMenu : MonoBehaviour
 {
+    // UI element
     public AutoScroll autoScroll;
-    public GameObject savefileitemPrefab;
-
     public GameObject newsavePrefab;
     public SavePromptNameCanvas promptNameCanvas;
 
+    // Prefab for SaveFileItem
+    public GameObject savefileitemPrefab;
+        
+    // Events
     private Dictionary<DataSave.FileData, string> fileDico = new Dictionary<DataSave.FileData, string>();
     private SaveFileItem selectedSaveFile;
 
+    /// <summary>
+    /// SetupLoadMenu method setups and shows the Load menu
+    /// </summary>
     public void SetupLoadMenu()
     {
         // Clear dictionnary
@@ -53,6 +62,9 @@ public class LoadSaveMenu : MonoBehaviour
         autoScroll.SelectFirtsItem();
     }
 
+    /// <summary>
+    /// SetupSaveMenu method setups and shows the Save menu
+    /// </summary>
     public void SetupSaveMenu()
     {
         // Hide Prompt Name Canvas
@@ -101,6 +113,10 @@ public class LoadSaveMenu : MonoBehaviour
         autoScroll.SelectFirtsItem();
     }
 
+    /// <summary>
+    /// SelectItem method set the input item as the selected one
+    /// </summary>
+    /// <param name="_sfi">Item to select (SaveFileItem)</param>
     private void SelectItem(SaveFileItem _sfi)
     {
         // If same selected item, return
@@ -111,12 +127,18 @@ public class LoadSaveMenu : MonoBehaviour
         selectedSaveFile = _sfi;
     }
 
+    /// <summary>
+    /// UnselectItems method unselects the selected item
+    /// </summary>
     private void UnselectItems()
     {
         if (selectedSaveFile != null) selectedSaveFile.Unselect();
         selectedSaveFile = null;
     }
 
+    /// <summary>
+    /// LoadFile method loads the save file of the selected item
+    /// </summary>
     public void LoadFile()
     {
         if (selectedSaveFile != null)
@@ -125,6 +147,9 @@ public class LoadSaveMenu : MonoBehaviour
         }
     }
 
+    /// <summary>
+    /// PromptNewFileName method shows the Prompt Name Canvas to enter a file name
+    /// </summary>
     public void PromptNewFileName()
     {
         if (promptNameCanvas != null)
@@ -134,6 +159,10 @@ public class LoadSaveMenu : MonoBehaviour
         }
     }
 
+    /// <summary>
+    /// CreateNewSaveFile method creates a save file
+    /// </summary>
+    /// <param name="_saveName">Name of the save file (string)</param>
     public void CreateNewSaveFile(string _saveName)
     {
         // Check for existing file
@@ -142,30 +171,37 @@ public class LoadSaveMenu : MonoBehaviour
             // If exist => overwrite message with Save on confirm
             UIManager.InitConfirmMessage("The file already exists, are you sure you want to overwrite it?", delegate {
                 StartCoroutine(SaveGame(_saveName));
-                //GameManager.ChangeGameStateRequest(GameManager.GameState.save);
-                //new DataSave().SaveGame(_saveName);                
             });
         }
         else
         {
             // Else Save
             StartCoroutine(SaveGame(_saveName));
-            //new DataSave().SaveGame(_saveName);
         }
     }
 
+    /// <summary>
+    /// SaveGame coroutine is the save sequence
+    /// </summary>
+    /// <param name="_saveName">File name (string)</param>
+    /// <returns></returns>
     IEnumerator SaveGame(string _saveName)
     {
         float startTime = Time.time;
+        // Change the GameState to display the save animation
         GameManager.ChangeGameStateRequest(GameManager.GameState.save);
         new DataSave().SaveGame(_saveName);
         while(Time.time < startTime +1f)
         {
             yield return null;
         }
+        // Return to the Pause GameState
         GameManager.ChangeGameStateRequest(GameManager.GameState.pause);
     }
 
+    /// <summary>
+    /// SaveFile method is called by the "Save" button
+    /// </summary>
     public void SaveFile()
     {
         // Overwrite message with Save on confirm
@@ -179,6 +215,9 @@ public class LoadSaveMenu : MonoBehaviour
         }
     }
     
+    /// <summary>
+    /// DeleteFile method is called by the "Delete" button
+    /// </summary>
     public void DeleteFile()
     {
         // Do nothing if no save file is selected

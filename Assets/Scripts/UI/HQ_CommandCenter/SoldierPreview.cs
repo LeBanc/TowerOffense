@@ -38,12 +38,18 @@ public class SoldierPreview : MonoBehaviour
     // Private element: Soldier displayed in this SoldierPreview
     private Soldier soldier;
 
+    /// <summary>
+    /// On Start, subscribe to events
+    /// </summary>
     private void Start()
     {
         PlayManager.OnEndDay += UpdateHPBarValue;
         PlayManager.OnEndDay += UpdateXPBarValue;
     }
 
+    /// <summary>
+    /// OnDestroy, unsubscribe from events
+    /// </summary>
     private void OnDestroy()
     {
         PlayManager.OnEndDay -= UpdateHPBarValue;
@@ -250,11 +256,17 @@ public class SoldierPreview : MonoBehaviour
         }
     }
 
+    /// <summary>
+    /// UpdateHPBarValue method updates the value of the HealthBar
+    /// </summary>
     private void UpdateHPBarValue()
     {
         if(soldier!=null) healthBar.UpdateValue(soldier.CurrentHP, soldier.MaxHP);
     }
 
+    /// <summary>
+    /// UpdateXPBarValue method updates the value of the ExperienceBar
+    /// </summary>
     private void UpdateXPBarValue()
     {
         if (soldier != null) experienceBar.UpdateValue(Mathf.Min(soldier.CurrentXP, soldier.MaxXP), soldier.MaxXP);

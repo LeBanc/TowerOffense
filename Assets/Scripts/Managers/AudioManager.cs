@@ -1,5 +1,8 @@
 ﻿using UnityEngine;
 
+/// <summary>
+/// AudioManager class manages the Audio/Sound of the game
+/// </summary>
 public class AudioManager : Singleton<AudioManager>
 {
 
