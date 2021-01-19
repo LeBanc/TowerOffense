@@ -1,14 +1,14 @@
 ﻿using UnityEngine;
 using UnityEngine.UI;
-using UnityEngine.EventSystems;
 
 /// <summary>
 /// SoldierListItem class is linked to the prefab SoldierListItem and is used to display an overview of a soldier in the barracks'list
+/// SoldierListItem requires the GameObject to have a SelectedButton component
 /// </summary>
-public class SoldierListItem : Button
+[RequireComponent(typeof(SelectedButton))]
+public class SoldierListItem : MonoBehaviour
 {
     // public UI elements
-    public Image selected;
     public SoldierImage soldierImage;
     public Text gradeText;
     public Text nameText;
@@ -17,6 +17,9 @@ public class SoldierListItem : Button
     public Image levelUpImage;
     public Image squadImage;
     public Text squadText;
+
+    // private UI mandatory element
+    private SelectedButton button;
 
     // private displayed soldier
     private Soldier soldier;
@@ -32,18 +35,21 @@ public class SoldierListItem : Button
     }
 
     /// <summary>
-    /// On Start, unselect the item
+    /// On Start, fetch the SelectedButton, subscribe to event and unselect the item
     /// </summary>
-    protected override void Awake()
+    private void Awake()
     {
-        base.Awake();
-        Unselect();
-    }
+        button = GetComponent<SelectedButton>();
+        if (button != null)
+        {
+            button.OnSelection += Select;
+        }
+        else
+        {
+            Debug.LogError("[SoldierListItem] SelectedButton component not found!");
+        }
 
-    public override void OnSelect(BaseEventData eventData)
-    {
-        base.OnSelect(eventData);
-        Select();
+        Unselect();
     }
 
     /// <summary>
@@ -87,7 +93,7 @@ public class SoldierListItem : Button
     /// <summary>
     /// OnDestroy, unsubscribes from events
     /// </summary>
-    protected override void OnDestroy()
+    void OnDestroy()
     {
         if(soldier != null)
         {
@@ -96,16 +102,16 @@ public class SoldierListItem : Button
             soldier.OnImageChange -= UpdateImage;
             soldier.OnDataChange -= UpdateData;
         }
-        base.OnDestroy();
+
+        if(button != null) button.OnSelection -= Select;
+        OnSelection = null;
     }
 
     /// <summary>
     /// Select method is used to display the item as selected
     /// </summary>
-    public override void Select()
+    public void Select()
     {
-        base.Select();
-        selected.enabled = true;
         OnSelection?.Invoke(soldier);
     }
 
@@ -114,7 +120,7 @@ public class SoldierListItem : Button
     /// </summary>
     public void Unselect()
     {
-        selected.enabled = false;
+        if(button != null) button.Unselect();
     }
 
     /// <summary>

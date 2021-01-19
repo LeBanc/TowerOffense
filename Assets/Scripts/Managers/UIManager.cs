@@ -9,13 +9,13 @@ using UnityEngine.EventSystems;
 public class UIManager : Singleton<UIManager>
 {
     // Public Canvas, one for each GameManager GameState
-    public Canvas startMenu;
-    public Canvas pauseMenu;
-    public Canvas loadingUI;
-    public Canvas savingUI;
-    public Canvas playUI;
-    public Canvas loadMenu;
-    public Canvas saveMenu;
+    public UICanvas startMenu;
+    public UICanvas pauseMenu;
+    public UICanvas loadingUI;
+    public UICanvas savingUI;
+    public UICanvas playUI;
+    public UICanvas loadMenu;
+    public UICanvas saveMenu;
     public ConfirmMessageCanvas confirmMessage;
     public ErrorMessageCanvas errorMessage;
 
@@ -158,12 +158,12 @@ public class UIManager : Singleton<UIManager>
     /// </summary>
     void ShowStartMenu()
     {
-        startMenu.enabled = true;
+        startMenu.Show();
 
         // Select default selectable
         if (startMenu.TryGetComponent<DefaultSelectable>(out DefaultSelectable _default))
         {
-            _default.defaultSelectable.Select();
+            if(_default.defaultSelectable != null) _default.defaultSelectable.Select();
         }
     }
     /// <summary>
@@ -171,7 +171,7 @@ public class UIManager : Singleton<UIManager>
     /// </summary>
     void HideStartMenu()
     {
-        startMenu.enabled = false;
+        startMenu.Hide();
     }
 
     /// <summary>
@@ -179,12 +179,12 @@ public class UIManager : Singleton<UIManager>
     /// </summary>
     void ShowPauseMenu()
     {
-        pauseMenu.enabled=true;
+        pauseMenu.Show();
 
         // Select default selectable
         if (pauseMenu.TryGetComponent<DefaultSelectable>(out DefaultSelectable _default))
         {
-            _default.defaultSelectable.Select();
+            if (_default.defaultSelectable != null) _default.defaultSelectable.Select();
         }
     }
     /// <summary>
@@ -192,7 +192,7 @@ public class UIManager : Singleton<UIManager>
     /// </summary>
     void HidePauseMenu()
     {
-        pauseMenu.enabled=false;
+        pauseMenu.Hide();
     }
 
     /// <summary>
@@ -200,7 +200,7 @@ public class UIManager : Singleton<UIManager>
     /// </summary>
     void ShowPlayUI()
     {
-        playUI.enabled=true;
+        playUI.Show();
 
         // Selection of default selectable is done by PlayUI dedicated canvas components
     }
@@ -209,7 +209,7 @@ public class UIManager : Singleton<UIManager>
     /// </summary>
     void HidePlayUI()
     {
-        playUI.enabled=false;
+        playUI.Hide();
     }
 
     /// <summary>
@@ -217,14 +217,14 @@ public class UIManager : Singleton<UIManager>
     /// </summary>
     void ShowLoadingUI()
     {
-        loadingUI.enabled=true;
+        loadingUI.Show();
     }
     /// <summary>
     /// HideLoadingUI method hides the Loading UI
     /// </summary>
     void HideLoadingUI()
     {
-        loadingUI.enabled=false;
+        loadingUI.Hide();
     }
 
     /// <summary>
@@ -232,16 +232,14 @@ public class UIManager : Singleton<UIManager>
     /// </summary>
     void ShowSavingUI()
     {
-        savingUI.enabled=true;
-        savingUI.GetComponent<SaveAnimation>().StartAnimation();
+        savingUI.Show();
     }
     /// <summary>
     /// HideSavingUI method hides the Saving UI
     /// </summary>
     void HideSavingUI()
     {
-        savingUI.GetComponent<SaveAnimation>().StopAnimation();
-        savingUI.enabled=false;
+        savingUI.Hide();
     }
 
     /// <summary>
@@ -252,24 +250,23 @@ public class UIManager : Singleton<UIManager>
         // Save the last selected object on the previous canvas
         if(EventSystem.current.currentSelectedGameObject != null)
         {
-            if (startMenu.enabled) startMenuLastSelected = EventSystem.current.currentSelectedGameObject.GetComponent<Selectable>();
-            if (pauseMenu.enabled) pauseMenuLastSelected = EventSystem.current.currentSelectedGameObject.GetComponent<Selectable>();
-        }       
+            if (startMenu.IsVisible) startMenuLastSelected = EventSystem.current.currentSelectedGameObject.GetComponent<Selectable>();
+            if (pauseMenu.IsVisible) pauseMenuLastSelected = EventSystem.current.currentSelectedGameObject.GetComponent<Selectable>();
+        }
 
-        loadMenu.enabled = true;
-        loadMenu.GetComponentInChildren<LoadSaveMenu>().SetupLoadMenu();
+        loadMenu.Show();
 
     }
     /// <summary>
     /// HideLoadMenu method hides the Load Menu
     /// </summary>
-    public void HideLoadMenu()
+    public static void HideLoadMenu()
     {
-        loadMenu.enabled = false;
+        Instance.loadMenu.Hide();
 
         // Select the last selected object from the previous canvas
-        if (pauseMenu.enabled && pauseMenuLastSelected != null) pauseMenuLastSelected.Select();
-        if (startMenu.enabled && startMenuLastSelected != null) startMenuLastSelected.Select();
+        if (Instance.pauseMenu.IsVisible && Instance.pauseMenuLastSelected != null) Instance.pauseMenuLastSelected.Select();
+        if (Instance.startMenu.IsVisible && Instance.startMenuLastSelected != null) Instance.startMenuLastSelected.Select();
     }
 
     /// <summary>
@@ -280,20 +277,19 @@ public class UIManager : Singleton<UIManager>
         // Save the last selected object on the previous canvas
         if (EventSystem.current.currentSelectedGameObject != null)
         {
-            if (pauseMenu.enabled) pauseMenuLastSelected = EventSystem.current.currentSelectedGameObject.GetComponent<Selectable>();
-        }            
+            if (pauseMenu.IsVisible) pauseMenuLastSelected = EventSystem.current.currentSelectedGameObject.GetComponent<Selectable>();
+        }
 
-        saveMenu.enabled = true;
-        saveMenu.GetComponentInChildren<LoadSaveMenu>().SetupSaveMenu();
+        saveMenu.Show();
     }
     /// <summary>
     /// HideSaveMenu method hides the Save Menu
     /// </summary>
-    public void HideSaveMenu()
+    public static void HideSaveMenu()
     {
-        saveMenu.enabled = false;
+        Instance.saveMenu.Hide();
         // Select the last selected object from the previous canvas
-        if (pauseMenu.enabled && pauseMenuLastSelected != null) pauseMenuLastSelected.Select();
+        if (Instance.pauseMenu.IsVisible && Instance.pauseMenuLastSelected != null) Instance.pauseMenuLastSelected.Select();
     }
     #endregion
 
@@ -309,23 +305,23 @@ public class UIManager : Singleton<UIManager>
         // Save the last selected object on the previous canvas
         if (EventSystem.current.currentSelectedGameObject != null)
         {
-            if (Instance.loadMenu.enabled)
+            if (Instance.loadMenu.IsVisible)
             {
                 Instance.loadMenuLastSelected = EventSystem.current.currentSelectedGameObject.GetComponent<Selectable>();
             }
-            else if (Instance.saveMenu.enabled)
+            else if (Instance.saveMenu.IsVisible)
             {
                 Instance.saveMenuLastSelected = EventSystem.current.currentSelectedGameObject.GetComponent<Selectable>();
             }
-            else if (Instance.startMenu.enabled)
+            else if (Instance.startMenu.IsVisible)
             {
                 Instance.startMenuLastSelected = EventSystem.current.currentSelectedGameObject.GetComponent<Selectable>();
             }
-            else if (Instance.pauseMenu.enabled)
+            else if (Instance.pauseMenu.IsVisible)
             {
                 Instance.pauseMenuLastSelected = EventSystem.current.currentSelectedGameObject.GetComponent<Selectable>();
             }
-            else if (Instance.playUI.enabled) Instance.playUILastSelected = EventSystem.current.currentSelectedGameObject.GetComponent<Selectable>();
+            else if (Instance.playUI.IsVisible) Instance.playUILastSelected = EventSystem.current.currentSelectedGameObject.GetComponent<Selectable>();
         }            
 
         // Init the confirm message window
@@ -341,23 +337,23 @@ public class UIManager : Singleton<UIManager>
         Instance.confirmMessage.Hide();
 
         // Select the last selected object from the previous canvas
-        if (Instance.saveMenu.enabled && Instance.saveMenuLastSelected != null)
+        if (Instance.saveMenu.IsVisible && Instance.saveMenuLastSelected != null)
         {
             Instance.saveMenuLastSelected.Select();
         }
-        else if(Instance.loadMenu.enabled && Instance.loadMenuLastSelected != null)
+        else if(Instance.loadMenu.IsVisible && Instance.loadMenuLastSelected != null)
         {
             Instance.loadMenuLastSelected.Select();
         }
-        else if(Instance.pauseMenu.enabled && Instance.pauseMenuLastSelected != null)
+        else if(Instance.pauseMenu.IsVisible && Instance.pauseMenuLastSelected != null)
         {
             Instance.pauseMenuLastSelected.Select();
         }
-        else if(Instance.startMenu.enabled && Instance.startMenuLastSelected != null)
+        else if(Instance.startMenu.IsVisible && Instance.startMenuLastSelected != null)
         {
             Instance.startMenuLastSelected.Select();
         }
-        else if(Instance.playUI.enabled && Instance.playUILastSelected != null)
+        else if(Instance.playUI.IsVisible && Instance.playUILastSelected != null)
         {
             Instance.playUILastSelected.Select();
         }
@@ -373,23 +369,23 @@ public class UIManager : Singleton<UIManager>
         // Save the last selected object on the previous canvas
         if (EventSystem.current.currentSelectedGameObject != null)
         {
-            if (Instance.loadMenu.enabled)
+            if (Instance.loadMenu.IsVisible)
             {
                 Instance.loadMenuLastSelected = EventSystem.current.currentSelectedGameObject.GetComponent<Selectable>();
             }
-            else if (Instance.saveMenu.enabled)
+            else if (Instance.saveMenu.IsVisible)
             {
                 Instance.saveMenuLastSelected = EventSystem.current.currentSelectedGameObject.GetComponent<Selectable>();
             }
-            else if (Instance.startMenu.enabled)
+            else if (Instance.startMenu.IsVisible)
             {
                 Instance.startMenuLastSelected = EventSystem.current.currentSelectedGameObject.GetComponent<Selectable>();
             }
-            else if (Instance.pauseMenu.enabled)
+            else if (Instance.pauseMenu.IsVisible)
             {
                 Instance.pauseMenuLastSelected = EventSystem.current.currentSelectedGameObject.GetComponent<Selectable>();
             }
-            else if (Instance.playUI.enabled) Instance.playUILastSelected = EventSystem.current.currentSelectedGameObject.GetComponent<Selectable>();
+            else if (Instance.playUI.IsVisible) Instance.playUILastSelected = EventSystem.current.currentSelectedGameObject.GetComponent<Selectable>();
         }            
 
         // Display the error message
@@ -405,23 +401,23 @@ public class UIManager : Singleton<UIManager>
         Instance.errorMessage.Hide();
 
         // Select the last selected object from the previous canvas
-        if (Instance.saveMenu.enabled && Instance.saveMenuLastSelected != null)
+        if (Instance.saveMenu.IsVisible && Instance.saveMenuLastSelected != null)
         {
             Instance.saveMenuLastSelected.Select();
         }
-        else if (Instance.loadMenu.enabled && Instance.loadMenuLastSelected != null)
+        else if (Instance.loadMenu.IsVisible && Instance.loadMenuLastSelected != null)
         {
             Instance.loadMenuLastSelected.Select();
         }
-        else if (Instance.pauseMenu.enabled && Instance.pauseMenuLastSelected != null)
+        else if (Instance.pauseMenu.IsVisible && Instance.pauseMenuLastSelected != null)
         {
             Instance.pauseMenuLastSelected.Select();
         }
-        else if (Instance.startMenu.enabled && Instance.startMenuLastSelected != null)
+        else if (Instance.startMenu.IsVisible && Instance.startMenuLastSelected != null)
         {
             Instance.startMenuLastSelected.Select();
         }
-        else if (Instance.playUI.enabled && Instance.playUILastSelected != null)
+        else if (Instance.playUI.IsVisible && Instance.playUILastSelected != null)
         {
             Instance.playUILastSelected.Select();
         }
@@ -465,19 +461,19 @@ public class UIManager : Singleton<UIManager>
         // On Start menu, Esc. key is used to hide any window (confirm, error, load, save) or to quit the game
         if (Input.GetKeyDown(KeyCode.Escape))
         {
-            if (confirmMessage.IsShown)
+            if (confirmMessage.IsVisible)
             {
                 HideConfirmMessage();
             }
-            else if (errorMessage.IsShown)
+            else if (errorMessage.IsVisible)
             {
                 HideErrorMessage();
             }
-            else if (saveMenu.enabled == true)
+            else if (saveMenu.IsVisible)
             {
                 HideSaveMenu();
             }
-            else if (loadMenu.enabled == true)
+            else if (loadMenu.IsVisible)
             {
                 HideLoadMenu();
             }
@@ -496,19 +492,26 @@ public class UIManager : Singleton<UIManager>
         // On Pause menu, Esc. key is used to hide any window (confirm, error, load, save) or to return to play mode
         if (Input.GetKeyDown(KeyCode.Escape))
         {
-            if(confirmMessage.IsShown)
+            if(confirmMessage.IsVisible)
             {
                 HideConfirmMessage();
             }
-            else if (errorMessage.IsShown)
+            else if (errorMessage.IsVisible)
             {
                 HideErrorMessage();
             }
-            else if(saveMenu.enabled == true)
+            else if(saveMenu.IsVisible)
             {
-                HideSaveMenu();
+                if(saveMenu.GetComponent<LoadSaveMenu>().promptNameCanvas.IsVisible)
+                {
+                    saveMenu.GetComponent<LoadSaveMenu>().promptNameCanvas.Hide();
+                }
+                else
+                {
+                    HideSaveMenu();
+                }                
             }
-            else if(loadMenu.enabled == true)
+            else if(loadMenu.IsVisible)
             {
                 HideLoadMenu();
             }
@@ -528,11 +531,11 @@ public class UIManager : Singleton<UIManager>
         // On Plau UI, Esc. key is used to hide any window (confirm, error) or to go to pause Menu (via pause gamestate)
         if (Input.GetKeyDown(KeyCode.Escape))
         {
-            if(confirmMessage.IsShown)
+            if(confirmMessage.IsVisible)
             {
                 HideConfirmMessage();
             }
-            else if (errorMessage.IsShown)
+            else if (errorMessage.IsVisible)
             {
                 HideErrorMessage();
             }

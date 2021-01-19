@@ -4,7 +4,7 @@
 /// ColorPickerCanvas is the Canvas of the ColorPicker
 /// It sets up the ColorPicker element, Show and Hode the canvas and implements the return buttons
 /// </summary>
-public class ColorPickerCanvas : MonoBehaviour
+public class ColorPickerCanvas : UICanvas
 {
     // ColorPicker element
     public ColorPicker colorPicker;
@@ -25,11 +25,10 @@ public class ColorPickerCanvas : MonoBehaviour
     /// <summary>
     /// Show methods shows the canvas on screen and activate the ColorPicker
     /// </summary>
-    public void Show()
+    public override void Show()
     {
-        // Enable the Canvas and sets it at last sibling to be sure it is visible
-        GetComponent<Canvas>().enabled = true;
-        GetComponent<Transform>().SetAsLastSibling();
+        base.Show();
+
         // Link the ColorPickerUpdate to the GameManager.PlayUpdate event
         GameManager.PlayUpdate += colorPicker.ColorPickerUpdate;
     }
@@ -37,11 +36,10 @@ public class ColorPickerCanvas : MonoBehaviour
     /// <summary>
     /// Hide methods hides the canvas and deactivate the ColorPicker
     /// </summary>
-    public void Hide()
+    public override void Hide()
     {
-        // Disable the Canvas and sets it at first sibling to be sure it is not visible or over other canvas
-        GetComponent<Canvas>().enabled = false;
-        GetComponent<Transform>().SetAsFirstSibling();
+        base.Hide();
+
         // Unlink the ColorPickerUpdate from the GameManager.PlayUpdate event
         GameManager.PlayUpdate -= colorPicker.ColorPickerUpdate;
     }

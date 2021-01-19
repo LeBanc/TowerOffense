@@ -2,9 +2,9 @@
 using UnityEngine.UI;
 
 /// <summary>
-/// HQSquadEdition is used to disply the Squad Edition Canvas
+/// HQSquadEdition is used to display the Squad Edition Canvas
 /// </summary>
-public class HQSquadEdition : MonoBehaviour
+public class HQSquadEdition : UICanvas
 {
     // Public elements used in the prefab
     public ColorPickerCanvas colorPickerCanvas;
@@ -42,7 +42,6 @@ public class HQSquadEdition : MonoBehaviour
     private Squad selectedSquad;
 
     // Private canvas component
-    private Canvas canvas;
     private Button lastSelectedButton;
 
     #region Properties access
@@ -51,14 +50,6 @@ public class HQSquadEdition : MonoBehaviour
         get { return selectedSquad; }
     }
     #endregion
-
-    /// <summary>
-    /// On Awake, get the canvas component
-    /// </summary>
-    private void Awake()
-    {
-        canvas = GetComponent<Canvas>();
-    }
 
     /// <summary>
     /// On Start, subscribe events and hides the Color Picker Canvas
@@ -147,15 +138,6 @@ public class HQSquadEdition : MonoBehaviour
             UpdateSoldier3();
             UpdateSoldier4();
         }
-    }
-
-    /// <summary>
-    /// Hide method hides the SquadEdition canvas
-    /// </summary>
-    public void Hide()
-    {
-        canvas.enabled = false;
-        transform.SetAsFirstSibling();
     }
 
     /// <summary>
@@ -413,5 +395,4 @@ public class HQSquadEdition : MonoBehaviour
             lastSelectedButton.Select();
         }
     }
-
 }

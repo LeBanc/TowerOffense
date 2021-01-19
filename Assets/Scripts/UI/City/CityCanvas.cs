@@ -5,7 +5,7 @@ using UnityEngine.UI;
 /// <summary>
 /// CityCanvas class manages the CityCanvas overall functions
 /// </summary>
-public class CityCanvas : MonoBehaviour
+public class CityCanvas : UICanvas
 {
     // Public Squad Action Panels
     public SquadActionPanel squad1;
@@ -35,8 +35,10 @@ public class CityCanvas : MonoBehaviour
     /// <summary>
     /// On Awake, disables the SquadActionPanels and initializes HelthBar list
     /// </summary>
-    void Awake()
+    protected override void Awake()
     {
+        base.Awake();
+
         squad1.enabled = false;
         squad2.enabled = false;
         squad3.enabled = false;
@@ -315,11 +317,9 @@ public class CityCanvas : MonoBehaviour
     /// <summary>
     /// Show method shows the CityCanvas
     /// </summary>
-    public void Show()
+    public override void Show()
     {
-        // Enable Canvas and set it as last sibling to unsure its visibility
-        GetComponent<Canvas>().enabled = true;
-        transform.SetAsLastSibling();
+        base.Show();
 
         // Link update events
         GameManager.PlayUpdate += UIUpdate;
@@ -349,7 +349,7 @@ public class CityCanvas : MonoBehaviour
     /// <summary>
     /// Hide method hides the CityCanvas
     /// </summary>
-    public void Hide()
+    public override void Hide()
     {
         // Unlink update events
         GameManager.PlayUpdate -= UIUpdate;
@@ -361,9 +361,7 @@ public class CityCanvas : MonoBehaviour
         squad4.gameObject.SetActive(false);
         retreatButton.gameObject.SetActive(false);
 
-        // Set Canvas as first sibling and disable it to unsure its invisibility
-        transform.SetAsFirstSibling();
-        GetComponent<Canvas>().enabled = false;
+        base.Hide();
     }
 
     /// <summary>

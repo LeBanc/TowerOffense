@@ -3,17 +3,21 @@ using System.Collections;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
+using System.Text.RegularExpressions;
 using UnityEngine;
 
 /// <summary>
 /// LoadSaveMenu class defines the methods of the Load and Save menus
 /// </summary>
-public class LoadSaveMenu : MonoBehaviour
+public class LoadSaveMenu : UICanvas
 {
     // UI element
     public AutoScroll autoScroll;
     public GameObject newsavePrefab;
     public SavePromptNameCanvas promptNameCanvas;
+
+    // public bool Load or Save state
+    public bool loadState;
 
     // Prefab for SaveFileItem
     public GameObject savefileitemPrefab;
@@ -21,6 +25,54 @@ public class LoadSaveMenu : MonoBehaviour
     // Events
     private Dictionary<DataSave.FileData, string> fileDico = new Dictionary<DataSave.FileData, string>();
     private SaveFileItem selectedSaveFile;
+    private SelectedButton newSaveFileButton;
+
+    /// <summary>
+    /// At Awake, fetches the Canvas and checks if all public elements are well provided
+    /// </summary>
+    protected override void Awake()
+    {
+        base.Awake();
+
+        if (savefileitemPrefab == null) Debug.LogError("[LoadSaveMenu] Couldn't find SaveFileItemPrefab");
+        if (autoScroll == null) Debug.LogError("[LoadSaveMenu] Couldn't find AutoScroll");
+        if (!loadState)
+        {
+            if (newsavePrefab == null) Debug.LogError("[LoadSaveMenu] Couldn't find NewSavePrefab for SaveMenu");
+            if (promptNameCanvas == null)
+            {
+                Debug.LogError("[LoadSaveMenu] Couldn't find PromptName Canvas for SaveMenu");
+            }
+            else
+            {
+                promptNameCanvas.OnHide += SelectNewSaveItem;
+            }
+        }
+    }
+
+    /// <summary>
+    /// OnDestroy, unsubscribe from events
+    /// </summary>
+    private void OnDestroy()
+    {
+        if(promptNameCanvas != null) promptNameCanvas.OnHide -= SelectNewSaveItem;
+    }
+
+    /// <summary>
+    /// Show method displays the UI Canvas and setups it depending of load or save state
+    /// </summary>
+    public override void Show()
+    {
+        base.Show();
+        if(loadState)
+        {
+            SetupLoadMenu();
+        }
+        else
+        {
+            SetupSaveMenu();
+        }
+    }
 
     /// <summary>
     /// SetupLoadMenu method setups and shows the Load menu
@@ -67,9 +119,6 @@ public class LoadSaveMenu : MonoBehaviour
     /// </summary>
     public void SetupSaveMenu()
     {
-        // Hide Prompt Name Canvas
-        if (promptNameCanvas != null) promptNameCanvas.Hide();
-
         // Clear dictionnary
         fileDico.Clear();
 
@@ -80,8 +129,9 @@ public class LoadSaveMenu : MonoBehaviour
         if (newsavePrefab != null)
         {
             GameObject _instance = autoScroll.AddPrefabReturnInstance(newsavePrefab);
-            _instance.GetComponent<NewSaveFileButton>().OnSelection += UnselectItems;
-            _instance.GetComponent<NewSaveFileButton>().onClick.AddListener(PromptNewFileName);
+            newSaveFileButton = _instance.GetComponent<SelectedButton>();
+            newSaveFileButton.OnSelection += UnselectItems;
+            newSaveFileButton.onClick.AddListener(PromptNewFileName);
         }
 
         // Get save files from the directory
@@ -111,6 +161,32 @@ public class LoadSaveMenu : MonoBehaviour
 
         // Select first savefile
         autoScroll.SelectFirtsItem();
+
+        // Hide Prompt Name Canvas
+        if (promptNameCanvas != null) promptNameCanvas.Hide();
+    }
+
+    /// <summary>
+    /// Hide method hides the canvas
+    /// </summary>
+    public override void Hide()
+    {
+        base.Hide();
+        if (!loadState && promptNameCanvas != null)
+        {
+            if(promptNameCanvas.IsVisible) promptNameCanvas.Hide();
+        }
+    }
+
+    /// <summary>
+    /// SelectNewSaveItem method selects the NewSave item if the LoadSaveMenu is in Save config.
+    /// </summary>
+    private void SelectNewSaveItem()
+    {
+        if(!loadState)
+        {
+            autoScroll.SelectFirtsItem();
+        }
     }
 
     /// <summary>
@@ -123,6 +199,8 @@ public class LoadSaveMenu : MonoBehaviour
         if (selectedSaveFile == _sfi) return;
         // Else, if an item is selected, unselect it
         if (selectedSaveFile != null) selectedSaveFile.Unselect();
+        // Unselect the New save file item if it exists
+        if (newSaveFileButton != null) newSaveFileButton.Unselect();
         // Set the new item as the selected one
         selectedSaveFile = _sfi;
     }
@@ -165,8 +243,10 @@ public class LoadSaveMenu : MonoBehaviour
     /// <param name="_saveName">Name of the save file (string)</param>
     public void CreateNewSaveFile(string _saveName)
     {
+        _saveName = Regex.Replace(_saveName, "[/\\:*?\" <>|]", String.Empty);
+
         // Check for existing file
-        if (File.Exists(Path.Combine(Application.persistentDataPath, string.Concat(_saveName.Replace(' ', '_'), ".save"))))
+        if (File.Exists(Path.Combine(Application.persistentDataPath, string.Concat(_saveName, ".save"))))
         {
             // If exist => overwrite message with Save on confirm
             UIManager.InitConfirmMessage("The file already exists, are you sure you want to overwrite it?", delegate {
@@ -235,5 +315,27 @@ public class LoadSaveMenu : MonoBehaviour
                 autoScroll.Remove(selectedSaveFile.gameObject);
             }
         });
+    }
+
+    /// <summary>
+    /// Cancel method is called by the "Cancel" button
+    /// It hides the currently opened Menu (load or save) through the UIManager static methods
+    /// </summary>
+    public void Cancel()
+    {
+        if(loadState)
+        {
+            UIManager.HideLoadMenu();
+        }
+        else
+        {
+            UIManager.HideSaveMenu();
+        }
+
+        if (IsVisible)
+        {
+            Debug.Log("LoadSaveMenu still visible after calling Hide methods from UIManager: Hiding itself");
+            Hide();
+        }
     }
 }

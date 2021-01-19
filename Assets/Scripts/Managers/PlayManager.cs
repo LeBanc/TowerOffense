@@ -32,6 +32,8 @@ public class PlayManager : Singleton<PlayManager>
     // HQ properties
     public static int coins;
     public static int day;
+    public static int recruitment;
+    public static bool newSoldier;
     public static int nextSoldierID;
     public static int nextSquadID;
     public static SquadData defaultSquadType;
@@ -78,6 +80,7 @@ public class PlayManager : Singleton<PlayManager>
     public static event PlayManagerEvents OnEndDay;
     public static event PlayManagerEvents OnCoinsUpdate;
     public static event PlayManagerEvents OnLoadGame;
+    public static event PlayManagerEvents OnRecruit;
 
     public delegate HealthBar PlayManagerHealthBarEvents(Transform _t, float _maxW);
     public static event PlayManagerHealthBarEvents OnNewHealthBarAdded;
@@ -153,10 +156,27 @@ public class PlayManager : Singleton<PlayManager>
         {
             // Increment day count
             day++;
+
+            // Add recruitment chances and reset the enemy list
+            recruitment += enemyList.Count;
+            recruitment++;
+            RecruitTest();
+            enemyList.Clear();
+
             // Switch to HQ
             OnEndDay?.Invoke();
-            // Reset the enemy list
-            enemyList.Clear();
+        }
+    }
+
+    static void RecruitTest()
+    {
+        int _value = Random.Range(0, 100);
+        if (_value <= recruitment)
+        {
+            newSoldier = true;
+            OnRecruit?.Invoke();
+            Debug.Log("New Soldier at " + recruitment + "% chances");
+            recruitment = 0;
         }
     }
 
@@ -267,6 +287,7 @@ public class PlayManager : Singleton<PlayManager>
         // Init HQ data
         day = 1;
         coins = 0;
+        recruitment = 0;
         infirmaryLevel = 0;
         radioLevel = 0;
 

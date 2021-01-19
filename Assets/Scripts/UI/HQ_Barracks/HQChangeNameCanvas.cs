@@ -4,15 +4,12 @@ using UnityEngine.UI;
 /// <summary>
 /// HQChangeNameCanvas class is used by the Change Name Canvas
 /// </summary>
-public class HQChangeNameCanvas : MonoBehaviour
+public class HQChangeNameCanvas : UICanvas
 {
     // public UI elements
     public InputField inputField;
     public Button okButton;
     public Button cancelButton;
-
-    // private canvas component
-    private Canvas canvas;
 
     // private selected soldier
     private Soldier selectedSoldier;
@@ -20,14 +17,6 @@ public class HQChangeNameCanvas : MonoBehaviour
     // Events
     public delegate void ChangeNameEventHandler();
     public event ChangeNameEventHandler OnCanvasHide;
-
-    /// <summary>
-    /// On Awake, fetches the canvas
-    /// </summary>
-    private void Awake()
-    {
-        canvas = GetComponent<Canvas>();
-    }
 
     /// <summary>
     /// Validate method changes the soldier name and hides the canvas
@@ -46,18 +35,16 @@ public class HQChangeNameCanvas : MonoBehaviour
     {
         selectedSoldier = _soldier;
         inputField.text = selectedSoldier.Name;
-        canvas.enabled = true;
-        transform.SetAsLastSibling();
+        Show();
         inputField.Select();
     }
 
     /// <summary>
     /// Hide method hides the canvas
     /// </summary>
-    public void Hide()
+    public override void Hide()
     {
-        canvas.enabled = false;
-        transform.SetAsFirstSibling();
+        base.Hide();
         OnCanvasHide?.Invoke();
     }
 }

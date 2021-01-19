@@ -3,15 +3,12 @@
 /// <summary>
 /// HQLevelupCanvas class manages the Level Up Canvas
 /// </summary>
-public class HQLevelupCanvas : MonoBehaviour
+public class HQLevelupCanvas : UICanvas
 {
     // public UI elements
-    public HQLevelUpItem levelupItem1;
-    public HQLevelUpItem levelupItem2;
-    public HQLevelUpItem levelupItem3;
-
-    // private canvas
-    private Canvas canvas;
+    public LevelUpItem item1;
+    public LevelUpItem item2;
+    public LevelUpItem item3;
 
     // private data
     private Soldier soldier;
@@ -22,11 +19,25 @@ public class HQLevelupCanvas : MonoBehaviour
     public event LevelUPEventHandler OnCanvasHide;
 
     /// <summary>
-    /// On Awke, fetches Canvas
+    /// On Awake, fetches Canvas and subscribe to events
     /// </summary>
-    private void Awake()
+    protected override void Awake()
     {
-        canvas = GetComponent<Canvas>();
+        base.Awake();
+
+        if (item1 != null) item1.OnSelection += SelectClass1;
+        if (item2 != null) item2.OnSelection += SelectClass2;
+        if (item3 != null) item3.OnSelection += SelectClass3;
+    }
+
+    /// <summary>
+    /// OnDestroy, unsubscribe from events
+    /// </summary>
+    private void OnDestroy()
+    {
+        if (item1 != null) item1.OnSelection -= SelectClass1;
+        if (item2 != null) item2.OnSelection -= SelectClass2;
+        if (item3 != null) item3.OnSelection -= SelectClass3;
     }
 
     /// <summary>
@@ -38,50 +49,47 @@ public class HQLevelupCanvas : MonoBehaviour
         if(_soldier.Data.improveTo.Count == 3) // If there are 3 possible evolutions
         {
             soldier = _soldier;
-            levelupItem1.gameObject.SetActive(true);
-            levelupItem1.Setup(soldier, soldier.Data.improveTo[0]);
-            levelupItem2.Setup(soldier, soldier.Data.improveTo[1]);
-            levelupItem3.gameObject.SetActive(true);
-            levelupItem3.Setup(soldier, soldier.Data.improveTo[2]);
+            item1.gameObject.SetActive(true);
+            item1.Setup(soldier, soldier.Data.improveTo[0]);
+            item2.Setup(soldier, soldier.Data.improveTo[1]);
+            item3.gameObject.SetActive(true);
+            item3.Setup(soldier, soldier.Data.improveTo[2]);
 
-            canvas.enabled = true;
-            transform.SetAsLastSibling();
+            Show();
         }
         else if (_soldier.Data.improveTo.Count == 1) // If only one possible evolution
         {
             soldier = _soldier;
-            levelupItem1.gameObject.SetActive(false);
-            levelupItem2.Setup(soldier, soldier.Data.improveTo[0]);
-            levelupItem3.gameObject.SetActive(false);
+            item1.gameObject.SetActive(false);
+            item2.Setup(soldier, soldier.Data.improveTo[0]);
+            item3.gameObject.SetActive(false);
 
-            canvas.enabled = true;
-            transform.SetAsLastSibling();
+            Show();
         }
         else
         {
             Debug.LogError("[HQLevelupCanvas] Trying to open the LevelUp Canvas for a soldier with no possible evolution");
         }
-        if(levelupItem1.isActiveAndEnabled)
+        if(item1.isActiveAndEnabled)
         {
-            levelupItem1.Select();
+            item1.SelectButton();
         }
         else
         {
-            levelupItem2.Select();
+            item2.SelectButton();
         }
     }
 
     /// <summary>
     /// Hide method hides the canvas
     /// </summary>
-    public void Hide()
+    public override void Hide()
     {
         // reset the selected data
         selectedData = null;
 
         // Hide the canvas
-        canvas.enabled = false;
-        transform.SetAsFirstSibling();
+        base.Hide();
         OnCanvasHide?.Invoke();
     }
 
@@ -103,9 +111,8 @@ public class HQLevelupCanvas : MonoBehaviour
     public void SelectClass1()
     {
         selectedData = soldier.Data.improveTo[0];
-        levelupItem1.selectedBackground.enabled = true;
-        levelupItem2.selectedBackground.enabled = false;
-        levelupItem3.selectedBackground.enabled = false;
+        item2.Unselect();
+        item3.Unselect();
     }
 
     /// <summary>
@@ -114,9 +121,8 @@ public class HQLevelupCanvas : MonoBehaviour
     public void SelectClass2()
     {
         selectedData = soldier.Data.improveTo[(soldier.Data.improveTo.Count>1)?1:0]; //2 possibilities depending of 3 or only 1 evolutions
-        levelupItem1.selectedBackground.enabled = false;
-        levelupItem2.selectedBackground.enabled = true;
-        levelupItem3.selectedBackground.enabled = false;
+        item1.Unselect();
+        item3.Unselect();
     }
 
     /// <summary>
@@ -125,8 +131,7 @@ public class HQLevelupCanvas : MonoBehaviour
     public void SelectClass3()
     {
         selectedData = soldier.Data.improveTo[2];
-        levelupItem1.selectedBackground.enabled = false;
-        levelupItem2.selectedBackground.enabled = false;
-        levelupItem3.selectedBackground.enabled = true;
+        item1.Unselect();
+        item2.Unselect();
     }
 }

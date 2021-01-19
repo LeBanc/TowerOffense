@@ -1,11 +1,12 @@
 ﻿using UnityEngine;
-using UnityEngine.EventSystems;
 using UnityEngine.UI;
 
 /// <summary>
 /// SoldierSelectionItem class manages a Soldier selection item
+/// SoldierSelectionItem requires the GameObject to have a SelectedButton component
 /// </summary>
-public class SoldierSelectionItem : Button
+[RequireComponent(typeof(SelectedButton))]
+public class SoldierSelectionItem : MonoBehaviour
 {
     // Public element of the item
     public SoldierImage soldierImage;
@@ -19,7 +20,13 @@ public class SoldierSelectionItem : Button
     public Text defValue;
     public Text speedValue;
     public Text friendValue;
-    public Image selectedImage;
+
+    // private mandatory SelectedButton
+    private SelectedButton button;
+
+    // Events
+    public delegate void SoldierSelectionItemEventHandler(SoldierSelectionItem _item);
+    public event SoldierSelectionItemEventHandler OnSelection;
 
     // Displayed soldier
     private Soldier soldier;
@@ -27,6 +34,37 @@ public class SoldierSelectionItem : Button
     public Soldier Soldier
     {
         get { return soldier; }
+    }
+
+    /// <summary>
+    /// On Start, fetch the SelectedButton, subscribe to event and unselect the item
+    /// </summary>
+    private void Awake()
+    {
+        button = GetComponent<SelectedButton>();
+        if (button != null)
+        {
+            button.OnSelection += Select;
+        }
+        else
+        {
+            Debug.LogError("[SoldierSelectionItem] SelectedButton component not found!");
+        }
+
+        Unselect();
+    }
+
+    /// <summary>
+    /// OnDestroy, unsubscribes from events
+    /// </summary>
+    void OnDestroy()
+    {
+        if (button != null)
+        {
+            button.OnSelection -= Select;
+            button.onClick.RemoveAllListeners();
+        }
+        OnSelection = null;
     }
 
     /// <summary>
@@ -70,19 +108,18 @@ public class SoldierSelectionItem : Button
     }
 
     /// <summary>
-    /// Select override is used to enables the selected image (border)
+    /// Select method is used to display the item as selected
     /// </summary>
-    public override void Select()
+    private void Select()
     {
-        base.Select();
-        selectedImage.enabled = true;
+        OnSelection?.Invoke(this);
     }
 
     /// <summary>
-    /// Unselect method hides the item border
+    /// Unselect method is used to display the item as unselected
     /// </summary>
     public void Unselect()
     {
-        selectedImage.enabled = false;
+        if (button != null) button.Unselect();
     }
 }

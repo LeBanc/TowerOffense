@@ -3,22 +3,45 @@ using UnityEngine.UI;
 
 /// <summary>
 /// SoldierImageSelectionItem is a Button displaying a soldier avatar
+/// SoldierImageSelectionItem requires the GameObject to have a SelectedButton component
 /// </summary>
-public class SoldierImageSelectionItem : Button
+[RequireComponent(typeof(SelectedButton))]
+public class SoldierImageSelectionItem : MonoBehaviour
 {
     // public UI elements
     public Image soldierImage;
-    public Mask mask;
 
+    // private UI elements
+    private SelectedButton button;
     private HQChangeImageCanvas changeImageCanvas;
 
     /// <summary>
-    /// At Awake, disables the mask
+    /// On Start, fetch the SelectedButton, subscribe to event and unselect the item
     /// </summary>
-    protected override void Awake()
+    private void Awake()
     {
-        base.Awake();
-        mask.enabled = false;
+        button = GetComponent<SelectedButton>();
+        if (button != null)
+        {
+            button.onClick.AddListener(Select);
+        }
+        else
+        {
+            Debug.LogError("[SoldierImageSelectionItem] SelectedButton component not found!");
+        }
+
+        Unselect();
+    }
+
+    /// <summary>
+    /// OnDestroy, unsubscribes from events
+    /// </summary>
+    void OnDestroy()
+    {
+        if (button != null)
+        {
+            button.onClick.RemoveAllListeners();
+        }
     }
 
     /// <summary>
@@ -35,11 +58,10 @@ public class SoldierImageSelectionItem : Button
     /// <summary>
     /// Select method activates the mask to show the border and set this component as the selected one of the HQChangeImageCanvas
     /// </summary>
-    public override void Select()
+    public void Select()
     {
-        base.Select();
-        mask.enabled = true;
-        changeImageCanvas.SelectImage(this);
+        if (button != null) button.Select();
+        if(changeImageCanvas != null) changeImageCanvas.SelectImage(this);
     }
 
     /// <summary>
@@ -47,6 +69,6 @@ public class SoldierImageSelectionItem : Button
     /// </summary>
     public void Unselect()
     {
-        mask.enabled = false;
+        button.Unselect();
     }
 }

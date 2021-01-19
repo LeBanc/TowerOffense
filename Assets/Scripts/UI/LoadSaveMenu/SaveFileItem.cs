@@ -1,16 +1,20 @@
 ﻿using UnityEngine.UI;
-using UnityEngine.EventSystems;
+using UnityEngine;
 
 /// <summary>
-/// SaveFileItem class is a Button used to display SaveFile
+/// SaveFileItem class is the item used to display SaveFile (with associated Selecetd Button)
+/// SaveFileItem requires the GameObject to have a SelectedButton component
 /// </summary>
-public class SaveFileItem : Button
+[RequireComponent(typeof(SelectedButton))]
+public class SaveFileItem : MonoBehaviour
 {
     // public UI elements
-    public Image selectedImage;
     public Text saveNameText;
     public Text dateText;
     public Text dayText;
+
+    // private associated UI SelectedButton
+    private SelectedButton button;
 
     // Events
     public delegate void SaveFileItemEventHandler(SaveFileItem _saveFileItem);
@@ -22,6 +26,22 @@ public class SaveFileItem : Button
     public string FileName
     {
         get { return fileName; }
+    }
+
+    /// <summary>
+    /// On Awake, fetches the SelectedButton and subscribe to events
+    /// </summary>
+    private void Awake()
+    {
+        button = GetComponent<SelectedButton>();
+        if (button != null)
+        {
+            button.OnSelection += Select;
+        }
+        else
+        {
+            Debug.LogError("[SaveFileItem] SelectedButton component not found!");
+        }
     }
 
     /// <summary>
@@ -38,22 +58,10 @@ public class SaveFileItem : Button
     }
 
     /// <summary>
-    /// OnSelect override is used to call the Select method when the Item is selected via the UI navigation
-    /// </summary>
-    /// <param name="eventData"></param>
-    public override void OnSelect(BaseEventData eventData)
-    {
-        base.OnSelect(eventData);
-        Select();
-    }
-
-    /// <summary>
     /// Select override shows the selected background image (border) and call the OnSelection event
     /// </summary>
-    public override void Select()
+    public void Select()
     {
-        base.Select();
-        selectedImage.enabled = true;
         OnSelection?.Invoke(this);
     }
 
@@ -62,15 +70,17 @@ public class SaveFileItem : Button
     /// </summary>
     public void Unselect()
     {
-        selectedImage.enabled = false;
+        button.Unselect();
     }
 
     /// <summary>
-    /// OnDestroy, clears the OnSelection event subscription
+    /// OnDestroy, clears the event subscription
     /// </summary>
-    protected override void OnDestroy()
+    protected void OnDestroy()
     {
         // Clear all event subscription
         OnSelection = null;
+
+        if(button != null) button.OnSelection -= Select;
     }
 }

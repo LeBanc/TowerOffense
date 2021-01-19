@@ -4,27 +4,16 @@ using UnityEngine.UI;
 /// <summary>
 /// SavePromptNameCanvas defines the Canvas prompted when asking a Save File Name
 /// </summary>
-public class SavePromptNameCanvas : MonoBehaviour
+public class SavePromptNameCanvas : UICanvas
 {
     // public UI elements
     public InputField inputField;
     public Button okButton;
     public Button cancelButton;
 
-    // private canvas component
-    private Canvas canvas;
-
     // Events
     public delegate void SavePromptNameCanvasEventHandler(string _name);
     public event SavePromptNameCanvasEventHandler OnValidate;
-
-    /// <summary>
-    /// On Awake, fetches the canvas
-    /// </summary>
-    private void Awake()
-    {
-        canvas = GetComponent<Canvas>();
-    }
 
     /// <summary>
     /// Validate method changes the soldier name and hides the canvas
@@ -38,21 +27,19 @@ public class SavePromptNameCanvas : MonoBehaviour
     /// <summary>
     /// Show method inits and displays the SavePromptNameCanvas
     /// </summary>
-    public void Show()
+    public override void Show()
     {
         inputField.text = "New Save Name";
-        canvas.enabled = true;
-        transform.SetAsLastSibling();
+        base.Show();
         inputField.Select();
     }
 
     /// <summary>
     /// Hide method hides the canvas
     /// </summary>
-    public void Hide()
+    public override void Hide()
     {
-        canvas.enabled = false;
-        transform.SetAsFirstSibling();
+        base.Hide();
         OnValidate = null;
     }
 }

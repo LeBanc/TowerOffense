@@ -4,7 +4,7 @@ using UnityEngine.UI;
 /// <summary>
 /// ErrorMessageCanvas is the class managing the Error message Canvas
 /// </summary>
-public class ErrorMessageCanvas : MonoBehaviour
+public class ErrorMessageCanvas : UICanvas
 {
     // Public elements of the Canvas
     public Image errorImage;
@@ -14,20 +14,12 @@ public class ErrorMessageCanvas : MonoBehaviour
     // Default error sprite (from asset)
     public Sprite defaultSprite;
 
-    // Attached Canvas
-    private Canvas canvas;
-
-    public bool IsShown
-    {
-        get { return canvas.enabled; }
-    }
-
     /// <summary>
     /// On Awake, find the Canvas, suscribe to events and hide the error message
     /// </summary>
-    private void Awake()
+    protected override void Awake()
     {
-        canvas = GetComponent<Canvas>();
+        base.Awake();
         Hide();
         okButton.onClick.AddListener(UIManager.HideErrorMessage);
     }
@@ -47,8 +39,8 @@ public class ErrorMessageCanvas : MonoBehaviour
     /// <param name="_sprite">Error sprite to display (optional)</param>
     public void Show(string _message, Sprite _sprite = null)
     {
-        canvas.enabled = true;
-        transform.SetAsLastSibling();
+        Show();
+
         errorText.text = _message;
         if (_sprite != null)
         {
@@ -60,14 +52,5 @@ public class ErrorMessageCanvas : MonoBehaviour
         }
 
         okButton.Select();
-    }
-
-    /// <summary>
-    /// Hide method hides the Error Message Canvas
-    /// </summary>
-    public void Hide()
-    {
-        transform.SetAsFirstSibling(); 
-        canvas.enabled = false;
     }
 }

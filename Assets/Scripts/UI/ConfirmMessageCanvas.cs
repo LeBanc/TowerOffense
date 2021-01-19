@@ -5,7 +5,7 @@ using System;
 /// <summary>
 /// ConfirmMessageCanvas is the class managing the Confirm message Canvas
 /// </summary>
-public class ConfirmMessageCanvas : MonoBehaviour
+public class ConfirmMessageCanvas : UICanvas
 {
     // Public elements of the Canvas
     public Image errorImage;
@@ -16,20 +16,12 @@ public class ConfirmMessageCanvas : MonoBehaviour
     // Default error sprite (from asset)
     public Sprite defaultSprite;
 
-    // Attached Canvas
-    private Canvas canvas;
-
-    public bool IsShown
-    {
-        get { return canvas.enabled; }
-    }
-
     /// <summary>
     /// On Awake, find the Canvas, suscribe to events and hide the confirm message
     /// </summary>
-    private void Awake()
+    protected override void Awake()
     {
-        canvas = GetComponent<Canvas>();
+        base.Awake();
         Hide();
         cancelButton.onClick.AddListener(UIManager.HideConfirmMessage);
     }
@@ -51,8 +43,8 @@ public class ConfirmMessageCanvas : MonoBehaviour
     /// <param name="_sprite">Error sprite to display (optional)</param>
     public void Show(string _message, Action _callback, Sprite _sprite = null)
     {
-        canvas.enabled = true;
-        transform.SetAsLastSibling();
+        Show();
+
         errorText.text = _message;
         if (_sprite != null)
         {
@@ -72,10 +64,9 @@ public class ConfirmMessageCanvas : MonoBehaviour
     /// <summary>
     /// Hide method hides the Confirm Message Canvas
     /// </summary>
-    public void Hide()
+    public override void Hide()
     {
-        transform.SetAsFirstSibling();
-        canvas.enabled = false;
+        base.Hide();
         okButton.onClick.RemoveAllListeners();
     }
 

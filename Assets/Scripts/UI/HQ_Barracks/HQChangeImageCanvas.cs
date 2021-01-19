@@ -4,14 +4,11 @@ using UnityEngine;
 /// <summary>
 /// HQChangeImageCanvas class is the class of the Change Image Canvas
 /// </summary>
-public class HQChangeImageCanvas : MonoBehaviour
+public class HQChangeImageCanvas : UICanvas
 {
     // public UI elements
     public AutoScroll autoScroll;
     public GameObject soldierImageItem;
-
-    // private own Canvas
-    private Canvas canvas;
 
     // List of available soldier sprites
     private List<SoldierImageSelectionItem> soldierImageItemList = new List<SoldierImageSelectionItem>();
@@ -23,14 +20,6 @@ public class HQChangeImageCanvas : MonoBehaviour
     // Events
     public delegate void ChangeImageEventHandler();
     public event ChangeImageEventHandler OnCanvasHide;
-
-    /// <summary>
-    /// On Awake, fetches the canvas
-    /// </summary>
-    private void Awake()
-    {
-        canvas = GetComponent<Canvas>();
-    }
 
     /// <summary>
     /// On Start, initializes the available sprites list
@@ -52,8 +41,7 @@ public class HQChangeImageCanvas : MonoBehaviour
     /// <param name="_soldier"></param>
     public void Show(Soldier _soldier = null)
     {
-        canvas.enabled = true;
-        transform.SetAsLastSibling();
+        Show();
 
         if(_soldier != null)
         {
@@ -86,13 +74,12 @@ public class HQChangeImageCanvas : MonoBehaviour
     /// <summary>
     /// Hide method hides the canvas
     /// </summary>
-    public void Hide()
+    public override void Hide()
     {
         if(selectedImageItem != null) selectedImageItem.Unselect();
         selectedSoldier = null;
 
-        transform.SetAsFirstSibling();
-        canvas.enabled = false;
+        base.Hide();
         OnCanvasHide?.Invoke();
     }
 

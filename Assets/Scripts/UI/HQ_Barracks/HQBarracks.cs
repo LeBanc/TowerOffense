@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
 
-public class HQBarracks : MonoBehaviour
+public class HQBarracks : UICanvas
 {
     // Graphical element for the soldier data display
     public SoldierUpgradeCanvas soldierUpgrade;
@@ -14,29 +14,18 @@ public class HQBarracks : MonoBehaviour
     // Prefab of a SoldierListItem
     public GameObject soldierListItem;
 
-    // private canvas (self)
-    private Canvas canvas;
     // private selected soldier item
     private SoldierListItem selectedSoldierItem;
 
     /// <summary>
-    /// On Awake, fetches canvas and gets the default height of an item
-    /// </summary>
-    private void Awake()
-    {
-        canvas = GetComponent<Canvas>();
-    }
-
-    /// <summary>
     /// Show methods initializes the canvas and the soldier list with all soldiers to display
     /// </summary>
-    public void Show()
+    public override void Show()
     {
         // If canvas is not visible, init and show it
         if (!canvas.enabled)
         {
-            canvas.enabled = true;
-            transform.SetAsLastSibling();
+            base.Show();
             soldierUpgrade.Show();
 
             // If not sort by ID, change the sort type (that will create the soldier list)
@@ -101,14 +90,13 @@ public class HQBarracks : MonoBehaviour
     /// <summary>
     /// Hide method deletes all soldierList items and hides the canvas
     /// </summary>
-    public void Hide()
+    public override void Hide()
     {
         soldierUpgrade.Hide();
 
         ClearSoldierListItems();
 
-        transform.SetAsFirstSibling();
-        canvas.enabled = false;
+        base.Hide();
     }
 
     /// <summary>

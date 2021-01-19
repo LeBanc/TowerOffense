@@ -4,7 +4,7 @@ using UnityEngine.UI;
 /// <summary>
 /// HQCanvas is the class used to manage the overall Menu of HQ management
 /// </summary>
-public class HQCanvas : MonoBehaviour
+public class HQCanvas : UICanvas
 {
     // Text label to display 'Day' value
     public Text day;
@@ -15,15 +15,13 @@ public class HQCanvas : MonoBehaviour
     // Default selected component
     public Selectable defaultSelected;
 
-    // private canvas element
-    private Canvas canvas;
-
     /// <summary>
     /// On Awake, get the Canvas component and subscribe to events
     /// </summary>
-    private void Awake()
+    protected override void Awake()
     {
-        canvas = GetComponent<Canvas>();
+        base.Awake();
+
         PlayManager.OnCoinsUpdate += UpdateCoins;
         PlayManager.OnLoadSquadsOnNewDay += Hide;
         PlayManager.OnEndDay += Show;
@@ -44,22 +42,12 @@ public class HQCanvas : MonoBehaviour
     }
 
     /// <summary>
-    /// Show method shows the whole HQCanvas
-    /// </summary>
-    public void Show()
-    {
-        canvas.enabled = true;
-        transform.SetAsLastSibling();
-    }
-
-    /// <summary>
     /// Hide method hides the HQCanvas
     /// </summary>
-    public void Hide()
+    public override void Hide()
     {
         tabs.HideAll();
-        transform.SetAsFirstSibling();
-        canvas.enabled = false;
+        base.Hide();
     }
 
     /// <summary>

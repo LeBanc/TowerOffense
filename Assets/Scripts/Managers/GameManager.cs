@@ -277,7 +277,7 @@ public class GameManager : Singleton<GameManager>
                 break;
             case GameState.save:
                 if (nextGameState == GameState.pause) {OnSaveToPause?.Invoke(); currentGameState = nextGameState; }
-                if (nextGameState == GameState.play) {OnSaveToPlay?.Invoke(); currentGameState = nextGameState; }
+                else if (nextGameState == GameState.play) {OnSaveToPlay?.Invoke(); currentGameState = nextGameState; }
                 else {Debug.LogError("[GameManager] Cannot transition from Save to " + nextGameState); nextGameState = currentGameState; }
                 break;
             default:

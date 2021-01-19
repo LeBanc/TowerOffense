@@ -61,7 +61,7 @@ public class HQCCSoldierSelection : MonoBehaviour
             // Else create a new SoldierSelectionItem and initialize it
             GameObject _item = autoScroll.AddPrefabReturnInstance(soldierSelectionItem);
             _item.GetComponent<SoldierSelectionItem>().Setup(_soldier);
-            _item.GetComponent<SoldierSelectionItem>().onClick.AddListener(delegate { ChangeSelection(_item.GetComponent<SoldierSelectionItem>()); });
+            _item.GetComponent<SoldierSelectionItem>().OnSelection += ChangeSelection;
         }
     }
 
@@ -81,6 +81,11 @@ public class HQCCSoldierSelection : MonoBehaviour
     /// </summary>
     private void Clear()
     {
+        foreach(GameObject _go in autoScroll.List)
+        {
+            _go.GetComponent<SoldierSelectionItem>().OnSelection -= ChangeSelection;
+        }
+
         autoScroll.Clear();
     }
 
@@ -122,11 +127,12 @@ public class HQCCSoldierSelection : MonoBehaviour
     /// <param name="_item">Item to select (SoldierSelectionItem)</param>
     private void ChangeSelection(SoldierSelectionItem _item)
     {
-        if(selectedItem != _item)
+        if (selectedItem != null)
         {
-            if (selectedItem != null) selectedItem.Unselect();
-            selectedItem = _item;
-        }        
+            if (selectedItem == _item) return;
+            selectedItem.Unselect();
+        }
+        selectedItem = _item;
     }
 
     /// <summary>

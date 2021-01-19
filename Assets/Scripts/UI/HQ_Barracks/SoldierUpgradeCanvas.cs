@@ -5,7 +5,7 @@ using UnityEngine.UI;
 /// <summary>
 /// SoldierUpgradeCanvas is the class linked to the Soldier Upgrade Canvas
 /// </summary>
-public class SoldierUpgradeCanvas : MonoBehaviour
+public class SoldierUpgradeCanvas : UICanvas
 {
     // public graphical elements
     public SoldierImage soldierImage;
@@ -39,16 +39,8 @@ public class SoldierUpgradeCanvas : MonoBehaviour
     public HQChangeImageCanvas changeImageCanvas;
     public HQLevelupCanvas levelupCanvas;
 
+    // private Soldier for storing current selection
     private Soldier selectedSoldier;
-    private Canvas canvas;
-
-    /// <summary>
-    /// On Awke, fetches the canvas
-    /// </summary>
-    private void Awake()
-    {
-        canvas = GetComponent<Canvas>();
-    }
 
     /// <summary>
     /// Setup method is used to initialize all data with a soldier
@@ -221,22 +213,15 @@ public class SoldierUpgradeCanvas : MonoBehaviour
     }
 
     /// <summary>
-    /// Show method displays the canvas and subcanvas
-    /// </summary>
-    public void Show()
-    {
-        canvas.enabled = true;
-    }
-
-    /// <summary>
     /// Show method hides the canvas and subcanvas
     /// </summary>
-    public void Hide()
+    public override void Hide()
     {
-        canvas.enabled = false;
         changeNameCanvas.Hide();
         changeImageCanvas.Hide();
         levelupCanvas.Hide();
+
+        base.Hide();
     }
 
     /// <summary>

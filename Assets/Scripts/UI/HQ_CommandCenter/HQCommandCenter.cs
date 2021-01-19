@@ -3,7 +3,7 @@
 /// <summary>
 /// HQCommandCenter is the class used by the CommandCenter canvas
 /// </summary>
-public class HQCommandCenter : MonoBehaviour
+public class HQCommandCenter : UICanvas
 {
     // Public elements used in the prefab
     public HQSquadHeader squad1Header;
@@ -16,16 +16,12 @@ public class HQCommandCenter : MonoBehaviour
     // Private Squad to save the selected squad
     private Squad selectedSquad;
 
-    // Private canvas element
-    private Canvas canvas;
-
     /// <summary>
     /// On Awake, fetches the canvas and subscribe to events
     /// </summary>
-    private void Awake()
+    protected override void Awake()
     {
-        // Get Canvas component
-        canvas = GetComponent<Canvas>();
+        base.Awake();
 
         squad1Header.OnSelection += SelectSquadHeader;
         squad2Header.OnSelection += SelectSquadHeader;
@@ -57,11 +53,9 @@ public class HQCommandCenter : MonoBehaviour
     /// <summary>
     /// Show methods displays the canvas and its subcanvas
     /// </summary>
-    public void Show()
+    public override void Show()
     {
-        // Show canvas and subcanvas
-        canvas.enabled = true;
-        transform.SetAsLastSibling();
+        base.Show();
 
         squad1Header.Show();
         squad2Header.Show();
@@ -75,7 +69,7 @@ public class HQCommandCenter : MonoBehaviour
     /// <summary>
     /// Hide methods hides the canvas and its subcanvas
     /// </summary>
-    public void Hide()
+    public override void Hide()
     {
         // Hide canvas and subcanvas
         squad1Header.Hide();
@@ -84,8 +78,7 @@ public class HQCommandCenter : MonoBehaviour
         squad4Header.Hide();
         squadEditionCanvas.Hide();
 
-        transform.SetAsFirstSibling();
-        canvas.enabled = false;
+        base.Hide();
     }
 
     /// <summary>
