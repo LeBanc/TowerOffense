@@ -13,8 +13,9 @@ GameObject:
   - component: {fileID: 1926868475141426374}
   - component: {fileID: 1926868475141426377}
   - component: {fileID: 1926868475141426373}
+  - component: {fileID: 8899901957641959272}
   m_Layer: 5
-  m_Name: CityCanvas
+  m_Name: _CityCanvas
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -123,6 +124,23 @@ MonoBehaviour:
   m_FillOrigin: 0
   m_UseSpriteMesh: 0
   m_PixelsPerUnitMultiplier: 1
+--- !u!114 &8899901957641959272
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1926868475141426371}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: dc42784cf147c0c48a680349fa168899, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  m_IgnoreReversedGraphics: 1
+  m_BlockingObjects: 0
+  m_BlockingMask:
+    serializedVersion: 2
+    m_Bits: 4294967295
 --- !u!1 &1926868475511706222
 GameObject:
   m_ObjectHideFlags: 0
@@ -158,7 +176,7 @@ RectTransform:
   m_AnchorMin: {x: 1, y: 0}
   m_AnchorMax: {x: 1, y: 1}
   m_AnchoredPosition: {x: 0, y: 0}
-  m_SizeDelta: {x: 855, y: 0}
+  m_SizeDelta: {x: 870, y: 0}
   m_Pivot: {x: 1, y: 0.5}
 --- !u!222 &1926868475511706227
 CanvasRenderer:
@@ -1550,6 +1568,16 @@ PrefabInstance:
         type: 3}
       propertyPath: m_FontData.m_MinSize
       value: 3
+      objectReference: {fileID: 0}
+    - target: {fileID: 8166120584270773192, guid: 2de71f222f4125b4e960e84af14d3cbf,
+        type: 3}
+      propertyPath: m_RaycastTarget
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 8166120584270773192, guid: 2de71f222f4125b4e960e84af14d3cbf,
+        type: 3}
+      propertyPath: m_Type
+      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 8916228764910673933, guid: 2de71f222f4125b4e960e84af14d3cbf,
         type: 3}
