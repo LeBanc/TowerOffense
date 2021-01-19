@@ -188,6 +188,7 @@ public class Tower : Enemy
     {
         // Unsubscribe to events
         GameManager.PlayUpdate -= EnemyUpdate;
+        StopSpawning();
     }
 
     /// <summary>

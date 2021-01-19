@@ -26,7 +26,7 @@ public class EnemySoldier : Enemy
 
         // Subscribe to events
         EnableUpdate();
-        PlayManager.OnEndDay += DestroyEnemy;
+        PlayManager.OnEndDay += RemoveEnemy;
     }
 
     /// <summary>
@@ -35,7 +35,7 @@ public class EnemySoldier : Enemy
     protected override void OnDestroy()
     {
         OnDestruction -= delegate { PlayManager.enemyList.Remove(this); };
-        PlayManager.OnEndDay -= DestroyEnemy;
+        PlayManager.OnEndDay -= RemoveEnemy;
         base.OnDestroy();
     }
 
@@ -46,8 +46,23 @@ public class EnemySoldier : Enemy
     {
         base.DestroyEnemy();
         GetComponentInChildren<MeshRenderer>().material.color = Color.black;
-        OnDestruction -= delegate { PlayManager.enemyList.Remove(this); };
-        PlayManager.OnEndDay -= DestroyEnemy;
+        //OnDestruction -= delegate { PlayManager.enemyList.Remove(this); };
+        Destroy(this.gameObject, Time.deltaTime);
+    }
+
+    /// <summary>
+    /// RemoveEnemy method destroys the enemy soldier without adding XP and removing it from the PlayManager
+    /// </summary>
+    protected void RemoveEnemy()
+    {
+        if (destroyed) return;
+        destroyed = true;
+        GameManager.PlayUpdate -= EnemyUpdate;
+        // GFX
+        OnDamage -= healthBar.UpdateValue;
+        healthBar.Hide();
+        healthBar.Remove();
+        //OnDestruction -= delegate { PlayManager.enemyList.Remove(this); };
         Destroy(this.gameObject, Time.deltaTime);
     }
 
@@ -90,7 +105,11 @@ public class EnemySoldier : Enemy
         {
             navAgent.updateRotation = true;
             navAgent.isStopped = false;
-            navAgent.SetDestination(GridAdjustment.GetGridCoordinates(Ranges.GetNearestSquad(transform).transform.position));
+
+            if(PlayManager.squadUnitList.Count > 0) // Test if PlayManager list is not empty to avoid setting an empty destination and creating an error
+            {
+                navAgent.SetDestination(GridAdjustment.GetGridCoordinates(Ranges.GetNearestSquad(transform).transform.position));
+            }
         }
         else
         {

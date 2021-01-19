@@ -24,8 +24,8 @@ public class HQCanvas : UICanvas
 
         PlayManager.OnCoinsUpdate += UpdateCoins;
         PlayManager.OnLoadSquadsOnNewDay += Hide;
-        PlayManager.OnEndDay += Show;
-        PlayManager.OnEndDay += Init;
+        PlayManager.OnHQPhase += Show;
+        PlayManager.OnHQPhase += Init;
         PlayManager.OnLoadGame += Init;
     }
 
@@ -36,8 +36,8 @@ public class HQCanvas : UICanvas
     {
         PlayManager.OnCoinsUpdate -= UpdateCoins;
         PlayManager.OnLoadSquadsOnNewDay -= Hide;
-        PlayManager.OnEndDay -= Show;
-        PlayManager.OnEndDay -= Init;
+        PlayManager.OnHQPhase -= Show;
+        PlayManager.OnHQPhase -= Init;
         PlayManager.OnLoadGame -= Init;
     }
 

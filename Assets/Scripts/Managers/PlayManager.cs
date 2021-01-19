@@ -78,6 +78,7 @@ public class PlayManager : Singleton<PlayManager>
     public static event PlayManagerEvents OnLoadSquadsOnNewDay;
     public static event PlayManagerEvents OnRetreatAll;
     public static event PlayManagerEvents OnEndDay;
+    public static event PlayManagerEvents OnHQPhase;
     public static event PlayManagerEvents OnCoinsUpdate;
     public static event PlayManagerEvents OnLoadGame;
     public static event PlayManagerEvents OnRecruit;
@@ -157,15 +158,32 @@ public class PlayManager : Singleton<PlayManager>
             // Increment day count
             day++;
 
-            // Add recruitment chances and reset the enemy list
-            recruitment += enemyList.Count;
-            recruitment++;
-            RecruitTest();
-            enemyList.Clear();
-
-            // Switch to HQ
-            OnEndDay?.Invoke();
+            // End the day and switch to HQ phase
+            Instance.EndDayRoutine();
         }
+    }
+
+    private void EndDayRoutine()
+    {
+        // Set End of day for all City phase listeners
+        OnEndDay?.Invoke();
+
+        // Add recruitment chances and reset the enemy list
+        recruitment += enemyList.Count;
+        recruitment++;
+        RecruitTest();
+        enemyList.Clear();
+
+        // Compute PlayManager data
+        SetXP();
+        AddCoins(attackCoins);
+
+        // Switch UI from City phase to HQ phase
+        OnHQPhase?.Invoke();
+
+        // Autosave
+        AutoSaveGame();
+
     }
 
     static void RecruitTest()
@@ -206,22 +224,6 @@ public class PlayManager : Singleton<PlayManager>
         soldierList = new List<Soldier>();
         soldierIDList = new List<int>();
         squadUnitList = new List<SquadUnit>();
-
-        // Subscribe to events
-        OnEndDay += AutoSaveGame;
-        OnEndDay += SetXP;
-        OnEndDay += delegate { AddCoins(attackCoins); } ;
-    }
-
-    /// <summary>
-    /// OnDestroy, unsubscribe from events and destroy the singleton
-    /// </summary>
-    protected override void OnDestroy()
-    {
-        OnEndDay -= SetXP;
-        OnEndDay -= delegate { AddCoins(attackCoins); };
-        OnEndDay -= AutoSaveGame;
-        base.OnDestroy();
     }
 
     /// <summary>

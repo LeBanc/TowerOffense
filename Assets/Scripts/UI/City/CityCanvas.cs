@@ -67,8 +67,8 @@ public class CityCanvas : UICanvas
         slowMotionEffect.CrossFadeAlpha(0f, 0f, true);
 
         PlayManager.OnLoadSquadsOnNewDay += Show;
-        PlayManager.OnEndDay += Hide;
-        PlayManager.OnEndDay += Reset;
+        PlayManager.OnHQPhase += Hide;
+        PlayManager.OnHQPhase += Reset;
         //enabled = false;
     }
 
@@ -80,8 +80,8 @@ public class CityCanvas : UICanvas
         // Unlink update events
         GameManager.PlayUpdate -= UIUpdate;
         PlayManager.OnLoadSquadsOnNewDay -= Show;
-        PlayManager.OnEndDay -= Hide;
-        PlayManager.OnEndDay -= Reset;
+        PlayManager.OnHQPhase -= Hide;
+        PlayManager.OnHQPhase -= Reset;
         PlayManager.OnNewHealthBarAdded -= AddHealthBar;
 
         squad1.OnRetreat -= HideRetreatButton;

@@ -43,8 +43,8 @@ public class SoldierPreview : MonoBehaviour
     /// </summary>
     private void Start()
     {
-        PlayManager.OnEndDay += UpdateHPBarValue;
-        PlayManager.OnEndDay += UpdateXPBarValue;
+        PlayManager.OnHQPhase += UpdateHPBarValue;
+        PlayManager.OnHQPhase += UpdateXPBarValue;
     }
 
     /// <summary>
@@ -52,8 +52,8 @@ public class SoldierPreview : MonoBehaviour
     /// </summary>
     private void OnDestroy()
     {
-        PlayManager.OnEndDay -= UpdateHPBarValue;
-        PlayManager.OnEndDay -= UpdateXPBarValue;
+        PlayManager.OnHQPhase -= UpdateHPBarValue;
+        PlayManager.OnHQPhase -= UpdateXPBarValue;
     }
 
     /// <summary>
