@@ -216,7 +216,7 @@ public class SoldierUnit : Shootable
                 if (IsTargetInSight(selectedTarget))
                 {
                     // shoot target
-                    if(!wounded && !isBuilding)Shoot(selectedTarget);
+                    if (!wounded && !isBuilding)Shoot(selectedTarget);
                 }
             }
             else

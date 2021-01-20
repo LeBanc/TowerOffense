@@ -185,6 +185,7 @@ public class Shootable : MonoBehaviour
     /// <returns>Shootable or not</returns>
     protected virtual bool IsTargetShootable(Shootable _t)
     {
+        //Debug.Log(transform.gameObject.name + " to " + _t.gameObject.name + " distance: " + (transform.position - _t.transform.position).magnitude);
         return (shortRangeAtk > 0 && Ranges.IsShootableShort(transform, _t)) ||
             (middleRangeAtk > 0 && Ranges.IsShootableMiddle(transform, _t)) ||
             (longRangeAtk > 0 && Ranges.IsShootableLong(transform, _t));
@@ -213,15 +214,15 @@ public class Shootable : MonoBehaviour
 
         // Check at each range the target is and calls the dedicated damage method
         // This is used to oppose attacker RangeAttack values to target RangeDefense ones
-        if (Ranges.IsInShortRange(transform, _t))
+        if (Ranges.IsInShortRange(transform, _t) && shortRangeAtk>0)
         {
             _t.DamageShortRange(shortRangeAtk);
         }
-        else if (Ranges.IsInMiddleRange(transform, _t))
+        else if (Ranges.IsInMiddleRange(transform, _t) && middleRangeAtk>0)
         {
             _t.DamageMiddleRange(middleRangeAtk);
         }
-        else if (Ranges.IsInLongRange(transform, _t))
+        else if (Ranges.IsInLongRange(transform, _t) && longRangeAtk>0)
         {
             _t.DamageLongRange(longRangeAtk);
         }

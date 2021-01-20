@@ -14,8 +14,6 @@ public class EnemySoldier : Enemy
     /// </summary>
     protected override void Start()
     {
-        base.Start();
-
         // Get the NavMeshAgent and enable it
         navAgent = GetComponent<NavMeshAgent>();
         navAgent.enabled = true;
@@ -85,6 +83,7 @@ public class EnemySoldier : Enemy
         middleRangeDef = _defense;
         longRangeDef = 0;
         shootingDataDuration = 3f;
+        shootingDelay = shootingDataDuration;
         active = true;
 
         // Show the health bar at the init values
@@ -98,7 +97,7 @@ public class EnemySoldier : Enemy
     protected override void EnemyUpdate()
     {
         // Search for nearest SoldierUnit target
-        Shootable _target = Ranges.GetNearestSoldier(this.transform, shortRangeAtk, middleRangeAtk, longRangeAtk);
+        Shootable _target = Ranges.GetNearestSoldier(this, shortRangeAtk, middleRangeAtk, longRangeAtk);
         if (_target != null && _target != selectedTarget) SetTarget(_target);
 
         if (selectedTarget == null)

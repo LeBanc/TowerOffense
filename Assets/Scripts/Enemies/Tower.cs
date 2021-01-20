@@ -54,7 +54,6 @@ public class Tower : Enemy
         shortRangeCells = new List<Vector3>();
         middleRangeCells = new List<Vector3>();
         longRangeCells = new List<Vector3>();
-        InitializeAvailableCells();
     }
 
     /// <summary>
@@ -179,6 +178,7 @@ public class Tower : Enemy
         base.EnableUpdate();
         spawnCounter = 0f;
         GameManager.PlayUpdate += SpawnUpdate;
+        InitializeAvailableCells(); // Init cells at each day to avoid error at init when loading
     }
 
     /// <summary>
@@ -205,7 +205,7 @@ public class Tower : Enemy
     protected override void EnemyUpdate()
     {
         if (destroyed) return;
-        Shootable _target = Ranges.GetNearestSoldier(this.transform, shortRangeAtk, middleRangeAtk, longRangeAtk);
+        Shootable _target = Ranges.GetNearestSoldier(this, shortRangeAtk, middleRangeAtk, longRangeAtk);
         if (_target != selectedTarget) SetTarget(_target);
 
         if (!active && !destroyed && selectedTarget != null) Activate();
@@ -249,6 +249,10 @@ public class Tower : Enemy
     /// </summary>
     private void InitializeAvailableCells()
     {
+        shortRangeCells.Clear();
+        middleRangeCells.Clear();
+        LongRangeCells.Clear();
+
         for (int i = -5; i <= 5; i++)
         {
             for (int j = -5; j <= 5; j++)
@@ -275,6 +279,25 @@ public class Tower : Enemy
                 }
             }
         }
+
+        /*
+        string _res = gameObject.name + " " + transform.position + "\nShortRange: ";
+        foreach(Vector3 _vect in shortRangeCells)
+        {
+            _res += _vect + " | ";
+        }
+        _res += "\nMiddleRange: ";
+        foreach (Vector3 _vect in middleRangeCells)
+        {
+            _res += _vect + " | ";
+        }
+        _res += "\nLongRange: ";
+        foreach (Vector3 _vect in longRangeCells)
+        {
+            _res += _vect + " | ";
+        }
+        Debug.Log(_res);
+        */
     }
 
     public List<Vector3> ShortRangeCells
@@ -306,6 +329,16 @@ public class Tower : Enemy
         {
             _cells.Remove(GridAdjustment.GetGridCoordinates(_squad.transform.position));
             _cells.Remove(GridAdjustment.GetGridCoordinates(_squad.Destination));
+        }
+
+        // Remove a cell from the list if a turret or a turret base is on it
+        foreach(Turret _turret in PlayManager.turretList)
+        {
+            _cells.Remove(GridAdjustment.GetGridCoordinates(_turret.transform.position));
+        }
+        foreach(TurretBase _turretBase in PlayManager.turretBaseList)
+        {
+            _cells.Remove(GridAdjustment.GetGridCoordinates(_turretBase.transform.position));
         }
 
         // Remove a cell from the list if there is already a soldier on it
