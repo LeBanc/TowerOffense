@@ -1420,6 +1420,11 @@ PrefabInstance:
       propertyPath: m_Name
       value: OKButton
       objectReference: {fileID: 0}
+    - target: {fileID: 5266140024695331867, guid: 2de71f222f4125b4e960e84af14d3cbf,
+        type: 3}
+      propertyPath: m_Text
+      value: OK
+      objectReference: {fileID: 0}
     - target: {fileID: 8916228764910673933, guid: 2de71f222f4125b4e960e84af14d3cbf,
         type: 3}
       propertyPath: m_LocalPosition.x
