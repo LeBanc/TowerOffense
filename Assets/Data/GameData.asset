@@ -17,6 +17,7 @@ MonoBehaviour:
   longRange: 50
   baseAttackTime: 45
   baseHealAmount: 30
+  baseRecruitAmount: 10
   ranks:
   - Soldier
   - Private

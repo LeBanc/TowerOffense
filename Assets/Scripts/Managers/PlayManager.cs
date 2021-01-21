@@ -194,7 +194,7 @@ public class PlayManager : Singleton<PlayManager>
             newSoldier = true;
             OnRecruit?.Invoke();
             Debug.Log("New Soldier at " + recruitment + "% chances");
-            recruitment = 0;
+            recruitment = data.baseRecruitAmount;
         }
     }
 
@@ -253,6 +253,9 @@ public class PlayManager : Singleton<PlayManager>
             hq = _hq.GetComponent<HQ>();
             hqPos = GridAdjustment.GetGridCoordinates(new Vector3(hq.transform.position.x, 0f, hq.transform.position.z));
         }
+
+        // To remove after load/save of recruitment value
+        recruitment = data.baseRecruitAmount;
     }
 
     /// <summary>
@@ -289,7 +292,7 @@ public class PlayManager : Singleton<PlayManager>
         // Init HQ data
         day = 1;
         coins = 0;
-        recruitment = 0;
+        recruitment = data.baseRecruitAmount;
         infirmaryLevel = 0;
         radioLevel = 0;
 

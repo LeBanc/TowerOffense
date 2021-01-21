@@ -20,6 +20,8 @@ public class GameData: ScriptableObject
     // Heal basic amount
     [Header("Basic amounts")]
     public int baseHealAmount = 30;
+    // Recruitment basic amount
+    public int baseRecruitAmount = 10;
 
     // Soldier ranks titles
     [Header("Soldier ranks")]
