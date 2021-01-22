@@ -225,7 +225,7 @@ GameObject:
   - component: {fileID: 5443253010953536260}
   - component: {fileID: 5197293641080186327}
   m_Layer: 5
-  m_Name: City_SquadActionPanel
+  m_Name: SquadActionPanel
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -816,6 +816,12 @@ PrefabInstance:
       propertyPath: m_Group
       value: 
       objectReference: {fileID: 1201286139373734081}
+    - target: {fileID: 3228243787000433779, guid: 6199a4c5111ef23459fe4b543107351d,
+        type: 3}
+      propertyPath: m_Sprite
+      value: 
+      objectReference: {fileID: 21300000, guid: 02f703f58f6243e469b44a727d9ac809,
+        type: 3}
     - target: {fileID: 3934850104665440772, guid: 6199a4c5111ef23459fe4b543107351d,
         type: 3}
       propertyPath: m_LocalPosition.x
@@ -1298,6 +1304,12 @@ PrefabInstance:
       propertyPath: m_Group
       value: 
       objectReference: {fileID: 1201286139373734081}
+    - target: {fileID: 3228243787000433779, guid: 6199a4c5111ef23459fe4b543107351d,
+        type: 3}
+      propertyPath: m_Sprite
+      value: 
+      objectReference: {fileID: 21300000, guid: 0adc414fc20183a45823a4adb6e5dd49,
+        type: 3}
     - target: {fileID: 3934850104665440772, guid: 6199a4c5111ef23459fe4b543107351d,
         type: 3}
       propertyPath: m_LocalPosition.x
@@ -1618,6 +1630,12 @@ PrefabInstance:
       propertyPath: m_Group
       value: 
       objectReference: {fileID: 1201286139373734081}
+    - target: {fileID: 3228243787000433779, guid: 6199a4c5111ef23459fe4b543107351d,
+        type: 3}
+      propertyPath: m_Sprite
+      value: 
+      objectReference: {fileID: 21300000, guid: feb1381032374c6428dee4c3a889bcc5,
+        type: 3}
     - target: {fileID: 3934850104665440772, guid: 6199a4c5111ef23459fe4b543107351d,
         type: 3}
       propertyPath: m_LocalPosition.x
@@ -2201,6 +2219,12 @@ PrefabInstance:
       value: HealToggle
       objectReference: {fileID: 0}
     - target: {fileID: 7974412962285817638, guid: 35a4c86051ffc494aa51d4016b2faf21,
+        type: 3}
+      propertyPath: m_Sprite
+      value: 
+      objectReference: {fileID: 21300000, guid: dddcc0cb56bc6ac4bb3008b8497b9a22,
+        type: 3}
+    - target: {fileID: 9188009670917389914, guid: 35a4c86051ffc494aa51d4016b2faf21,
         type: 3}
       propertyPath: m_Sprite
       value: 
