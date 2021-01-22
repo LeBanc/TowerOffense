@@ -237,5 +237,6 @@ public class HQ : MonoBehaviour
     public static void InstantiateHQCandidate(Vector3 _position)
     {
         GameObject _candidate = Instantiate(hqCandidateInstance, _position, Quaternion.identity, GameObject.Find("HQCandidates").transform);
+        PlayManager.hqCandidateList.Add(_candidate.GetComponent<HQCandidate>()); ;
     }
 }

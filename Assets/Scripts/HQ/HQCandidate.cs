@@ -11,7 +11,7 @@ public class HQCandidate : Buildable
     protected override void Start()
     {
         base.Start();
-        PlayManager.hqCandidateList.Add(this);
+        if(!PlayManager.hqCandidateList.Contains(this)) PlayManager.hqCandidateList.Add(this);
     }
 
     /// <summary>
