@@ -91,7 +91,7 @@ public static class Ranges
         Ray _ray;
         RaycastHit _hit;
         Collider[] _foundTransforms;
-        _foundTransforms = Physics.OverlapSphere(_source.transform.position, _rangeMax, LayerMask.GetMask("Soldiers"));
+        _foundTransforms = Physics.OverlapSphere(GridAdjustment.GetGridCoordinates(_source.transform.position), _rangeMax +15f, LayerMask.GetMask("Soldiers"));
         if (_foundTransforms.Length > 0)
         {
             foreach (Collider c in _foundTransforms)
@@ -101,9 +101,12 @@ public static class Ranges
                     foreach(Transform _t in _source.hitList)
                     {
                         _ray = new Ray(_t.position, (c.transform.position - _t.position).normalized);
-                        if (Physics.Raycast(_ray, out _hit))
+                        if (Physics.Raycast(_ray, out _hit, PlayManager.LongRange, LayerMask.GetMask(new string[] { "Soldiers", "Buildings", "Terrain" })))
                         {
-                            if (_hit.collider.gameObject == c.gameObject && !_soldier.IsWounded && IsInRange(_source.transform, _hit.transform, _rangeMax, _rangeMin)) _targets.Add(_soldier);
+                            if (_hit.collider.gameObject == c.gameObject && !_soldier.IsWounded && IsInRange(_source.transform, _hit.transform, _rangeMax, _rangeMin))
+                            {
+                                _targets.Add(_soldier);
+                            }
                         }
                     }
                 }
@@ -112,7 +115,7 @@ public static class Ranges
                     foreach(Transform _t in _source.hitList)
                     {
                         _ray = new Ray(_t.position, (c.transform.position - _t.position).normalized);
-                        if (Physics.Raycast(_ray, out _hit))
+                        if (Physics.Raycast(_ray, out _hit, PlayManager.LongRange, LayerMask.GetMask(new string[] { "Soldiers", "Buildings", "Terrain" })))
                         {
                             if (_hit.collider.gameObject == c.gameObject && IsInRange(_source.transform, _hit.transform, _rangeMax, _rangeMin)) _targets.Add(_turret);
                         }
@@ -203,7 +206,7 @@ public static class Ranges
     {
         List<Enemy> _targets = new List<Enemy>();
         Collider[] _foundTransforms;
-        _foundTransforms = Physics.OverlapSphere(_source.position, PlayManager.ShortRange, LayerMask.GetMask("Enemies"));
+        _foundTransforms = Physics.OverlapSphere(GridAdjustment.GetGridCoordinates(_source.position), PlayManager.ShortRange +15f, LayerMask.GetMask("Enemies"));
         if (_foundTransforms.Length > 0)
         {
             foreach (Collider c in _foundTransforms)
@@ -229,7 +232,7 @@ public static class Ranges
     {
         List<Enemy> _targets = new List<Enemy>();
         Collider[] _foundTransforms;
-        _foundTransforms = Physics.OverlapSphere(_source.position, PlayManager.MiddleRange, LayerMask.GetMask("Enemies"));
+        _foundTransforms = Physics.OverlapSphere(GridAdjustment.GetGridCoordinates(_source.position), PlayManager.MiddleRange +15f, LayerMask.GetMask("Enemies"));
         if (_foundTransforms.Length > 0)
         {
             foreach (Collider c in _foundTransforms)
@@ -255,7 +258,7 @@ public static class Ranges
     {
         List<Enemy> _targets = new List<Enemy>();
         Collider[] _foundTransforms;
-        _foundTransforms = Physics.OverlapSphere(_source.position, PlayManager.LongRange, LayerMask.GetMask("Enemies"));
+        _foundTransforms = Physics.OverlapSphere(GridAdjustment.GetGridCoordinates(_source.position), PlayManager.LongRange +15f, LayerMask.GetMask("Enemies"));
         if (_foundTransforms.Length > 0)
         {
             foreach (Collider c in _foundTransforms)
@@ -370,7 +373,7 @@ public static class Ranges
     private static bool IsInRange(Transform _source, Transform _target, float _rangeMax, float _rangeMin = 0f)
     {
         float _distance = (GridAdjustment.GetGridCoordinates(_target.position) - GridAdjustment.GetGridCoordinates(_source.position)).magnitude;
-        return (_distance <= _rangeMax +5f && _distance > _rangeMin + 5f);
+        return (_distance <= _rangeMax +5f && ((_rangeMin>0)?(_distance > _rangeMin + 5f):true));
     }
 
     public static bool IsInShortRange<T>(Transform _source, T _target) where T : Shootable
