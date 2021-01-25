@@ -1,4 +1,5 @@
 ﻿using UnityEngine;
+using UnityEngine.UI;
 
 /// <summary>
 /// HQCommandCenter is the class used by the CommandCenter canvas
@@ -24,9 +25,16 @@ public class HQCommandCenter : UICanvas
         base.Awake();
 
         squad1Header.OnSelection += SelectSquadHeader;
+        squad1Header.OnSelection += delegate { squad2Header.select.Unselect(); squad3Header.select.Unselect(); squad4Header.select.Unselect(); };
+
         squad2Header.OnSelection += SelectSquadHeader;
+        squad2Header.OnSelection += delegate { squad1Header.select.Unselect(); squad3Header.select.Unselect(); squad4Header.select.Unselect(); };
+
         squad3Header.OnSelection += SelectSquadHeader;
+        squad3Header.OnSelection += delegate { squad2Header.select.Unselect(); squad1Header.select.Unselect(); squad4Header.select.Unselect(); };
+
         squad4Header.OnSelection += SelectSquadHeader;
+        squad4Header.OnSelection += delegate { squad2Header.select.Unselect(); squad3Header.select.Unselect(); squad1Header.select.Unselect(); };
 
         squad1Header.OnUnlock += delegate { UpdateSquadHeaders(); };
         squad2Header.OnUnlock += delegate { UpdateSquadHeaders(); };
@@ -40,9 +48,16 @@ public class HQCommandCenter : UICanvas
     private void OnDestroy()
     {
         squad1Header.OnSelection -= SelectSquadHeader;
+        squad1Header.OnSelection -= delegate { squad2Header.select.Unselect(); squad3Header.select.Unselect(); squad4Header.select.Unselect(); };
+
         squad2Header.OnSelection -= SelectSquadHeader;
+        squad2Header.OnSelection -= delegate { squad1Header.select.Unselect(); squad3Header.select.Unselect(); squad4Header.select.Unselect(); };
+
         squad3Header.OnSelection -= SelectSquadHeader;
+        squad3Header.OnSelection -= delegate { squad2Header.select.Unselect(); squad1Header.select.Unselect(); squad4Header.select.Unselect(); };
+
         squad4Header.OnSelection -= SelectSquadHeader;
+        squad4Header.OnSelection -= delegate { squad2Header.select.Unselect(); squad3Header.select.Unselect(); squad1Header.select.Unselect(); };
 
         squad1Header.OnUnlock -= delegate { UpdateSquadHeaders(); };
         squad2Header.OnUnlock -= delegate { UpdateSquadHeaders(); };
@@ -88,6 +103,13 @@ public class HQCommandCenter : UICanvas
     private void SelectSquadHeader(HQSquadHeader _squadHeader)
     {
         SelectSquad(_squadHeader.Squad);
+
+
+
+        // Set Up navigation of Engage button to Selected SquadHeader
+        Navigation _nav = squadEditionCanvas.engageButton.navigation;
+        _nav.selectOnUp = _squadHeader.select;
+        squadEditionCanvas.engageButton.navigation = _nav;
     }
 
     /// <summary>

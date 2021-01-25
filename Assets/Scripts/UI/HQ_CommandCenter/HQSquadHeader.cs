@@ -8,11 +8,16 @@ public class HQSquadHeader : MonoBehaviour
 {
     // Public elements of the Squad Header
     public Image background;
+    public SelectedButton select;
     public Toggle engage;
     public SoldierImage soldier1Image;
     public SoldierImage soldier2Image;
     public SoldierImage soldier3Image;
     public SoldierImage soldier4Image;
+    public HealthBar soldier1Healthbar;
+    public HealthBar soldier2Healthbar;
+    public HealthBar soldier3Healthbar;
+    public HealthBar soldier4Healthbar;
     public Text atkShortValue;
     public Text atkMiddleValue;
     public Text atkLongValue;
@@ -58,6 +63,13 @@ public class HQSquadHeader : MonoBehaviour
         unlockText.text = "Locked";
         unlockCostLabel.text = "Cost: " + unlockCost.ToString();
         unlockCostLabel.enabled = false;
+
+        // Events
+        select.OnSelection += Select;
+        PlayManager.OnHQPhase += UpdateSoldier1;
+        PlayManager.OnHQPhase += UpdateSoldier2;
+        PlayManager.OnHQPhase += UpdateSoldier3;
+        PlayManager.OnHQPhase += UpdateSoldier4;
     }
 
     #region Canvas
@@ -112,8 +124,8 @@ public class HQSquadHeader : MonoBehaviour
         squad.OnPrefRangeChange += UpdateRangeChoice;
 
         // Set the Engage value and link event
-        engage.isOn = squad.isEngaged;
-        engage.onValueChanged.AddListener(delegate { squad.Engage(engage.isOn); });
+        UpdateEngageValue();
+        squad.OnEngageChange += UpdateEngageValue;
     }
 
     /// <summary>
@@ -130,8 +142,14 @@ public class HQSquadHeader : MonoBehaviour
             squad.OnSoldier4Change -= UpdateSoldier4;
             squad.OnValueChange -= UpdateSquadValues;
             squad.OnPrefRangeChange -= UpdateRangeChoice;
-            engage.onValueChanged.RemoveAllListeners();
+            squad.OnEngageChange -= UpdateEngageValue;
         }
+
+        select.OnSelection -= Select;
+        PlayManager.OnHQPhase -= UpdateSoldier1;
+        PlayManager.OnHQPhase -= UpdateSoldier2;
+        PlayManager.OnHQPhase -= UpdateSoldier3;
+        PlayManager.OnHQPhase -= UpdateSoldier4;
     }
 
     #region Update elements
@@ -148,7 +166,17 @@ public class HQSquadHeader : MonoBehaviour
     /// </summary>
     private void UpdateSoldier1()
     {
+        if (squad == null) return;
         soldier1Image.Setup(squad.Soldiers[0]);
+        if(squad.Soldiers[0] == null)
+        {
+            soldier1Healthbar.Hide();
+        }
+        else
+        {
+            soldier1Healthbar.Show();
+            soldier1Healthbar.UpdateValue(squad.Soldiers[0].CurrentHP, squad.Soldiers[0].MaxHP);
+        }
     }
 
     /// <summary>
@@ -156,7 +184,17 @@ public class HQSquadHeader : MonoBehaviour
     /// </summary>
     private void UpdateSoldier2()
     {
+        if (squad == null) return;
         soldier2Image.Setup(squad.Soldiers[1]);
+        if (squad.Soldiers[1] == null)
+        {
+            soldier2Healthbar.Hide();
+        }
+        else
+        {
+            soldier2Healthbar.Show();
+            soldier2Healthbar.UpdateValue(squad.Soldiers[1].CurrentHP, squad.Soldiers[1].MaxHP);
+        }
     }
 
     /// <summary>
@@ -164,7 +202,17 @@ public class HQSquadHeader : MonoBehaviour
     /// </summary>
     private void UpdateSoldier3()
     {
+        if (squad == null) return;
         soldier3Image.Setup(squad.Soldiers[2]);
+        if (squad.Soldiers[2] == null)
+        {
+            soldier3Healthbar.Hide();
+        }
+        else
+        {
+            soldier3Healthbar.Show();
+            soldier3Healthbar.UpdateValue(squad.Soldiers[2].CurrentHP, squad.Soldiers[2].MaxHP);
+        }
     }
 
     /// <summary>
@@ -172,7 +220,17 @@ public class HQSquadHeader : MonoBehaviour
     /// </summary>
     private void UpdateSoldier4()
     {
+        if (squad == null) return;
         soldier4Image.Setup(squad.Soldiers[3]);
+        if (squad.Soldiers[3] == null)
+        {
+            soldier4Healthbar.Hide();
+        }
+        else
+        {
+            soldier4Healthbar.Show();
+            soldier4Healthbar.UpdateValue(squad.Soldiers[3].CurrentHP, squad.Soldiers[3].MaxHP);
+        }
     }
 
     /// <summary>
@@ -200,15 +258,24 @@ public class HQSquadHeader : MonoBehaviour
         switch (squad.PrefRange)
         {
             case Squad.PreferedRange.ShortRange:
-                rangeSelection.rectTransform.localPosition = new Vector3(183, -3, 0);
+                rangeSelection.rectTransform.localPosition = atkShortValue.rectTransform.localPosition - new Vector3(-2, 0, 0);
                 break;
             case Squad.PreferedRange.MiddleRange:
-                rangeSelection.rectTransform.localPosition = new Vector3(228, -3, 0);
+                rangeSelection.rectTransform.localPosition = atkMiddleValue.rectTransform.localPosition - new Vector3(-2, 0, 0);
                 break;
             case Squad.PreferedRange.LongRange:
-                rangeSelection.rectTransform.localPosition = new Vector3(273, -3, 0);
+                rangeSelection.rectTransform.localPosition = atkLongValue.rectTransform.localPosition - new Vector3(-2, 0, 0);
                 break;
         }
+    }
+
+    /// <summary>
+    /// UpdateEngageValue method updates the Engage toggle value
+    /// </summary>
+    private void UpdateEngageValue()
+    {
+        // Set the Engage value and link event
+        engage.isOn = squad.isEngaged;
     }
     #endregion
 

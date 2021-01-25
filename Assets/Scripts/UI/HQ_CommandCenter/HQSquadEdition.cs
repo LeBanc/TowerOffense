@@ -10,6 +10,9 @@ public class HQSquadEdition : UICanvas
     public ColorPickerCanvas colorPickerCanvas;
     public HQCCSoldierSelection soldierSelectionCanvas;
 
+    public Button engageButton;
+    public Text engageButtonText;
+
     public Image squadTypeImage;
     public Image squadColorBkg;
     
@@ -95,6 +98,7 @@ public class HQSquadEdition : UICanvas
                 soldier2Clear.onClick.RemoveAllListeners();
                 soldier3Clear.onClick.RemoveAllListeners();
                 soldier4Clear.onClick.RemoveAllListeners();
+                engageButton.onClick.RemoveAllListeners();
             }
 
             // Hide the inner canvas
@@ -117,6 +121,9 @@ public class HQSquadEdition : UICanvas
             UpdateSoldier4();
             selectedSquad.OnSoldier4Change += UpdateSoldier4;
 
+            engageButton.onClick.AddListener(ChangeEngageState);
+            UpdateEngageButton();
+
             UpdateDropdowns();
 
             soldier1Change.onClick.AddListener(delegate { soldierSelectionCanvas.Show(selectedSquad, 1, selectedSquad.Soldiers[0]); lastSelectedButton = soldier1Change; });
@@ -138,6 +145,14 @@ public class HQSquadEdition : UICanvas
             UpdateSoldier3();
             UpdateSoldier4();
         }
+    }
+
+    /// <summary>
+    /// UpdateEngageButton initializes the Engage button display
+    /// </summary>
+    private void UpdateEngageButton()
+    {
+        engageButtonText.text = selectedSquad.isEngaged ? "Disengage" : "Engage";
     }
 
     /// <summary>
@@ -234,6 +249,12 @@ public class HQSquadEdition : UICanvas
     {
         colorPickerCanvas.Setup(selectedSquad);
         colorPickerCanvas.Show();
+    }
+
+    private void ChangeEngageState()
+    {
+        selectedSquad.Engage(!selectedSquad.isEngaged);
+        UpdateEngageButton();
     }
 
     /// <summary>

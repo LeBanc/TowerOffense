@@ -19,12 +19,25 @@ public class HQTabToggle : MonoBehaviour
 
     /// <summary>
     /// At Start, initialize the Tab bar to display the ComCenter
+    /// Subscribe to events to update UI navigation
     /// </summary>
     private void Start()
     {
-        //comCenterTab.Select();
-        //comCenterTab.isOn = true;
-        //Refresh();
+        comCenter.squad1Header.OnSelection += SetComCenterTabDownNav;
+        comCenter.squad2Header.OnSelection += SetComCenterTabDownNav;
+        comCenter.squad3Header.OnSelection += SetComCenterTabDownNav;
+        comCenter.squad4Header.OnSelection += SetComCenterTabDownNav;
+    }
+
+    /// <summary>
+    /// OnDestroy, unsubscribe from events
+    /// </summary>
+    private void OnDestroy()
+    {
+        comCenter.squad1Header.OnSelection -= SetComCenterTabDownNav;
+        comCenter.squad2Header.OnSelection -= SetComCenterTabDownNav;
+        comCenter.squad3Header.OnSelection -= SetComCenterTabDownNav;
+        comCenter.squad4Header.OnSelection -= SetComCenterTabDownNav;
     }
 
     /// <summary>
@@ -73,6 +86,18 @@ public class HQTabToggle : MonoBehaviour
         {
             barracks.Hide();
         }
+    }
+
+    /// <summary>
+    /// SetComCenterTabDownNav method updates the UI Navigation of the ComCenter tab to target the selected squad's Squad Header
+    /// Not the best way to do it on HQTab but it is a way that works ...
+    /// </summary>
+    /// <param name="_header">SquadHeader to target</param>
+    private void SetComCenterTabDownNav(HQSquadHeader _header)
+    {
+        Navigation _nav = comCenterTab.navigation;
+        _nav.selectOnDown = _header.select;
+        comCenterTab.navigation = _nav;
     }
 
 }

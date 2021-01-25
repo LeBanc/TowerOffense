@@ -57,6 +57,7 @@ public class Squad : ScriptableObject
     public event SquadEventHandler OnSoldier4Change; // When changing soldier4
     public event SquadEventHandler OnValueChange; // When changing any attack, defense or speed value
     public event SquadEventHandler OnPrefRangeChange; // When changing the preferred range
+    public event SquadEventHandler OnEngageChange; // When changing the engage value
 
     #region Properties access
     public int ID
@@ -162,6 +163,7 @@ public class Squad : ScriptableObject
     public void Engage(bool _engage)
     {
         isEngaged = _engage;
+        OnEngageChange?.Invoke();
     }
 
     /// <summary>
