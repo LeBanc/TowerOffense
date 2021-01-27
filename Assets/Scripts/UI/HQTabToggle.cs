@@ -16,7 +16,9 @@ public class HQTabToggle : MonoBehaviour
     // Specific canvas to display
     public HQCommandCenter comCenter;
     public HQBarracks barracks;
+    public UICanvas intelligenceServices;
     public HQFacilities facilities;
+    public UICanvas memorial;    
 
     /// <summary>
     /// At Start, initialize the Tab bar to display the ComCenter
@@ -48,7 +50,9 @@ public class HQTabToggle : MonoBehaviour
     {
         ShowComCenter();
         ShowBarracks();
+        ShowIntelligenceServices();
         ShowFacilities();
+        ShowMemorial();
     }
 
     /// <summary>
@@ -58,7 +62,9 @@ public class HQTabToggle : MonoBehaviour
     {
         comCenter.Hide();
         barracks.Hide();
+        intelligenceServices.Hide();
         facilities.Hide();
+        memorial.Hide();
     }
 
     /// <summary>
@@ -92,6 +98,21 @@ public class HQTabToggle : MonoBehaviour
     }
 
     /// <summary>
+    /// ShowIntelligenceServices method displays or hides the Intelligence Services Canvas depending on the Intell.Services toggle state
+    /// </summary>
+    public void ShowIntelligenceServices()
+    {
+        if (intelligenceTab.isOn)
+        {
+            intelligenceServices.Show();
+        }
+        else
+        {
+            intelligenceServices.Hide();
+        }
+    }
+
+    /// <summary>
     /// ShowFacilities method displays or hides the Facilities Canvas depending on the Facilities toggle state
     /// </summary>
     public void ShowFacilities()
@@ -103,6 +124,21 @@ public class HQTabToggle : MonoBehaviour
         else
         {
             facilities.Hide();
+        }
+    }
+
+    /// <summary>
+    /// ShowMemorial method displays or hides the Memorial Canvas depending on the Memorial toggle state
+    /// </summary>
+    public void ShowMemorial()
+    {
+        if (memorialTab.isOn)
+        {
+            memorial.Show();
+        }
+        else
+        {
+            memorial.Hide();
         }
     }
 
