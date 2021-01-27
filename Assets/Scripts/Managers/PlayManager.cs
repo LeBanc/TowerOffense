@@ -120,11 +120,11 @@ public class PlayManager : Singleton<PlayManager>
         }
 
         // Set the heal amount as the base heal amount + the medics bonus and the infirmary bonus (3 per level).
-        hq.HealAmount = data.baseHealAmount + data.healBonus * healLevel + med;
+        hq.HealAmount = data.baseHealAmount + data.facilities.healBonus * healLevel + med;
         // Set the attack time as base attack time + unlocked bons (TBD)
         hq.AttackTime = data.baseAttackTime;
         // Initialize sun light at morning
-        dayLight.Morning(data.baseAttackTime + attackTimeLevel * data.timeBonus);
+        dayLight.Morning(data.baseAttackTime + attackTimeLevel * data.facilities.timeBonus);
 
         // Launch a new day
         OnLoadSquadsOnNewDay?.Invoke();

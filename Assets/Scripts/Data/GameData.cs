@@ -24,14 +24,7 @@ public class GameData: ScriptableObject
     public int baseRecruitAmount = 10;
 
     [Header("Facilities bonus")]
-    // Time bonus
-    public int timeBonus = 15;
-    // Heal bonus
-    public int healBonus = 5;
-    // Recruiting Bonus
-    public int recruitingBonus = 5;
-    // Explosive damages bonus
-    public int exploDamagesBonus = 50;
+    public FacilitiesData facilities;
 
     // Soldier ranks titles
     [Header("Soldier ranks")]

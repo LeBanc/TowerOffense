@@ -18,6 +18,7 @@ MonoBehaviour:
   baseAttackTime: 45
   baseHealAmount: 30
   baseRecruitAmount: 10
+  facilities: {fileID: 11400000, guid: c973f6b2a1b732744a13f1ae3eb693cd, type: 2}
   ranks:
   - Soldier
   - Private

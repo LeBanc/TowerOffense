@@ -1,0 +1,34 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: bdc65651f99bb6f4296c79d6dde67e98, type: 3}
+  m_Name: FacilitiesData
+  m_EditorClassIdentifier: 
+  squad2Cost: 15
+  squad3Cost: 50
+  squad4Cost: 150
+  timeBonus: 15
+  attackTime1Cost: 50
+  attackTime2Cost: 150
+  attackTime3Cost: 300
+  healBonus: 5
+  healing1Cost: 40
+  healing2Cost: 100
+  healing3Cost: 400
+  recruitingBonus: 5
+  recruiting1Cost: 25
+  recruiting2Cost: 100
+  recruiting3Cost: 300
+  exploDamagesBonus: 50
+  explosive1Cost: 150
+  explosive2Cost: 400
+  explosive3Cost: 700
+  soldierXPCost: 250
