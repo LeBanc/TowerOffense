@@ -94,12 +94,16 @@ public class HQCommandCenter : UICanvas
     {
         SelectSquad(_squadHeader.Squad);
 
-
-
         // Set Up navigation of Engage button to Selected SquadHeader
         Navigation _nav = squadEditionCanvas.engageButton.navigation;
         _nav.selectOnUp = _squadHeader.select;
         squadEditionCanvas.engageButton.navigation = _nav;
+
+        // Set Up navigation of Soldier1 change button to Selected SquadHeader
+        _nav = squadEditionCanvas.soldier1Change.navigation;
+        _nav.selectOnUp = _squadHeader.select;
+        squadEditionCanvas.soldier1Change.navigation = _nav;
+
     }
 
     /// <summary>

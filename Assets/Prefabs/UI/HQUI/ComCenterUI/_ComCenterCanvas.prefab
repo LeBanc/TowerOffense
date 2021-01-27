@@ -634,6 +634,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: d7e5f6b954ca6ca4a97ee3bd3347a7be, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  webGLObjectsToHide: []
   colorPickerCanvas: {fileID: 574694198883775131}
   soldierSelectionCanvas: {fileID: 574694199486529022}
   engageButton: {fileID: 9105109182048001167}
@@ -902,6 +903,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 6bb54d6457e4ffb4bbbc24d9d182c0d5, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  webGLObjectsToHide: []
   squad1Header: {fileID: 8978960258588940475}
   squad2Header: {fileID: 6760296370850568038}
   squad3Header: {fileID: 6760296369833727616}
@@ -996,7 +998,7 @@ PrefabInstance:
         type: 3}
       propertyPath: m_Navigation.m_SelectOnLeft
       value: 
-      objectReference: {fileID: 1945396441668353319}
+      objectReference: {fileID: 9105109182048001167}
     - target: {fileID: 1356943840837939768, guid: 2de71f222f4125b4e960e84af14d3cbf,
         type: 3}
       propertyPath: m_Navigation.m_SelectOnUp
@@ -1330,7 +1332,7 @@ PrefabInstance:
         type: 3}
       propertyPath: m_Navigation.m_SelectOnLeft
       value: 
-      objectReference: {fileID: 1945396441668353319}
+      objectReference: {fileID: 9105109182048001167}
     - target: {fileID: 1356943840837939768, guid: 2de71f222f4125b4e960e84af14d3cbf,
         type: 3}
       propertyPath: m_Navigation.m_SelectOnUp
@@ -3130,7 +3132,7 @@ PrefabInstance:
         type: 3}
       propertyPath: m_Navigation.m_SelectOnLeft
       value: 
-      objectReference: {fileID: 1945396441668353319}
+      objectReference: {fileID: 9105109182048001167}
     - target: {fileID: 1356943840837939768, guid: 2de71f222f4125b4e960e84af14d3cbf,
         type: 3}
       propertyPath: m_Navigation.m_SelectOnUp
@@ -3289,7 +3291,7 @@ PrefabInstance:
         type: 3}
       propertyPath: m_Navigation.m_SelectOnLeft
       value: 
-      objectReference: {fileID: 1945396441668353319}
+      objectReference: {fileID: 9105109182048001167}
     - target: {fileID: 1356943840837939768, guid: 2de71f222f4125b4e960e84af14d3cbf,
         type: 3}
       propertyPath: m_Navigation.m_SelectOnDown
@@ -3443,7 +3445,7 @@ PrefabInstance:
         type: 3}
       propertyPath: m_Navigation.m_SelectOnLeft
       value: 
-      objectReference: {fileID: 1945396441668353319}
+      objectReference: {fileID: 9105109182048001167}
     - target: {fileID: 1356943840837939768, guid: 2de71f222f4125b4e960e84af14d3cbf,
         type: 3}
       propertyPath: m_Navigation.m_SelectOnUp
@@ -4114,7 +4116,7 @@ PrefabInstance:
         type: 3}
       propertyPath: m_Navigation.m_SelectOnLeft
       value: 
-      objectReference: {fileID: 1945396441668353319}
+      objectReference: {fileID: 9105109182048001167}
     - target: {fileID: 1356943840837939768, guid: 2de71f222f4125b4e960e84af14d3cbf,
         type: 3}
       propertyPath: m_Navigation.m_SelectOnUp
@@ -4533,7 +4535,7 @@ PrefabInstance:
         type: 3}
       propertyPath: m_Navigation.m_SelectOnLeft
       value: 
-      objectReference: {fileID: 1945396441668353319}
+      objectReference: {fileID: 9105109182048001167}
     - target: {fileID: 1356943840837939768, guid: 2de71f222f4125b4e960e84af14d3cbf,
         type: 3}
       propertyPath: m_Navigation.m_SelectOnUp
@@ -5179,7 +5181,7 @@ PrefabInstance:
         type: 3}
       propertyPath: m_Navigation.m_SelectOnLeft
       value: 
-      objectReference: {fileID: 1945396441668353319}
+      objectReference: {fileID: 9105109182048001167}
     - target: {fileID: 1356943840837939768, guid: 2de71f222f4125b4e960e84af14d3cbf,
         type: 3}
       propertyPath: m_Navigation.m_SelectOnUp
@@ -5344,6 +5346,11 @@ PrefabInstance:
       propertyPath: m_Navigation.m_SelectOnUp
       value: 
       objectReference: {fileID: 5916352169869268790}
+    - target: {fileID: 1356943840837939768, guid: 2de71f222f4125b4e960e84af14d3cbf,
+        type: 3}
+      propertyPath: m_Navigation.m_SelectOnRight
+      value: 
+      objectReference: {fileID: 726137266366036511}
     - target: {fileID: 2837854621332306106, guid: 2de71f222f4125b4e960e84af14d3cbf,
         type: 3}
       propertyPath: m_LocalRotation.z
