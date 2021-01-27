@@ -68,7 +68,7 @@ public class Enemy : Shootable
     {
         if (destroyed) return;
         hP = 0;
-        PlayManager.AddAttackCoins(maxHP);
+        PlayManager.AddAttackWorkforce(Mathf.Max(1,maxHP/50));
         OnDestruction?.Invoke();
         destroyed = true;
         GameManager.PlayUpdate -= EnemyUpdate;

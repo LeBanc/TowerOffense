@@ -164,10 +164,13 @@ public class GameManager : Singleton<GameManager>
         float startTime = Time.time;
 
         ChangeGameStateRequest(GameState.load);
-        while(_loadOperations[_loadOperations.Count-1].progress < 1f)
+        if(_loadOperations.Count > 0)
         {
-            yield return null;
-        }
+            while (_loadOperations[_loadOperations.Count - 1].progress < 1f)
+            {
+                yield return null;
+            }
+        }        
         PlayManager.LoadFromEmptyScene();
         if(_loadingType == 0)
         {

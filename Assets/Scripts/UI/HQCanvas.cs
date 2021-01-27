@@ -22,7 +22,7 @@ public class HQCanvas : UICanvas
     {
         base.Awake();
 
-        PlayManager.OnCoinsUpdate += UpdateCoins;
+        PlayManager.OnWorkforceUpdate += UpdateCoins;
         PlayManager.OnLoadSquadsOnNewDay += Hide;
         PlayManager.OnHQPhase += Show;
         PlayManager.OnHQPhase += Init;
@@ -34,7 +34,7 @@ public class HQCanvas : UICanvas
     /// </summary>
     private void OnDestroy()
     {
-        PlayManager.OnCoinsUpdate -= UpdateCoins;
+        PlayManager.OnWorkforceUpdate -= UpdateCoins;
         PlayManager.OnLoadSquadsOnNewDay -= Hide;
         PlayManager.OnHQPhase -= Show;
         PlayManager.OnHQPhase -= Init;
@@ -75,6 +75,6 @@ public class HQCanvas : UICanvas
     /// </summary>
     public void UpdateCoins()
     {
-        coins.text = PlayManager.coins.ToString();
+        coins.text = PlayManager.workforce.ToString();
     }
 }

@@ -126,10 +126,14 @@ public class Squad : ScriptableObject
         iD = _ID;
         color = _COLOR;
         squadType = Resources.Load("SquadData/" + _SQUADTYPE) as SquadData;
-        ChangeSoldier(1, PlayManager.soldierList[PlayManager.soldierIDList.FindIndex(x => x == _SOLDIER1ID)]);
-        ChangeSoldier(2, PlayManager.soldierList[PlayManager.soldierIDList.FindIndex(x => x == _SOLDIER2ID)]);
-        ChangeSoldier(3, PlayManager.soldierList[PlayManager.soldierIDList.FindIndex(x => x == _SOLDIER3ID)]);
-        ChangeSoldier(4, PlayManager.soldierList[PlayManager.soldierIDList.FindIndex(x => x == _SOLDIER4ID)]);
+        soldierList[0] = null;
+        soldierList[1] = null;
+        soldierList[2] = null;
+        soldierList[3] = null;
+        if (_SOLDIER1ID > -1)ChangeSoldier(1, PlayManager.soldierList[PlayManager.soldierIDList.FindIndex(x => x == _SOLDIER1ID)]);
+        if (_SOLDIER2ID > -1) ChangeSoldier(2, PlayManager.soldierList[PlayManager.soldierIDList.FindIndex(x => x == _SOLDIER2ID)]);
+        if (_SOLDIER3ID > -1) ChangeSoldier(3, PlayManager.soldierList[PlayManager.soldierIDList.FindIndex(x => x == _SOLDIER3ID)]);
+        if (_SOLDIER4ID > -1) ChangeSoldier(4, PlayManager.soldierList[PlayManager.soldierIDList.FindIndex(x => x == _SOLDIER4ID)]);
         range = _RANGE;
         ComputeSquadValues();
         UpdatePosChoice(_POS);

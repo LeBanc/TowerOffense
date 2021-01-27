@@ -28,14 +28,10 @@ public class HQSquadHeader : MonoBehaviour
     public Text speedValue;
     public Image rangeSelection;
     public Button unlockButton;
-    public int unlockCost;
-    public Text unlockText;
-    public Text unlockCostLabel;
 
     // Events
     public delegate void SquadHeaderEventHandler(HQSquadHeader _squadHeader);
     public event SquadHeaderEventHandler OnSelection;
-    public event SquadHeaderEventHandler OnUnlock;
 
     // Private Squad displayed in the header
     private Squad squad;
@@ -60,9 +56,6 @@ public class HQSquadHeader : MonoBehaviour
 
         // Set squad as locked
         unlockButton.interactable = false;
-        unlockText.text = "Locked";
-        unlockCostLabel.text = "Cost: " + unlockCost.ToString();
-        unlockCostLabel.enabled = false;
 
         // Events
         select.OnSelection += Select;
@@ -129,6 +122,18 @@ public class HQSquadHeader : MonoBehaviour
     }
 
     /// <summary>
+    /// Lock method
+    /// </summary>
+    public void Lock()
+    {
+        unlockButton.gameObject.SetActive(true);
+        PlayManager.OnHQPhase -= UpdateSoldier1;
+        PlayManager.OnHQPhase -= UpdateSoldier2;
+        PlayManager.OnHQPhase -= UpdateSoldier3;
+        PlayManager.OnHQPhase -= UpdateSoldier4;
+    }
+
+    /// <summary>
     /// OnDestroy, unsubscribe all events
     /// </summary>
     private void OnDestroy()
@@ -166,17 +171,24 @@ public class HQSquadHeader : MonoBehaviour
     /// </summary>
     private void UpdateSoldier1()
     {
-        if (squad == null) return;
-        soldier1Image.Setup(squad.Soldiers[0]);
-        if(squad.Soldiers[0] == null)
+        if (squad == null)
         {
+            soldier1Image.Setup(null);
             soldier1Healthbar.Hide();
         }
         else
         {
-            soldier1Healthbar.Show();
-            soldier1Healthbar.UpdateValue(squad.Soldiers[0].CurrentHP, squad.Soldiers[0].MaxHP);
-        }
+            soldier1Image.Setup(squad.Soldiers[0]);
+            if (squad.Soldiers[0] == null)
+            {
+                soldier1Healthbar.Hide();
+            }
+            else
+            {
+                soldier1Healthbar.Show();
+                soldier1Healthbar.UpdateValue(squad.Soldiers[0].CurrentHP, squad.Soldiers[0].MaxHP);
+            }
+        }        
     }
 
     /// <summary>
@@ -184,16 +196,23 @@ public class HQSquadHeader : MonoBehaviour
     /// </summary>
     private void UpdateSoldier2()
     {
-        if (squad == null) return;
-        soldier2Image.Setup(squad.Soldiers[1]);
-        if (squad.Soldiers[1] == null)
+        if (squad == null)
         {
+            soldier2Image.Setup(null);
             soldier2Healthbar.Hide();
         }
         else
         {
-            soldier2Healthbar.Show();
-            soldier2Healthbar.UpdateValue(squad.Soldiers[1].CurrentHP, squad.Soldiers[1].MaxHP);
+            soldier2Image.Setup(squad.Soldiers[1]);
+            if (squad.Soldiers[1] == null)
+            {
+                soldier2Healthbar.Hide();
+            }
+            else
+            {
+                soldier2Healthbar.Show();
+                soldier2Healthbar.UpdateValue(squad.Soldiers[1].CurrentHP, squad.Soldiers[1].MaxHP);
+            }
         }
     }
 
@@ -202,16 +221,23 @@ public class HQSquadHeader : MonoBehaviour
     /// </summary>
     private void UpdateSoldier3()
     {
-        if (squad == null) return;
-        soldier3Image.Setup(squad.Soldiers[2]);
-        if (squad.Soldiers[2] == null)
+        if (squad == null)
         {
+            soldier3Image.Setup(null);
             soldier3Healthbar.Hide();
         }
         else
         {
-            soldier3Healthbar.Show();
-            soldier3Healthbar.UpdateValue(squad.Soldiers[2].CurrentHP, squad.Soldiers[2].MaxHP);
+            soldier3Image.Setup(squad.Soldiers[2]);
+            if (squad.Soldiers[2] == null)
+            {
+                soldier3Healthbar.Hide();
+            }
+            else
+            {
+                soldier3Healthbar.Show();
+                soldier3Healthbar.UpdateValue(squad.Soldiers[2].CurrentHP, squad.Soldiers[2].MaxHP);
+            }
         }
     }
 
@@ -220,16 +246,23 @@ public class HQSquadHeader : MonoBehaviour
     /// </summary>
     private void UpdateSoldier4()
     {
-        if (squad == null) return;
-        soldier4Image.Setup(squad.Soldiers[3]);
-        if (squad.Soldiers[3] == null)
+        if (squad == null)
         {
+            soldier4Image.Setup(null);
             soldier4Healthbar.Hide();
         }
         else
         {
-            soldier4Healthbar.Show();
-            soldier4Healthbar.UpdateValue(squad.Soldiers[3].CurrentHP, squad.Soldiers[3].MaxHP);
+            soldier4Image.Setup(squad.Soldiers[3]);
+            if (squad.Soldiers[3] == null)
+            {
+                soldier4Healthbar.Hide();
+            }
+            else
+            {
+                soldier4Healthbar.Show();
+                soldier4Healthbar.UpdateValue(squad.Soldiers[3].CurrentHP, squad.Soldiers[3].MaxHP);
+            }
         }
     }
 
@@ -258,13 +291,13 @@ public class HQSquadHeader : MonoBehaviour
         switch (squad.PrefRange)
         {
             case Squad.PreferedRange.ShortRange:
-                rangeSelection.rectTransform.localPosition = atkShortValue.rectTransform.localPosition - new Vector3(-2, 0, 0);
+                rangeSelection.rectTransform.localPosition = atkShortValue.rectTransform.localPosition + new Vector3(-2, 0, 0);
                 break;
             case Squad.PreferedRange.MiddleRange:
-                rangeSelection.rectTransform.localPosition = atkMiddleValue.rectTransform.localPosition - new Vector3(-2, 0, 0);
+                rangeSelection.rectTransform.localPosition = atkMiddleValue.rectTransform.localPosition + new Vector3(-2, 0, 0);
                 break;
             case Squad.PreferedRange.LongRange:
-                rangeSelection.rectTransform.localPosition = atkLongValue.rectTransform.localPosition - new Vector3(-2, 0, 0);
+                rangeSelection.rectTransform.localPosition = atkLongValue.rectTransform.localPosition + new Vector3(-2, 0, 0);
                 break;
         }
     }
@@ -286,32 +319,6 @@ public class HQSquadHeader : MonoBehaviour
     public void Select()
     {
         OnSelection?.Invoke(this);
-    }
-
-    /// <summary>
-    /// ReadyToUnlock method is used to changed the Unlock button from Locked to Unlock state
-    /// </summary>
-    public void ReadyToUnlock()
-    {
-        unlockButton.interactable = true;
-        unlockText.text = "Unlock";
-        unlockCostLabel.enabled = true;
-    }
-
-    /// <summary>
-    /// Unlock method creates a new squad and links it to the header
-    /// </summary>
-    public void Unlock()
-    {
-        if(PlayManager.coins >= unlockCost)
-        {
-            unlockButton.gameObject.SetActive(false);
-            PlayManager.AddCoins(-unlockCost);
-            Squad _squad = ScriptableObject.CreateInstance("Squad") as Squad;
-            _squad.InitData();
-            PlayManager.squadList.Add(_squad);
-            OnUnlock?.Invoke(this);
-        }
     }
     #endregion
 }

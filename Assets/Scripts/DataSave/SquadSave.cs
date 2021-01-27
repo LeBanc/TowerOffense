@@ -74,10 +74,38 @@ public class SquadSave
         colorG = _squad.Color.g;
         colorB = _squad.Color.b;
         squadTypePath = _squad.SquadType.name;
-        soldier1 = _squad.Soldiers[0].ID;
-        soldier2 = _squad.Soldiers[1].ID;
-        soldier3 = _squad.Soldiers[2].ID;
-        soldier4 = _squad.Soldiers[3].ID;
+        if(_squad.Soldiers[0] != null)
+        {
+            soldier1 = _squad.Soldiers[0].ID;
+        }
+        else
+        {
+            soldier1 = -1;
+        }
+        if (_squad.Soldiers[1] != null)
+        {
+            soldier2 = _squad.Soldiers[1].ID;
+        }
+        else
+        {
+            soldier2 = -1;
+        }
+        if (_squad.Soldiers[2] != null)
+        {
+            soldier3 = _squad.Soldiers[2].ID;
+        }
+        else
+        {
+            soldier3 = -1;
+        }
+        if (_squad.Soldiers[3] != null)
+        {
+            soldier4 = _squad.Soldiers[3].ID;
+        }
+        else
+        {
+            soldier4 = -1;
+        }
         range = _squad.PrefRange;
         posChoice = _squad.PosChoice;
         isEngaged = _squad.isEngaged;

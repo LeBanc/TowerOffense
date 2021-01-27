@@ -19,16 +19,25 @@ public class DataSave
     public DateTime date;
 
     // Global HQ data
-    [XmlElement("Coins")]
-    public int coins;
+    [XmlElement("Workforce")]
+    public int workforce;
     [XmlElement("Day")]
     public int day;
+    [XmlElement("RecruitChance")]
+    public int recruitChance;
 
     // Facilities data
-    [XmlElement("Infirmary")]
-    public int infirmary;
-    [XmlElement("Radio")]
-    public int radio;
+    [XmlElement("TimeBonus")]
+    public int attackTimeLevel;
+    [XmlElement("HealBonus")]
+    public int healLevel;
+    [XmlElement("RecruitBonus")]
+    public int recruitmentLevel;
+    [XmlElement("ExplosivesBonus")]
+    public int explosivesLevel;
+    [XmlElement("RecruitXPBonus")]
+    public int recruitingWithXP;
+
 
     // HQ save data
     [XmlElement("HQ")]
@@ -81,10 +90,15 @@ public class DataSave
         date = DateTime.Now;
 
         // Save single data
-        coins = PlayManager.coins;
+        workforce = PlayManager.workforce;
         day = PlayManager.day;
-        infirmary = PlayManager.infirmaryLevel;
-        radio = PlayManager.radioLevel;
+        recruitChance = PlayManager.recruitment;
+
+        attackTimeLevel = PlayManager.attackTimeLevel;
+        healLevel = PlayManager.healLevel;
+        recruitmentLevel = PlayManager.recruitmentLevel;
+        explosivesLevel = PlayManager.explosivesLevel;
+        recruitingWithXP = PlayManager.recruitingWithXP;
 
         hqSave = new HQSave(PlayManager.hq);
 
@@ -269,10 +283,15 @@ public class DataSave
     public static void LoadData(DataSave _save)
     {
         // Global data
-        PlayManager.coins = _save.coins;
+        PlayManager.workforce = _save.workforce;
         PlayManager.day = _save.day;
-        PlayManager.infirmaryLevel = _save.infirmary;
-        PlayManager.radioLevel = _save.radio;
+        PlayManager.recruitment = _save.recruitChance;
+
+        PlayManager.attackTimeLevel = _save.attackTimeLevel;
+        PlayManager.healLevel = _save.healLevel;
+        PlayManager.recruitmentLevel = _save.recruitmentLevel;
+        PlayManager.explosivesLevel = _save.explosivesLevel;
+        PlayManager.recruitingWithXP = _save.recruitingWithXP;
 
         // Load Soldiers
         PlayManager.soldierList.Clear();

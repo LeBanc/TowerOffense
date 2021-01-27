@@ -35,11 +35,6 @@ public class HQCommandCenter : UICanvas
 
         squad4Header.OnSelection += SelectSquadHeader;
         squad4Header.OnSelection += delegate { squad2Header.select.Unselect(); squad3Header.select.Unselect(); squad1Header.select.Unselect(); };
-
-        squad1Header.OnUnlock += delegate { UpdateSquadHeaders(); };
-        squad2Header.OnUnlock += delegate { UpdateSquadHeaders(); };
-        squad3Header.OnUnlock += delegate { UpdateSquadHeaders(); };
-        squad4Header.OnUnlock += delegate { UpdateSquadHeaders(); };
     }
 
     /// <summary>
@@ -58,11 +53,6 @@ public class HQCommandCenter : UICanvas
 
         squad4Header.OnSelection -= SelectSquadHeader;
         squad4Header.OnSelection -= delegate { squad2Header.select.Unselect(); squad3Header.select.Unselect(); squad1Header.select.Unselect(); };
-
-        squad1Header.OnUnlock -= delegate { UpdateSquadHeaders(); };
-        squad2Header.OnUnlock -= delegate { UpdateSquadHeaders(); };
-        squad3Header.OnUnlock -= delegate { UpdateSquadHeaders(); };
-        squad4Header.OnUnlock -= delegate { UpdateSquadHeaders(); };
     }
 
     /// <summary>
@@ -131,40 +121,52 @@ public class HQCommandCenter : UICanvas
     public void UpdateSquadHeaders()
     {
         // if there is more than 0 squad in the list
-        if(PlayManager.squadList.Count > 0)
+        if (PlayManager.squadList.Count > 0)
         {
             if(squad1Header.Squad != PlayManager.squadList[0]) // If the header is null or after a game load
             {
                 squad1Header.Setup(PlayManager.squadList[0]); // Initialize the header
-                squad2Header.ReadyToUnlock(); // Set the next squad as ready to unlock
             }
         }
+        else
+        {
+            squad1Header.Lock();
+        }
+
         if (PlayManager.squadList.Count > 1)
         {
             if (squad2Header.Squad != PlayManager.squadList[1])
             {
                 squad2Header.Setup(PlayManager.squadList[1]);
-                squad3Header.ReadyToUnlock();
-                // If there is already a selected squad, this is an unlock situation so select this squad
-                if (selectedSquad != null) selectedSquad = PlayManager.squadList[1]; 
             }
         }
+        else
+        {
+            squad2Header.Lock();
+        }
+
         if (PlayManager.squadList.Count > 2)
         {
             if (squad3Header.Squad != PlayManager.squadList[2])
             {
                 squad3Header.Setup(PlayManager.squadList[2]);
-                squad4Header.ReadyToUnlock();
-                if (selectedSquad != null) selectedSquad = PlayManager.squadList[2];
             }
         }
+        else
+        {
+            squad3Header.Lock();
+        }
+
         if (PlayManager.squadList.Count > 3)
         {
             if (squad4Header.Squad != PlayManager.squadList[3])
             {
                 squad4Header.Setup(PlayManager.squadList[3]);
-                if (selectedSquad != null) selectedSquad = PlayManager.squadList[3];
             }
+        }
+        else
+        {
+            squad4Header.Lock();
         }
         // If no squad is selected, select the first squad
         if (selectedSquad == null) selectedSquad = PlayManager.squadList[0];

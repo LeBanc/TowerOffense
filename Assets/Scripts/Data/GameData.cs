@@ -17,11 +17,21 @@ public class GameData: ScriptableObject
     [Header("Time of the attack phase")]
     public float baseAttackTime = 45f;
 
-    // Heal basic amount
     [Header("Basic amounts")]
+    // Heal basic amount
     public int baseHealAmount = 30;
     // Recruitment basic amount
     public int baseRecruitAmount = 10;
+
+    [Header("Facilities bonus")]
+    // Time bonus
+    public int timeBonus = 15;
+    // Heal bonus
+    public int healBonus = 5;
+    // Recruiting Bonus
+    public int recruitingBonus = 5;
+    // Explosive damages bonus
+    public int exploDamagesBonus = 50;
 
     // Soldier ranks titles
     [Header("Soldier ranks")]

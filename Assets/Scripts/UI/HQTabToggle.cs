@@ -16,6 +16,7 @@ public class HQTabToggle : MonoBehaviour
     // Specific canvas to display
     public HQCommandCenter comCenter;
     public HQBarracks barracks;
+    public HQFacilities facilities;
 
     /// <summary>
     /// At Start, initialize the Tab bar to display the ComCenter
@@ -47,6 +48,7 @@ public class HQTabToggle : MonoBehaviour
     {
         ShowComCenter();
         ShowBarracks();
+        ShowFacilities();
     }
 
     /// <summary>
@@ -56,6 +58,7 @@ public class HQTabToggle : MonoBehaviour
     {
         comCenter.Hide();
         barracks.Hide();
+        facilities.Hide();
     }
 
     /// <summary>
@@ -85,6 +88,21 @@ public class HQTabToggle : MonoBehaviour
         else
         {
             barracks.Hide();
+        }
+    }
+
+    /// <summary>
+    /// ShowFacilities method displays or hides the Facilities Canvas depending on the Facilities toggle state
+    /// </summary>
+    public void ShowFacilities()
+    {
+        if(facilitiesTab.isOn)
+        {
+            facilities.Show();
+        }
+        else
+        {
+            facilities.Hide();
         }
     }
 

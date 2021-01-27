@@ -30,7 +30,7 @@ public class PlayManager : Singleton<PlayManager>
     public static List<HQCandidate> hqCandidateList = new List<HQCandidate>();
 
     // HQ properties
-    public static int coins;
+    public static int workforce;
     public static int day;
     public static int recruitment;
     public static bool newSoldier;
@@ -46,10 +46,14 @@ public class PlayManager : Singleton<PlayManager>
     public static List<EnemySoldier> enemyList = new List<EnemySoldier>();
     public static List<Explosives> explosivesList = new List<Explosives>();
     private static int attackXP;
-    private static int attackCoins;
+    private static int attackWorkforce;
 
-    public static int infirmaryLevel = 0;
-    public static int radioLevel = 0;
+    // Facilities properties
+    public static int attackTimeLevel = 0;
+    public static int healLevel = 0;
+    public static int recruitmentLevel = 0;
+    public static int explosivesLevel = 0;
+    public static int recruitingWithXP = 0;
 
     #region Properties access
     public static float LongRange
@@ -79,7 +83,7 @@ public class PlayManager : Singleton<PlayManager>
     public static event PlayManagerEvents OnRetreatAll;
     public static event PlayManagerEvents OnEndDay;
     public static event PlayManagerEvents OnHQPhase;
-    public static event PlayManagerEvents OnCoinsUpdate;
+    public static event PlayManagerEvents OnWorkforceUpdate;
     public static event PlayManagerEvents OnLoadGame;
     public static event PlayManagerEvents OnRecruit;
 
@@ -116,16 +120,16 @@ public class PlayManager : Singleton<PlayManager>
         }
 
         // Set the heal amount as the base heal amount + the medics bonus and the infirmary bonus (3 per level).
-        hq.HealAmount = data.baseHealAmount + 3 * infirmaryLevel + med;
+        hq.HealAmount = data.baseHealAmount + data.healBonus * healLevel + med;
         // Set the attack time as base attack time + unlocked bons (TBD)
         hq.AttackTime = data.baseAttackTime;
         // Initialize sun light at morning
-        dayLight.Morning(data.baseAttackTime + radioLevel * 15f);
+        dayLight.Morning(data.baseAttackTime + attackTimeLevel * data.timeBonus);
 
         // Launch a new day
         OnLoadSquadsOnNewDay?.Invoke();
         attackXP = 0;
-        attackCoins = 0;
+        attackWorkforce = 0;
     }
 
     /// <summary>
@@ -176,7 +180,7 @@ public class PlayManager : Singleton<PlayManager>
 
         // Compute PlayManager data
         SetXP();
-        AddCoins(attackCoins);
+        UpdateWorkforce(attackWorkforce);
 
         // Switch UI from City phase to HQ phase
         OnHQPhase?.Invoke();
@@ -254,8 +258,17 @@ public class PlayManager : Singleton<PlayManager>
             hqPos = GridAdjustment.GetGridCoordinates(new Vector3(hq.transform.position.x, 0f, hq.transform.position.z));
         }
 
-        // To remove after load/save of recruitment value
-        recruitment = data.baseRecruitAmount;
+        // Clear data
+        soldierList.Clear();
+        soldierIDList.Clear();
+        squadList.Clear();
+        towerList.Clear();
+        buildingList.Clear();
+        turretList.Clear();
+        turretBaseList.Clear();
+        hqCandidateList.Clear();
+        nextSoldierID = 0;
+        nextSquadID = 0;
     }
 
     /// <summary>
@@ -291,10 +304,13 @@ public class PlayManager : Singleton<PlayManager>
 
         // Init HQ data
         day = 1;
-        coins = 0;
+        workforce = 0;
         recruitment = data.baseRecruitAmount;
-        infirmaryLevel = 0;
-        radioLevel = 0;
+        healLevel = 0;
+        attackTimeLevel = 0;
+        recruitmentLevel = 0;
+        explosivesLevel = 0;
+        recruitingWithXP = 0;
 
         // Create soldiers
         for (int i = 0; i < 8; i++)
@@ -436,22 +452,22 @@ public class PlayManager : Singleton<PlayManager>
     }
 
     /// <summary>
-    /// AddAttackCoins method adds to attackCoins the amount of coins to add
+    /// AddAttackWorkforce method adds to attackCoins the amount of coins to add
     /// </summary>
-    /// <param name="_coins">Amount to add</param>
-    public static void AddAttackCoins(int _coins)
+    /// <param name="_amount">Amount to add</param>
+    public static void AddAttackWorkforce(int _amount)
     {
-        attackCoins += _coins;
+        attackWorkforce += _amount;
     }
 
     /// <summary>
-    /// AddCoins method adds the amount of coins to the main coins value
+    /// UpdateWorkforce method adds the amount of worforce to the main workforce value
     /// </summary>
-    /// <param name="_coins">Amount to add</param>
-    public static void AddCoins(int _coins)
+    /// <param name="_amount">Amount to add</param>
+    public static void UpdateWorkforce(int _amount)
     {
-        coins += _coins;
-        OnCoinsUpdate?.Invoke();
+        workforce += _amount;
+        OnWorkforceUpdate?.Invoke();
     }
 
     /// <summary>
