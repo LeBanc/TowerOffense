@@ -1,6 +1,5 @@
 ﻿using UnityEngine;
 using UnityEngine.UI;
-using UnityScript.Steps;
 
 /// <summary>
 /// FacilitiesItem class defines an item of Facilities UI
