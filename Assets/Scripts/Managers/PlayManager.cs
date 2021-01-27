@@ -95,14 +95,25 @@ public class PlayManager : Singleton<PlayManager>
     /// </summary>
     public void NewDayButton()
     {
+        bool engagedSquad = false;
         // If an engaged squad is not full, display an error message and stop
         foreach(Squad _squad in squadList)
         {
+            // Check if the squad is engaged and add this data to the engagedSquad boolean
+            engagedSquad = engagedSquad || _squad.isEngaged;
+
             if(_squad.isEngaged && !_squad.IsFull())
             {
                 UIManager.InitErrorMessage("At least one of the engaged squads has not four soldiers assigned!");
                 return;
             }
+        }
+
+        // Check if there is a squad engaged for the new day
+        if(!engagedSquad)
+        {
+            UIManager.InitErrorMessage("You need to engage at least on squad!");
+            return;
         }
 
         // Get how many doctor stayed in the HQ and add 1 to the heal amount for each one of them
@@ -475,7 +486,10 @@ public class PlayManager : Singleton<PlayManager>
     /// </summary>
     public void AutoSaveGame()
     {
+        // Autosave file if not in WebGL mode
+#if !UNITY_WEBGL
         StartCoroutine(AutoSaveSequence());
+#endif
     }
 
     /// <summary>
