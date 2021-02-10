@@ -119,6 +119,9 @@ public class HQSquadHeader : MonoBehaviour
         // Set the Engage value and link event
         UpdateEngageValue();
         squad.OnEngageChange += UpdateEngageValue;
+
+        // Reset UI navigation
+        ResetUINav();
     }
 
     /// <summary>
@@ -312,7 +315,7 @@ public class HQSquadHeader : MonoBehaviour
     }
     #endregion
 
-    #region Selection/Unlock
+    #region Selection/UI Navigation
     /// <summary>
     /// Select method is linked to the background button of the Header
     /// </summary>
@@ -320,5 +323,31 @@ public class HQSquadHeader : MonoBehaviour
     {
         OnSelection?.Invoke(this);
     }
+
+    /// <summary>
+    /// SetUINav method sets the UI navigation left element to the previous SquadHeader and the UI navigation right element of the previous SquadHeader to the current one
+    /// </summary>
+    /// <param name="_prevSquadHeader">Previous SquadHeader to select on left UI navigation (SquadHeader)</param>
+    public void SetUINav(HQSquadHeader _prevSquadHeader)
+    {
+        Navigation _nav = select.navigation;
+        _nav.selectOnLeft = _prevSquadHeader.select;
+        select.navigation = _nav;
+
+        Navigation _prevNav = _prevSquadHeader.select.navigation;
+        _prevNav.selectOnRight = select;
+        _prevSquadHeader.select.navigation = _prevNav;
+    }
+
+    /// <summary>
+    /// ResetUINav method resets the UI navigation left/right elements
+    /// </summary>
+    public void ResetUINav()
+    {
+        Navigation _nav = select.navigation;
+        _nav.selectOnLeft = null;
+        _nav.selectOnRight = null;
+    }
+
     #endregion
 }

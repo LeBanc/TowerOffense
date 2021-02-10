@@ -142,6 +142,7 @@ public class HQCommandCenter : UICanvas
             if (squad2Header.Squad != PlayManager.squadList[1])
             {
                 squad2Header.Setup(PlayManager.squadList[1]);
+                squad2Header.SetUINav(squad1Header);
             }
         }
         else
@@ -154,6 +155,7 @@ public class HQCommandCenter : UICanvas
             if (squad3Header.Squad != PlayManager.squadList[2])
             {
                 squad3Header.Setup(PlayManager.squadList[2]);
+                squad3Header.SetUINav(squad2Header);
             }
         }
         else
@@ -166,6 +168,7 @@ public class HQCommandCenter : UICanvas
             if (squad4Header.Squad != PlayManager.squadList[3])
             {
                 squad4Header.Setup(PlayManager.squadList[3]);
+                squad4Header.SetUINav(squad3Header);
             }
         }
         else
