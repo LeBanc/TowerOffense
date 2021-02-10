@@ -12,23 +12,23 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: bdc65651f99bb6f4296c79d6dde67e98, type: 3}
   m_Name: FacilitiesData
   m_EditorClassIdentifier: 
-  squad2Cost: 15
-  squad3Cost: 50
-  squad4Cost: 150
+  squad2Cost: 10
+  squad3Cost: 20
+  squad4Cost: 50
   timeBonus: 15
-  attackTime1Cost: 50
-  attackTime2Cost: 150
-  attackTime3Cost: 300
+  attackTime1Cost: 10
+  attackTime2Cost: 20
+  attackTime3Cost: 35
   healBonus: 5
-  healing1Cost: 40
-  healing2Cost: 100
-  healing3Cost: 400
+  healing1Cost: 20
+  healing2Cost: 25
+  healing3Cost: 30
   recruitingBonus: 5
-  recruiting1Cost: 25
-  recruiting2Cost: 100
-  recruiting3Cost: 300
+  recruiting1Cost: 5
+  recruiting2Cost: 10
+  recruiting3Cost: 20
   exploDamagesBonus: 50
-  explosive1Cost: 150
-  explosive2Cost: 400
-  explosive3Cost: 700
-  soldierXPCost: 250
+  explosive1Cost: 20
+  explosive2Cost: 30
+  explosive3Cost: 50
+  soldierXPCost: 50
