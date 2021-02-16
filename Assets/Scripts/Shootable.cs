@@ -231,8 +231,11 @@ public class Shootable : MonoBehaviour
             return;
         }
 
+        // Send message for Animator when there is one (soldiers and enemy soldiers)
+        SendMessage("ShootMessage", SendMessageOptions.DontRequireReceiver);
+
         // Launch VFX
-        if(fireParticles != null)
+        if (fireParticles != null)
         {
             fireParticles.Play();
             Invoke("StopFireParticules", 0.3f);

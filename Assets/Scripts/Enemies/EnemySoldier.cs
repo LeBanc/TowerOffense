@@ -43,8 +43,9 @@ public class EnemySoldier : Enemy
     protected override void DestroyEnemy()
     {
         base.DestroyEnemy();
-        GetComponentInChildren<MeshRenderer>().material.color = Color.black;
+        //GetComponentInChildren<MeshRenderer>().material.color = Color.black;
         //OnDestruction -= delegate { PlayManager.enemyList.Remove(this); };
+        SendMessage("DieMessage");
         Destroy(this.gameObject, Time.deltaTime);
     }
 
@@ -134,7 +135,8 @@ public class EnemySoldier : Enemy
                 navAgent.SetDestination(GridAdjustment.GetGridCoordinates(selectedTarget.transform.position));
             }
         }
-        if (!navAgent.isStopped) healthBar.UpdatePosition();
+        SendMessage("UpdateSpeedMessage", navAgent.velocity.magnitude);
+        if (!navAgent.isStopped || navAgent.hasPath) healthBar.UpdatePosition();
         shootingDelay = Mathf.Max(0f, shootingDelay - Time.deltaTime);
     }
 

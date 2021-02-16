@@ -116,7 +116,8 @@ public class SquadUnit : MonoBehaviour
         }
 
         // Set the squad floor color
-        transform.GetChild(0).GetComponent<MeshRenderer>().material.color = squad.Color;
+        //transform.GetChild(0).GetComponent<MeshRenderer>().material.color = squad.Color; // For Standard
+        transform.GetChild(0).GetComponent<MeshRenderer>().material.SetColor("_BaseColor", squad.Color); // For URP
 
         // Get navAgent, enables it and set its speed
         navAgent = GetComponent<NavMeshAgent>();
@@ -131,6 +132,8 @@ public class SquadUnit : MonoBehaviour
 
         // Link update events
         GameManager.PlayUpdate += SquadUpdate;
+
+        Debug.LogError("SquadUnit instantiation");
     }
 
     /// <summary>

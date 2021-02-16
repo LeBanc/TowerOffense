@@ -132,6 +132,7 @@ public class SoldierUnit : Shootable
         OnDamage -= healthBar.UpdateValue;
         healthBar.Remove();
         soldier.Die();
+        SendMessage("DieMessage");
         Destroy(gameObject);
     }
 
@@ -216,7 +217,10 @@ public class SoldierUnit : Shootable
                 if (IsTargetInSight(selectedTarget))
                 {
                     // shoot target
-                    if (!wounded && !isBuilding)Shoot(selectedTarget);
+                    if (!wounded && !isBuilding)
+                    {
+                        Shoot(selectedTarget);
+                    }
                 }
             }
             else
@@ -230,7 +234,10 @@ public class SoldierUnit : Shootable
                     if (IsTargetInSight(secondaryTarget))
                     {
                         // shoot secondary target
-                        if (!wounded && !isBuilding) Shoot(secondaryTarget);
+                        if (!wounded && !isBuilding)
+                        {
+                            Shoot(secondaryTarget);
+                        }
                     }
                 }
                 else
@@ -242,9 +249,13 @@ public class SoldierUnit : Shootable
             }
         }
 
+        SendMessage("UpdateSpeedMessage", navAgent.velocity.magnitude);
         if (!navAgent.isStopped) healthBar.UpdatePosition();
 
         shootingDelay = Mathf.Max(0f, shootingDelay - Time.deltaTime);
+        
+        SendMessage("BuildMessage", isBuilding);
+        
         isBuilding =  false;
     }
 
@@ -261,6 +272,7 @@ public class SoldierUnit : Shootable
         // Wounded soldier is slower and slows down the squad
         navAgent.speed = 0.9f * navAgent.speed;
         squadUnit.Speed = 0.9f * squadUnit.Speed;
+        SendMessage("WoundedMessage", true);
     }
     #endregion
 
@@ -280,6 +292,8 @@ public class SoldierUnit : Shootable
             // Healed soldier gets back his/her initial speed and so does the squad
             navAgent.speed = navAgent.speed / 0.9f;
             squadUnit.Speed = squadUnit.Speed / 0.9f;
+
+            SendMessage("WoundedMessage", false);
         }
         RaiseOnDamage(hP, maxHP);
     }
