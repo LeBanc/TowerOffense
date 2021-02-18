@@ -249,7 +249,7 @@ public class SoldierUnit : Shootable
             }
         }
 
-        SendMessage("UpdateSpeedMessage", navAgent.velocity.magnitude);
+        SendMessage("UpdateVelocityMessage", transform.InverseTransformDirection(navAgent.velocity));
         if (!navAgent.isStopped) healthBar.UpdatePosition();
 
         shootingDelay = Mathf.Max(0f, shootingDelay - Time.deltaTime);

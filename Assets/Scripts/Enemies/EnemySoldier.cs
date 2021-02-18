@@ -135,7 +135,7 @@ public class EnemySoldier : Enemy
                 navAgent.SetDestination(GridAdjustment.GetGridCoordinates(selectedTarget.transform.position));
             }
         }
-        SendMessage("UpdateSpeedMessage", navAgent.velocity.magnitude);
+        SendMessage("UpdateVelocityMessage", transform.InverseTransformDirection(navAgent.velocity));
         if (!navAgent.isStopped || navAgent.hasPath) healthBar.UpdatePosition();
         shootingDelay = Mathf.Max(0f, shootingDelay - Time.deltaTime);
     }

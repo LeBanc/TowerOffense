@@ -9,6 +9,13 @@ public class SoldierAnimatorTrigger : MonoBehaviour
         animator.SetFloat("Speed", _speed);
     }
 
+    private void UpdateVelocityMessage(Vector3 _velocity)
+    {
+        animator.SetFloat("Speed", _velocity.magnitude);
+        animator.SetFloat("XVelocity", _velocity.x);
+        animator.SetFloat("ZVelocity", _velocity.z);
+    }
+
     private void ShootMessage()
     {
         animator.SetTrigger("Shoot");
