@@ -268,7 +268,6 @@ public class SoldierUnit : Shootable
         if (wounded) return;
         wounded = true;
         OnWounded?.Invoke();
-        GetComponentInChildren<MeshRenderer>().material.color = Color.black;
         // Wounded soldier is slower and slows down the squad
         navAgent.speed = 0.9f * navAgent.speed;
         squadUnit.Speed = 0.9f * squadUnit.Speed;
@@ -287,7 +286,6 @@ public class SoldierUnit : Shootable
         if (wounded)
         {
             wounded = false;
-            GetComponentInChildren<MeshRenderer>().material.color = Color.white;
 
             // Healed soldier gets back his/her initial speed and so does the squad
             navAgent.speed = navAgent.speed / 0.9f;
