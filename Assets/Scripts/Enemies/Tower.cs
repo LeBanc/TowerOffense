@@ -8,6 +8,7 @@ public class Tower : Enemy
 {
     // Prefab of soldier to spawn
     public GameObject enemySoldier;
+    public GameObject activeFlag;
 
     public TowerData data;
     private string dataPath = "";
@@ -25,12 +26,6 @@ public class Tower : Enemy
     private List<Vector3> middleRangeCells;
     private List<Vector3> longRangeCells;
 
-    // For debug purpose
-    // /*
-    private LineRenderer line;
-    private Material _red;
-    // */
-
     /// <summary>
     /// On Start, initialize HealthBar, events and available cells
     /// </summary>
@@ -44,16 +39,11 @@ public class Tower : Enemy
         PlayManager.OnEndDay += DisableUpdate;
         PlayManager.OnRetreatAll += StopSpawning;
 
-        // For debug purpose
-        // /*
-        _red = Resources.Load("Materials/UnlitRed_mat", typeof(Material)) as Material;
-        line = gameObject.AddComponent<LineRenderer>();
-        line.enabled = false;
-        // */
-
         shortRangeCells = new List<Vector3>();
         middleRangeCells = new List<Vector3>();
         longRangeCells = new List<Vector3>();
+
+        Debug.Log("Tower.Start");
     }
 
     /// <summary>
@@ -66,6 +56,8 @@ public class Tower : Enemy
         PlayManager.OnEndDay -= DisableUpdate;
         PlayManager.OnRetreatAll -= StopSpawning;
         base.OnDestroy();
+
+        Debug.Log("Tower.OnDestroy");
     }
 
     /// <summary>
@@ -78,6 +70,7 @@ public class Tower : Enemy
         dataPath = data.name;
 
         active = false;
+        activeFlag.SetActive(false);
 
         maxHP = data.maxHP;
         hP = maxHP;
@@ -136,8 +129,8 @@ public class Tower : Enemy
     {
         active = true;
         // GFX
-        GetComponent<MeshRenderer>().material.color = Color.red;
         healthBar.Show();
+        activeFlag.SetActive(true);
 
         // SFX
     }
@@ -151,6 +144,8 @@ public class Tower : Enemy
 
         // Deactive tower
         active = false;
+        activeFlag.SetActive(false);
+
         StopSpawning();
 
         // Remove tower from tower list
@@ -161,11 +156,6 @@ public class Tower : Enemy
         //GetComponent<MeshRenderer>().material.color = Color.black;
 
         // SFX
-
-        // For debug purpose
-        // /*
-        line.enabled = false;
-        // */
 
         Destroy(gameObject);
     }
@@ -179,6 +169,9 @@ public class Tower : Enemy
         spawnCounter = 0f;
         GameManager.PlayUpdate += SpawnUpdate;
         InitializeAvailableCells(); // Init cells at each day to avoid error at init when loading
+        healthBar.UpdateValue(hP, maxHP);
+
+        Debug.Log("Tower.EnableUpdate");
     }
 
     /// <summary>
@@ -189,6 +182,8 @@ public class Tower : Enemy
         // Unsubscribe to events
         GameManager.PlayUpdate -= EnemyUpdate;
         StopSpawning();
+
+        Debug.Log("Tower.DisableUpdate");
     }
 
     /// <summary>
@@ -217,13 +212,6 @@ public class Tower : Enemy
         if (selectedTarget != null)
         {
             Vector3[] _positions = new Vector3[] { transform.position, selectedTarget.transform.position };
-            line.material = _red;
-            line.SetPositions(_positions);
-            //line.enabled = true;
-        }
-        else
-        {
-            line.enabled = false;
         }
     }
 
@@ -279,25 +267,6 @@ public class Tower : Enemy
                 }
             }
         }
-
-        /*
-        string _res = gameObject.name + " " + transform.position + "\nShortRange: ";
-        foreach(Vector3 _vect in shortRangeCells)
-        {
-            _res += _vect + " | ";
-        }
-        _res += "\nMiddleRange: ";
-        foreach (Vector3 _vect in middleRangeCells)
-        {
-            _res += _vect + " | ";
-        }
-        _res += "\nLongRange: ";
-        foreach (Vector3 _vect in longRangeCells)
-        {
-            _res += _vect + " | ";
-        }
-        Debug.Log(_res);
-        */
     }
 
     public List<Vector3> ShortRangeCells
