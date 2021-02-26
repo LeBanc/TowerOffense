@@ -45,6 +45,7 @@ public class DayLight : MonoBehaviour
 
         // Subscribe to PlayManager events
         PlayManager.OnEndDay += Night;
+        PlayManager.OnReset += ResetLight;
     }
 
     /// <summary>
@@ -54,7 +55,16 @@ public class DayLight : MonoBehaviour
     {
         PlayManager.OnEndDay -= Night;
         GameManager.PlayUpdate -= LightUpdate;
+        PlayManager.OnReset -= ResetLight;
+    }
 
+    /// <summary>
+    /// ResetLight methods reset the light event subscriptions to avoid multiple calls after loading new scene
+    /// </summary>
+    private void ResetLight()
+    {
+        PlayManager.OnEndDay -= Night;
+        GameManager.PlayUpdate -= LightUpdate;
     }
 
     /// <summary>
