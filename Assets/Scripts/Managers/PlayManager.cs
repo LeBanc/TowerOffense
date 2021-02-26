@@ -86,6 +86,7 @@ public class PlayManager : Singleton<PlayManager>
     public static event PlayManagerEvents OnWorkforceUpdate;
     public static event PlayManagerEvents OnLoadGame;
     public static event PlayManagerEvents OnRecruit;
+    public static event PlayManagerEvents OnReset;
 
     public delegate HealthBar PlayManagerHealthBarEvents(Transform _t, float _maxW);
     public static event PlayManagerHealthBarEvents OnNewHealthBarAdded;
@@ -246,6 +247,8 @@ public class PlayManager : Singleton<PlayManager>
     /// </summary>
     public static void LoadFromEmptyScene()
     {
+        OnReset?.Invoke();
+
         // Load DayLight
         GameObject _dayLight = GameObject.Find("Directional Day Light");
         if (_dayLight == null)
@@ -340,8 +343,6 @@ public class PlayManager : Singleton<PlayManager>
         squadList[0].ChangeSoldier(3, soldierList[2]);
         squadList[0].ChangeSoldier(4, soldierList[3]);
         squadList[0].isEngaged = true;
-
-        OnLoadGame?.Invoke();
     }
 
     /// <summary>
@@ -513,5 +514,6 @@ public class PlayManager : Singleton<PlayManager>
     public static void InitAfterLoad()
     {
         OnLoadGame?.Invoke();
+        OnHQPhase?.Invoke();
     }
 }

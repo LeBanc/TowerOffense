@@ -24,6 +24,8 @@ public class HQCommandCenter : UICanvas
     {
         base.Awake();
 
+        PlayManager.OnReset += ResetSelectedSquad;
+
         squad1Header.OnSelection += SelectSquadHeader;
         squad1Header.OnSelection += delegate { squad2Header.select.Unselect(); squad3Header.select.Unselect(); squad4Header.select.Unselect(); };
 
@@ -42,6 +44,8 @@ public class HQCommandCenter : UICanvas
     /// </summary>
     private void OnDestroy()
     {
+        PlayManager.OnReset -= ResetSelectedSquad;
+
         squad1Header.OnSelection -= SelectSquadHeader;
         squad1Header.OnSelection -= delegate { squad2Header.select.Unselect(); squad3Header.select.Unselect(); squad4Header.select.Unselect(); };
 
@@ -120,6 +124,14 @@ public class HQCommandCenter : UICanvas
     }
 
     /// <summary>
+    /// ResetSelectedSquad method sets the selected squad to null
+    /// </summary>
+    private void ResetSelectedSquad()
+    {
+        selectedSquad = null;
+    }
+
+    /// <summary>
     /// UpdateSquadHeaders updates all the SquadHeaders if needed from the PlayManager Squad list
     /// </summary>
     public void UpdateSquadHeaders()
@@ -175,6 +187,7 @@ public class HQCommandCenter : UICanvas
         {
             squad4Header.Lock();
         }
+
         // If no squad is selected, select the first squad
         if (selectedSquad == null) selectedSquad = PlayManager.squadList[0];
         // Display the selected squad in the Edition Canvas

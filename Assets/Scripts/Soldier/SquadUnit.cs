@@ -132,8 +132,7 @@ public class SquadUnit : MonoBehaviour
 
         // Link update events
         GameManager.PlayUpdate += SquadUpdate;
-
-        Debug.LogError("SquadUnit instantiation");
+        PlayManager.OnReset += ResetSquadUnit;
     }
 
     /// <summary>
@@ -143,6 +142,7 @@ public class SquadUnit : MonoBehaviour
     {
         // Unlinks event
         GameManager.PlayUpdate -= SquadUpdate;
+        PlayManager.OnReset -= ResetSquadUnit;
         OnUnselection = null;
         OnActionDone = null;
     }
@@ -955,6 +955,16 @@ public class SquadUnit : MonoBehaviour
     {
         OnDeath?.Invoke();
         PlayManager.RemoveSquadUnit(this);
+        Destroy(gameObject);
+    }
+
+    /// <summary>
+    /// ResetSquadUnit method removes the SquadUnit, its soldiers and its SquadActionPanel without triggering the PlayManager EndDayRoutine
+    /// </summary>
+    private void ResetSquadUnit()
+    {
+        OnHQBack?.Invoke();
+        PlayManager.squadUnitList.Remove(this);
         Destroy(gameObject);
     }
 

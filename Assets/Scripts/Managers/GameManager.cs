@@ -141,36 +141,61 @@ public class GameManager : Singleton<GameManager>
         _unloadOperations.Add(ao);
     }
 
+    public void ClearLoadedLevel()
+    {
+        if (SceneManager.GetSceneByName("Test").IsValid()) UnloadLevel("Test");
+        if (SceneManager.GetSceneByName("EmptyScene").IsValid()) UnloadLevel("EmptyScene");
+    }
+
     public void StartNewGame()
     {
-        if (!SceneManager.GetSceneByName("Test").IsValid() && !SceneManager.GetSceneByName("EmptyScene").IsValid()) LoadLevel("Test");
         Instance.StartCoroutine(LoadingSequence(0));
     }
 
     public void ContinueGame()
     {
-        if (!SceneManager.GetSceneByName("Test").IsValid() && !SceneManager.GetSceneByName("EmptyScene").IsValid()) LoadLevel("EmptyScene");
         Instance.StartCoroutine(LoadingSequence(1));
     }
 
     public static void LoadGame(string _fileName)
     {
-        if (!SceneManager.GetSceneByName("Test").IsValid() && !SceneManager.GetSceneByName("EmptyScene").IsValid()) Instance.LoadLevel("EmptyScene");
         Instance.StartCoroutine(Instance.LoadingSequence(2,_fileName));
     }
 
     private IEnumerator LoadingSequence(int _loadingType, string _fileName = "")
     {
         float startTime = Time.time;
-
+        // Change game state
         ChangeGameStateRequest(GameState.load);
-        if(_loadOperations.Count > 0)
+
+        // Unload currently loaded level (if any)
+        ClearLoadedLevel();
+        if (_unloadOperations.Count > 0)
+        {
+            while (_unloadOperations[_unloadOperations.Count - 1].progress < 1f)
+            {
+                yield return null;
+            }
+        }
+
+        // Load level (Test for new game, EmptyScene for loaded game)
+        if (_loadingType == 0)
+        {
+            if (!SceneManager.GetSceneByName("Test").IsValid() && !SceneManager.GetSceneByName("EmptyScene").IsValid()) LoadLevel("Test");
+        }
+        else
+        {
+            if (!SceneManager.GetSceneByName("Test").IsValid() && !SceneManager.GetSceneByName("EmptyScene").IsValid()) Instance.LoadLevel("EmptyScene");
+        }
+        if (_loadOperations.Count > 0)
         {
             while (_loadOperations[_loadOperations.Count - 1].progress < 1f)
             {
                 yield return null;
             }
-        }        
+        }
+        
+        //Setup PlayManager data
         PlayManager.LoadFromEmptyScene();
         if(_loadingType == 0)
         {
@@ -179,23 +204,34 @@ public class GameManager : Singleton<GameManager>
         else if(_loadingType == 1)
         {
             DataSave.LoadAutoSavedGame();
-            PlayManager.InitAfterLoad();
         }
         else
         {
             DataSave.LoadSavedGame(_fileName);
-            PlayManager.InitAfterLoad();
         }
+        // Always init after a load to unsure the game is in HQPhase, showing the new loaded data
+        PlayManager.InitAfterLoad();
 
         // Small pause if the loading take less than 2 seconds, just to see the loading screen
-        while(Time.time < startTime +2f)
+        while (Time.time < startTime +2f)
         {
             yield return null;
         }
         ChangeGameStateRequest(GameState.play);
     }
 
-    
+    private void UnloadingWait()
+    {
+        if (_unloadOperations.Count > 0)
+        {
+            while (_unloadOperations[_unloadOperations.Count - 1].progress < 1f)
+            {
+                // do nothing
+            }
+        }
+    }
+
+
     #endregion
 
     /// <summary>
@@ -208,6 +244,9 @@ public class GameManager : Singleton<GameManager>
         nextGameState = GameState.init;
         _instanciatedManagers = new List<GameObject>();
         InstantiateManagers();
+
+        OnPauseToStart += ClearLoadedLevel;
+        OnPlayToStart += ClearLoadedLevel;
     }
 
     /// <summary>
@@ -297,6 +336,9 @@ public class GameManager : Singleton<GameManager>
         base.OnDestroy();
 
         ClearInstantiatedManagers();
+
+        OnPauseToStart -= ClearLoadedLevel;
+        OnPlayToStart -= ClearLoadedLevel;
     }
 
     public void QuitGame()
