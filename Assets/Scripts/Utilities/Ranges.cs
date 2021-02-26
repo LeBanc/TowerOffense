@@ -213,7 +213,7 @@ public static class Ranges
             {
                 if (c.TryGetComponent(out Enemy _enemy))
                 {
-                    if (!_enemy.IsDestroyed() && IsShootableShort(_source, _enemy))
+                    if (!_enemy.IsDestroyed() && IsShootableShort(_source, _enemy) && _enemy.IsActive())
                     {
                         _targets.Add(_enemy);
                     }
@@ -239,7 +239,7 @@ public static class Ranges
             {
                 if (c.TryGetComponent(out Enemy _enemy))
                 {
-                    if (!_enemy.IsDestroyed() && IsShootableMiddle(_source, _enemy))
+                    if (!_enemy.IsDestroyed() && IsShootableMiddle(_source, _enemy) && _enemy.IsActive())
                     {
                         _targets.Add(_enemy);
                     }
@@ -265,7 +265,7 @@ public static class Ranges
             {
                 if (c.TryGetComponent(out Enemy _enemy))
                 {
-                    if (!_enemy.IsDestroyed() && IsShootableLong(_source, _enemy))
+                    if (!_enemy.IsDestroyed() && IsShootableLong(_source, _enemy) && _enemy.IsActive())
                     {
                         _targets.Add(_enemy);
                     }
