@@ -25,6 +25,7 @@ public class EnemySoldier : Enemy
         // Subscribe to events
         EnableUpdate();
         PlayManager.OnEndDay += RemoveEnemy;
+        PlayManager.OnReset += RemoveEnemy;
     }
 
     /// <summary>
@@ -34,6 +35,7 @@ public class EnemySoldier : Enemy
     {
         OnDestruction -= delegate { PlayManager.enemyList.Remove(this); };
         PlayManager.OnEndDay -= RemoveEnemy;
+        PlayManager.OnReset -= RemoveEnemy;
         base.OnDestroy();
     }
 

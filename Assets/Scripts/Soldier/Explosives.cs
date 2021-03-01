@@ -23,6 +23,8 @@ public class Explosives : Buildable
     {
         base.Start();
         StartBuilding();
+
+        PlayManager.OnReset += Remove;
     }
 
     /// <summary>
@@ -32,6 +34,7 @@ public class Explosives : Buildable
     {
         GameManager.PlayUpdate -= Countdown;
         PlayManager.OnEndDay -= Explode;
+        PlayManager.OnReset -= Remove;
         base.OnDestroy();
     }
 
@@ -101,6 +104,9 @@ public class Explosives : Buildable
     /// </summary>
     private void Explode()
     {
+        // Stop the countdown
+        GameManager.PlayUpdate -= Countdown;
+
         // SFX and VFX (TBD)
 
         // Damage the target (tower)
@@ -125,6 +131,14 @@ public class Explosives : Buildable
         }
 
         // Remove the explosives
+        Remove();
+    }
+
+    /// <summary>
+    /// Remove method removes the Explosives from the PlayManager list and destroy the object
+    /// </summary>
+    private void Remove()
+    {
         PlayManager.explosivesList.Remove(this);
         Destroy(gameObject);
     }
