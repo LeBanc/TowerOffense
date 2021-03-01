@@ -25,6 +25,9 @@ public class CityCanvas : UICanvas
     public GameObject healthBar;
     private List<HealthBar> hBarList;
 
+    // Active camera
+    private CameraMovement activeCamMove;
+
     // Events
     public delegate void CityCanvasEventHandler();
     public event CityCanvasEventHandler OnSquad1Selection;
@@ -69,6 +72,7 @@ public class CityCanvas : UICanvas
         PlayManager.OnLoadSquadsOnNewDay += Show;
         PlayManager.OnHQPhase += Hide;
         PlayManager.OnHQPhase += Reset;
+        PlayManager.OnLoadGame += FetchCamera;
         //enabled = false;
     }
 
@@ -83,6 +87,7 @@ public class CityCanvas : UICanvas
         PlayManager.OnHQPhase -= Hide;
         PlayManager.OnHQPhase -= Reset;
         PlayManager.OnNewHealthBarAdded -= AddHealthBar;
+        PlayManager.OnLoadGame -= FetchCamera;
 
         squad1.OnRetreat -= HideRetreatButton;
         squad2.OnRetreat -= HideRetreatButton;
@@ -489,24 +494,21 @@ public class CityCanvas : UICanvas
                 }
             }
         }
-        // Camera movment with arrow keys (up and down)
-        if (Input.GetKey(KeyCode.UpArrow))
+    }
+
+    private void FetchCamera()
+    {
+        if (activeCamMove != null) activeCamMove.OnCameraMovement -= UpdateAllHealthBars;
+
+        activeCamMove = Camera.main.GetComponent<CameraMovement>();
+
+        if(activeCamMove != null)
         {
-            // Move Camera up and update HealthBars
-            Camera.main.transform.position += new Vector3(0f, 0f, 1f);
-            foreach(HealthBar _hb in hBarList)
-            {
-                _hb.UpdatePosition();
-            }
+            activeCamMove.OnCameraMovement += UpdateAllHealthBars;
         }
-        if (Input.GetKey(KeyCode.DownArrow))
+        else
         {
-            // Move Camera down and update HealthBars
-            Camera.main.transform.position += new Vector3(0f, 0f, -1f);
-            foreach (HealthBar _hb in hBarList)
-            {
-                _hb.UpdatePosition();
-            }
+            Debug.LogError("[CityCanvas] Cannot find main camera CameraMovement script!");
         }
     }
 }
