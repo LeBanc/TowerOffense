@@ -63,7 +63,6 @@ public class DayLight : MonoBehaviour
     /// </summary>
     private void ResetLight()
     {
-        PlayManager.OnEndDay -= Night;
         GameManager.PlayUpdate -= LightUpdate;
     }
 
@@ -73,6 +72,7 @@ public class DayLight : MonoBehaviour
     /// <param name="time">Time at which the night should come</param>
     public void Morning(float time)
     {
+        //Debug.Log("Morning: " + time);
         // Set up private parameters
         nightTime = time + 10f;
         counter = 0f;
