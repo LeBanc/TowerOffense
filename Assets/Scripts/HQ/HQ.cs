@@ -1,4 +1,5 @@
-﻿using UnityEngine;
+﻿using System.Collections.Generic;
+using UnityEngine;
 
 /// <summary>
 /// HQ class manages the in game HQ
@@ -37,6 +38,11 @@ public class HQ : MonoBehaviour
         set { attackTime = value; }
         get { return attackTime; }
     }
+
+    public Vector3[] SpawnPositions
+    {
+        get { return spawnPoints; }
+    }
     #endregion
 
     /// <summary>
@@ -45,7 +51,6 @@ public class HQ : MonoBehaviour
     void Start()
     {
         hqCandidateInstance = hqCandidate;
-        SetSpawnPoints();
         PlayManager.OnLoadSquadsOnNewDay += InstantiateSquads;
         PlayManager.OnEndDay += EndDayAtHQ;
     }
@@ -97,9 +102,10 @@ public class HQ : MonoBehaviour
 
         while (_index < 4 && _posIndex <positions.Length)
         {
-            if (IsSpawnPoint(transform.position + positions[_posIndex]))
+            Vector3 _posToTest = transform.position + positions[_posIndex];
+            if (IsSpawnPoint(ref _posToTest))
             {
-                spawnPoints[_index] = transform.position + positions[_posIndex];
+                spawnPoints[_index] = _posToTest;
                 _index++;
             }
             _posIndex++;
@@ -110,16 +116,18 @@ public class HQ : MonoBehaviour
     /// <summary>
     /// IsSpawnPoints returns the avaibility of the transform position to be a spawn point
     /// </summary>
-    /// <param name="position">Spawn point position</param>
+    /// <param name="position">Spawn point position, the position is changed to the raycast hit if it is an valid spawn point </param>
     /// <returns>True if the cell is an available spawn point, false otherwise</returns>
-    private bool IsSpawnPoint(Vector3 position)
+    private bool IsSpawnPoint(ref Vector3 position)
     {
         Ray _ray = new Ray(position + Vector3.up * 20, -Vector3.up);
         RaycastHit _hit;
-        if (Physics.Raycast(_ray, out _hit, Mathf.Infinity, LayerMask.GetMask("Terrain", "Buildings")))
+        if (Physics.Raycast(_ray, out _hit, Mathf.Infinity, LayerMask.GetMask("Terrain", "Buildings", "Enemies")))
         {
+            Debug.Log(_hit.collider.gameObject.name + ": " + _hit.collider.gameObject.tag);
             if (_hit.collider.gameObject.CompareTag("Terrain"))
             {
+                position = _hit.point + 0.01f * Vector3.up;
                 return true;
             }
             else
@@ -145,6 +153,9 @@ public class HQ : MonoBehaviour
     /// </summary>
     public void InstantiateSquads()
     {
+        // Set new spawn points before instanciating squads
+        SetSpawnPoints();
+
         int _index = 0;
         foreach(Squad _squad in PlayManager.squadList)
         {
@@ -237,6 +248,8 @@ public class HQ : MonoBehaviour
     public static void InstantiateHQCandidate(Vector3 _position)
     {
         GameObject _candidate = Instantiate(hqCandidateInstance, _position, Quaternion.identity, GameObject.Find("HQCandidates").transform);
-        PlayManager.hqCandidateList.Add(_candidate.GetComponent<HQCandidate>()); ;
+        PlayManager.hqCandidateList.Add(_candidate.GetComponent<HQCandidate>());
+        PlayManager.soldierNav.UpdateNavMesh(PlayManager.soldierNav.navMeshData);
+        PlayManager.squadNav.UpdateNavMesh(PlayManager.squadNav.navMeshData);
     }
 }

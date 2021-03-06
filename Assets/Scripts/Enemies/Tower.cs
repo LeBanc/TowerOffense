@@ -42,8 +42,6 @@ public class Tower : Enemy
         shortRangeCells = new List<Vector3>();
         middleRangeCells = new List<Vector3>();
         longRangeCells = new List<Vector3>();
-
-        Debug.Log("Tower.Start");
     }
 
     /// <summary>
@@ -56,8 +54,6 @@ public class Tower : Enemy
         PlayManager.OnEndDay -= DisableUpdate;
         PlayManager.OnRetreatAll -= StopSpawning;
         base.OnDestroy();
-
-        Debug.Log("Tower.OnDestroy");
     }
 
     /// <summary>
@@ -170,8 +166,6 @@ public class Tower : Enemy
         GameManager.PlayUpdate += SpawnUpdate;
         InitializeAvailableCells(); // Init cells at each day to avoid error at init when loading
         healthBar.UpdateValue(hP, maxHP);
-
-        Debug.Log("Tower.EnableUpdate");
     }
 
     /// <summary>
@@ -182,8 +176,6 @@ public class Tower : Enemy
         // Unsubscribe to events
         GameManager.PlayUpdate -= EnemyUpdate;
         StopSpawning();
-
-        Debug.Log("Tower.DisableUpdate");
     }
 
     /// <summary>

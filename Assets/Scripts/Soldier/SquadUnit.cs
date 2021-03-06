@@ -932,7 +932,10 @@ public class SquadUnit : MonoBehaviour
     /// </summary>
     public void Retreat()
     {
-        navAgent.SetDestination(GridAdjustment.GetGridCoordinates(PlayManager.hqPos));
+        // As setting destination to HQ pos is not working anymore (issue with NavMesh and maybe empty buildings)
+        // The destination is the first spawn point (should be a spawn point at max 10m of the HQ, so the squad will retrun to HQ)
+        navAgent.SetDestination(PlayManager.hq.SpawnPositions[0]);
+
         fixedDestination = true;
         retreatActive = true;
         Unselect();

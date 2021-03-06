@@ -350,9 +350,12 @@ public class PlayManager : Singleton<PlayManager>
     /// </summary>
     public static void SetNewHQPosition()
     {
+        // Set new HQ spawn points, they are needed to set a new destination for all squad
+        hq.SetSpawnPoints();
+
         foreach(SquadUnit _su in squadUnitList)
         {
-            if (_su.IsRetreating) _su.SetDestination(hqPos);
+            if (_su.IsRetreating) _su.Retreat(); // Calling retreat again will change the squad destination
         }
     }
 
@@ -513,6 +516,9 @@ public class PlayManager : Singleton<PlayManager>
     /// </summary>
     public static void InitAfterLoad()
     {
+        PlayManager.soldierNav.BuildNavMesh();
+        PlayManager.squadNav.BuildNavMesh();
+
         OnLoadGame?.Invoke();
         OnHQPhase?.Invoke();
     }

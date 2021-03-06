@@ -14,12 +14,13 @@ GameObject:
   - component: {fileID: 740958671378340044}
   - component: {fileID: 740958671378340035}
   - component: {fileID: 6971997040731647222}
+  - component: {fileID: 5977299480254566428}
   m_Layer: 10
   m_Name: HQCandidate
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 1
-  m_StaticEditorFlags: 4294967295
+  m_StaticEditorFlags: 4294967263
   m_IsActive: 1
 --- !u!4 &740958671378340047
 Transform:
@@ -123,3 +124,19 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 50ef0fbffeed3d14685ee2207aa52882, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+--- !u!114 &5977299480254566428
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 740958671378340033}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 1e3fdca004f2d45fe8abbed571a8abd5, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  m_OverrideArea: 1
+  m_Area: 1
+  m_IgnoreFromBuild: 0
+  m_AffectedAgents: ffffffff

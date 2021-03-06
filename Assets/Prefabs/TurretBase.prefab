@@ -11,6 +11,7 @@ GameObject:
   - component: {fileID: 5100498192306108398}
   - component: {fileID: 195216098441837167}
   - component: {fileID: 6087189888435367896}
+  - component: {fileID: 7873840124773174015}
   m_Layer: 10
   m_Name: TurretBase
   m_TagString: Untagged
@@ -61,6 +62,22 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   turretPrefab: {fileID: 6257947811021738995, guid: ceb8473b5a5b8a147b4d73afcf6671c5,
     type: 3}
+--- !u!114 &7873840124773174015
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 6257947811021738995}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 1e3fdca004f2d45fe8abbed571a8abd5, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  m_OverrideArea: 1
+  m_Area: 1
+  m_IgnoreFromBuild: 0
+  m_AffectedAgents: ffffffff
 --- !u!1 &6357460948454896610
 GameObject:
   m_ObjectHideFlags: 0
@@ -76,8 +93,8 @@ GameObject:
   m_Name: Base
   m_TagString: Untagged
   m_Icon: {fileID: 0}
-  m_NavMeshLayer: 0
-  m_StaticEditorFlags: 0
+  m_NavMeshLayer: 1
+  m_StaticEditorFlags: 8
   m_IsActive: 1
 --- !u!4 &894305535026902661
 Transform:

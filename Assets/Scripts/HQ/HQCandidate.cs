@@ -32,10 +32,14 @@ public class HQCandidate : Buildable
     protected override void EndBuilding()
     {
         HQ.InstantiateHQCandidate(PlayManager.hq.transform.position);
+
         PlayManager.hq.transform.position = transform.position;
         PlayManager.hq.SetSpawnPoints();
         PlayManager.hqPos = GridAdjustment.GetGridCoordinates(new Vector3(transform.position.x, 0f, transform.position.z));
         PlayManager.SetNewHQPosition();
+
+        PlayManager.soldierNav.UpdateNavMesh(PlayManager.soldierNav.navMeshData);
+        PlayManager.squadNav.UpdateNavMesh(PlayManager.squadNav.navMeshData);
 
         base.EndBuilding();
 

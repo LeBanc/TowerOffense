@@ -194,12 +194,13 @@ GameObject:
   - component: {fileID: 899035066}
   - component: {fileID: 899035065}
   - component: {fileID: 899035064}
+  - component: {fileID: 899035068}
   m_Layer: 8
   m_Name: CameraStopperDown
   m_TagString: Untagged
   m_Icon: {fileID: 0}
-  m_NavMeshLayer: 0
-  m_StaticEditorFlags: 0
+  m_NavMeshLayer: 1
+  m_StaticEditorFlags: 4294967295
   m_IsActive: 1
 --- !u!4 &899035063
 Transform:
@@ -289,6 +290,22 @@ MeshFilter:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 899035062}
   m_Mesh: {fileID: 10209, guid: 0000000000000000e000000000000000, type: 0}
+--- !u!114 &899035068
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 899035062}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 1e3fdca004f2d45fe8abbed571a8abd5, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  m_OverrideArea: 1
+  m_Area: 1
+  m_IgnoreFromBuild: 0
+  m_AffectedAgents: ffffffff
 --- !u!1 &1065785548
 GameObject:
   m_ObjectHideFlags: 0
@@ -760,6 +777,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 247f1504294932c4aaf0a8bad9d39712, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  maxSpeed: 100
+  accel: 5
 --- !u!1 &1533163281
 GameObject:
   m_ObjectHideFlags: 0
@@ -775,8 +794,8 @@ GameObject:
   m_Name: Clouds
   m_TagString: Untagged
   m_Icon: {fileID: 0}
-  m_NavMeshLayer: 0
-  m_StaticEditorFlags: 0
+  m_NavMeshLayer: 1
+  m_StaticEditorFlags: 4294967295
   m_IsActive: 1
 --- !u!23 &1533163282
 MeshRenderer:
@@ -882,12 +901,13 @@ GameObject:
   - component: {fileID: 1828444828}
   - component: {fileID: 1828444827}
   - component: {fileID: 1828444826}
+  - component: {fileID: 1828444830}
   m_Layer: 8
   m_Name: CameraStopperUp
   m_TagString: Untagged
   m_Icon: {fileID: 0}
-  m_NavMeshLayer: 0
-  m_StaticEditorFlags: 0
+  m_NavMeshLayer: 1
+  m_StaticEditorFlags: 4294967295
   m_IsActive: 1
 --- !u!4 &1828444825
 Transform:
@@ -977,6 +997,22 @@ MeshFilter:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1828444824}
   m_Mesh: {fileID: 10209, guid: 0000000000000000e000000000000000, type: 0}
+--- !u!114 &1828444830
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1828444824}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 1e3fdca004f2d45fe8abbed571a8abd5, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  m_OverrideArea: 1
+  m_Area: 1
+  m_IgnoreFromBuild: 0
+  m_AffectedAgents: ffffffff
 --- !u!1 &1966687172
 GameObject:
   m_ObjectHideFlags: 0
@@ -1071,7 +1107,7 @@ PrefabInstance:
     - target: {fileID: 8523458129953674628, guid: 07014bc2408a144459231499980fc562,
         type: 3}
       propertyPath: m_LocalPosition.y
-      value: 7.5
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 8523458129953674628, guid: 07014bc2408a144459231499980fc562,
         type: 3}

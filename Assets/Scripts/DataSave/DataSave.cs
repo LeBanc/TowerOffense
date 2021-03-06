@@ -380,10 +380,6 @@ public class DataSave
         Vector3 _hqPos = _save.hqSave.Load();
         PlayManager.hq.transform.position = _hqPos;
         PlayManager.hqPos = GridAdjustment.GetGridCoordinates(new Vector3(_hqPos.x, 0f, _hqPos.z));
-        PlayManager.hq.SetSpawnPoints();
-
-        PlayManager.soldierNav.BuildNavMesh();
-        PlayManager.squadNav.BuildNavMesh();
     }
 }
 
