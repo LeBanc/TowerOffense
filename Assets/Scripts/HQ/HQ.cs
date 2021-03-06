@@ -124,7 +124,6 @@ public class HQ : MonoBehaviour
         RaycastHit _hit;
         if (Physics.Raycast(_ray, out _hit, Mathf.Infinity, LayerMask.GetMask("Terrain", "Buildings", "Enemies")))
         {
-            Debug.Log(_hit.collider.gameObject.name + ": " + _hit.collider.gameObject.tag);
             if (_hit.collider.gameObject.CompareTag("Terrain"))
             {
                 position = _hit.point + 0.01f * Vector3.up;
