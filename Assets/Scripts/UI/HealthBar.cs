@@ -18,6 +18,7 @@ public class HealthBar : MonoBehaviour
     // Private elements
     private Transform source;
     private Image bar;
+    private float offset = 3f;
 
     // Events
     public delegate void HealthBarEvents(HealthBar _hb);
@@ -40,6 +41,11 @@ public class HealthBar : MonoBehaviour
     public void Setup(Transform _t, float _maxW)
     {
         source = _t;
+        if(source.TryGetComponent(out Tower _tower) || source.TryGetComponent(out HQCandidate _hqCandidate))
+        {
+            offset = 10f;
+        }
+
         maxWidth = _maxW;
         if(bar == null) bar = GetComponent<Image>();
         if (bar == null)
@@ -87,7 +93,7 @@ public class HealthBar : MonoBehaviour
     /// </summary>
     public void UpdatePosition()
     {
-        bar.rectTransform.position = Camera.main.WorldToScreenPoint(source.position + new Vector3(0f, 0f, 2f));
+        bar.rectTransform.position = Camera.main.WorldToScreenPoint(source.position + new Vector3(0f, 0f, offset));
     }
 
     /// <summary>
