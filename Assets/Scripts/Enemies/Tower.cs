@@ -241,15 +241,29 @@ public class Tower : Enemy
 
                 Vector3 _cell = new Vector3((float)10 * i, 0f, (float)10 * j);
 
-                RaycastHit _hit;
+                // Check if cell is empty (Raycast from above hits the terrain)
+                RaycastHit _hitPosition;
                 Ray _ray = new Ray(GridAdjustment.GetGridCoordinates(transform.position) + _cell + 100 * Vector3.up, -Vector3.up);
-                if (Physics.Raycast(_ray, out _hit, Mathf.Infinity, LayerMask.GetMask(new string[] { "Terrain", "Buildings", "Enemies" })))
+                if (Physics.Raycast(_ray, out _hitPosition, Mathf.Infinity, LayerMask.GetMask(new string[] { "Terrain", "Buildings", "Enemies", "Soldiers" })))
                 {
-                    if (_hit.collider.gameObject.layer == LayerMask.NameToLayer("Terrain"))
+                    if (_hitPosition.collider.gameObject.layer == LayerMask.NameToLayer("Terrain"))
                     {
-                        _hit = new RaycastHit();
-                        _ray = new Ray(transform.position, (_cell - 7.5f * Vector3.up).normalized);
-                        if (!Physics.Raycast(_ray, out _hit, Mathf.Infinity, LayerMask.GetMask(new string[] { "Buildings", "Enemies" })))
+
+                        // If cell is empty, check if it is in sight
+                        RaycastHit _hitSight = new RaycastHit();
+                        bool isInSight = false;
+                        foreach(Transform _t in hitList)
+                        {
+                            _ray = new Ray(_t.position, (_hitPosition.point - _t.position).normalized);
+                            if (!Physics.Raycast(_ray, out _hitSight, Mathf.Infinity, LayerMask.GetMask(new string[] { "Buildings", "Enemies", "Soldiers" })))
+                            {
+                                isInSight = true;
+                                break;
+                            }                                
+                        }
+
+                        // If the cell is empty and in sight, add it to the cells' list
+                        if (isInSight)
                         {
                             if (_cell.magnitude <= (PlayManager.ShortRange + 5f)) shortRangeCells.Add(GridAdjustment.GetGridCoordinates(transform.position + _cell));
                             else if (_cell.magnitude <= (PlayManager.MiddleRange + 5f)) middleRangeCells.Add(GridAdjustment.GetGridCoordinates(transform.position + _cell));
