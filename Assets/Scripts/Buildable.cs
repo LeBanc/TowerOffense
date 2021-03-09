@@ -56,8 +56,15 @@ public class Buildable : MonoBehaviour
         // If the TurretBase is still building, shows the HealthBar
         if (isBuilding)
         {
-            healthBar.Show();
-            GameManager.PlayUpdate += Build;
+            if(healthBar == null)
+            {
+                StartBuilding();
+            }
+            else
+            {
+                healthBar.Show();
+                GameManager.PlayUpdate += Build;
+            }            
         }
         // If not, hides it and destroys it
         if (!isBuilding && healthBar != null)
