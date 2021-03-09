@@ -69,6 +69,7 @@ public class FacilitiesItem : MonoBehaviour
     /// </summary>
     public void Activate()
     {
+        Debug.Log("Unlock: " + title.text + "@ " + cost.text);
         OnActivation?.Invoke(this);
     }
 
@@ -78,6 +79,9 @@ public class FacilitiesItem : MonoBehaviour
     /// <param name="_lockState">State of the item (bool): true=locked, false=unlocked</param>
     public void Lock(bool _lockState)
     {
+        // Start with event removal to be sure to remove all listener for a previous game (when loading, starting new game, etc. in a same session)
+        backgroundButton.onClick.RemoveListener(Activate);
+
         if (_lockState)
         {
             lockImage.sprite = lockedSprite;
@@ -86,7 +90,6 @@ public class FacilitiesItem : MonoBehaviour
         else
         {
             lockImage.sprite = unlockedSprite;
-            backgroundButton.onClick.RemoveListener(Activate);
         }
     }
 
