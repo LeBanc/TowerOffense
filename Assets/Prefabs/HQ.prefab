@@ -12,7 +12,7 @@ GameObject:
   - component: {fileID: 2188442752034716864}
   - component: {fileID: 6353065977624505146}
   - component: {fileID: 6310373931530452262}
-  m_Layer: 11
+  m_Layer: 10
   m_Name: Flag
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -106,7 +106,7 @@ GameObject:
   - component: {fileID: 5143700663173055889}
   - component: {fileID: 749463290049461928}
   - component: {fileID: 6982346072182400194}
-  m_Layer: 11
+  m_Layer: 10
   m_Name: FlagPole
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -184,7 +184,7 @@ CapsuleCollider:
   m_GameObject: {fileID: 3866872638746958889}
   m_Material: {fileID: 0}
   m_IsTrigger: 0
-  m_Enabled: 1
+  m_Enabled: 0
   m_Radius: 0.50000024
   m_Height: 2
   m_Direction: 1
@@ -278,7 +278,7 @@ BoxCollider:
   m_GameObject: {fileID: 7631080830049284691}
   m_Material: {fileID: 0}
   m_IsTrigger: 0
-  m_Enabled: 1
+  m_Enabled: 0
   serializedVersion: 2
   m_Size: {x: 1.0000002, y: 1, z: 1.0000002}
   m_Center: {x: 0, y: 0, z: 0}
@@ -447,6 +447,11 @@ PrefabInstance:
         type: 3}
       propertyPath: m_LocalScale.z
       value: 0.162
+      objectReference: {fileID: 0}
+    - target: {fileID: 3295646643590304130, guid: 2557362e4e8bcfe4486030fd8a78182a,
+        type: 3}
+      propertyPath: m_Enabled
+      value: 0
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 2557362e4e8bcfe4486030fd8a78182a, type: 3}
