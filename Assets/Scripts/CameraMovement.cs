@@ -118,7 +118,7 @@ public class CameraMovement : MonoBehaviour
             }
             else if ((hq.transform.position.z) > transform.position.z)
             {
-                StartCoroutine(MoveDownRoutine());
+                StartCoroutine(MoveUpRoutine());
             }
         }
         else
