@@ -338,4 +338,36 @@ public class LoadSaveMenu : UICanvas
             Hide();
         }
     }
+
+    /// <summary>
+    /// GetLastSavedFile method is a static method that returns the name of the last saved file
+    /// </summary>
+    /// <returns>Name of the last saved file or empty string if no save file is found (string)</returns>
+    public static string GetLastSavedFile()
+    {
+        Dictionary<DataSave.FileData, string> _dico = new Dictionary<DataSave.FileData, string>();
+
+        // Get save files from the directory
+        string[] files = Directory.GetFiles(Application.persistentDataPath, "*.save", SearchOption.AllDirectories);
+        // Create SaveFileItem from the files
+        foreach (string f in files)
+        {
+            DataSave.FileData _data = DataSave.GetFileData(f);
+            if (_data.Date != DateTime.MinValue)
+            {
+                _dico.Add(_data, f);
+            }
+        }
+
+        // If dictionnary is empty, return now the default value
+        if (_dico.Count == 0) return "";
+
+        // Sort the list by DateTime
+        List<DataSave.FileData> _fileDataList = _dico.Keys.ToList();
+        _fileDataList.Sort(DataSave.SortByDate);
+        string _fileName = "";
+        _dico.TryGetValue(_fileDataList[0], out _fileName);
+
+        return _fileName;
+    }
 }

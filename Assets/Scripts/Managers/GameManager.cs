@@ -152,14 +152,9 @@ public class GameManager : Singleton<GameManager>
         Instance.StartCoroutine(LoadingSequence(0));
     }
 
-    public void ContinueGame()
-    {
-        Instance.StartCoroutine(LoadingSequence(1));
-    }
-
     public static void LoadGame(string _fileName)
     {
-        Instance.StartCoroutine(Instance.LoadingSequence(2,_fileName));
+        Instance.StartCoroutine(Instance.LoadingSequence(1,_fileName));
     }
 
     private IEnumerator LoadingSequence(int _loadingType, string _fileName = "")
@@ -203,10 +198,6 @@ public class GameManager : Singleton<GameManager>
         }
         else if(_loadingType == 1)
         {
-            DataSave.LoadAutoSavedGame();
-        }
-        else
-        {
             DataSave.LoadSavedGame(_fileName);
         }
         // Always init after a load to unsure the game is in HQPhase, showing the new loaded data
@@ -219,19 +210,6 @@ public class GameManager : Singleton<GameManager>
         }
         ChangeGameStateRequest(GameState.play);
     }
-
-    private void UnloadingWait()
-    {
-        if (_unloadOperations.Count > 0)
-        {
-            while (_unloadOperations[_unloadOperations.Count - 1].progress < 1f)
-            {
-                // do nothing
-            }
-        }
-    }
-
-
     #endregion
 
     /// <summary>

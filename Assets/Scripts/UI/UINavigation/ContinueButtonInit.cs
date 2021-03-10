@@ -44,54 +44,35 @@ public class ContinueButtonInit : MonoBehaviour
     /// </summary>
     private void InitContinueButton()
     {
-        // Clear dictionnary
-        fileDico.Clear();
+#if UNITY_WEBGL
+        return; // In WebGL, the continue button is hidden and shall not be init
+#endif
+        // Reset the action of continue button
+        continueButton.onClick.RemoveAllListeners();
 
-        // Get save files from the directory
-        string[] files = Directory.GetFiles(Application.persistentDataPath, "*.save", SearchOption.AllDirectories);
-        // Create SaveFileItem from the files
-        foreach (string f in files)
-        {
-            DataSave.FileData _data = DataSave.GetFileData(f);
-            if (_data.Date != DateTime.MinValue)
-            {
-                fileDico.Add(_data, f);
-            }
-        }
-        // Sort the list by DateTime
-        List<DataSave.FileData> _fileDataList = fileDico.Keys.ToList();
-        _fileDataList.Sort(DataSave.SortByDate);
-
-        // If there is a save, take the first one (the last saved) and show the continue button
-        if(_fileDataList.Count > 0)
-        {
-            string _fileName = "";
-            if(fileDico.TryGetValue(_fileDataList[0], out _fileName))
-            {
-                // Show the continue button
-                gameObject.SetActive(true);
-
-                // Set the nav from the button below
-                Navigation nav = continueButton.FindSelectableOnDown().navigation;
-                nav.selectOnUp = continueButton;
-                continueButton.FindSelectableOnDown().navigation = nav;
-
-                // Set the action of continue button
-                continueButton.onClick.AddListener(delegate { GameManager.LoadGame(_fileName); });
-            }
-        }
-        else // hide the continue button
+        string _saveFile = LoadSaveMenu.GetLastSavedFile();
+        if (_saveFile.Equals(""))
         {
             // Reset the nav from the button below
             Navigation nav = continueButton.FindSelectableOnDown().navigation;
             nav.selectOnUp = null;
             continueButton.FindSelectableOnDown().navigation = nav;
 
-            // Reset the action of continue button
-            continueButton.onClick.RemoveAllListeners();
-
             // hide the button
             gameObject.SetActive(false);
+        }
+        else
+        {
+            // Show the continue button
+            gameObject.SetActive(true);
+
+            // Set the nav from the button below
+            Navigation nav = continueButton.FindSelectableOnDown().navigation;
+            nav.selectOnUp = continueButton;
+            continueButton.FindSelectableOnDown().navigation = nav;
+
+            // Set the action of continue button
+            continueButton.onClick.AddListener(delegate { GameManager.LoadGame(_saveFile); });
         }
     }
 }
