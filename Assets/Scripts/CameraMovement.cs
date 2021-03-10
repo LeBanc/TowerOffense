@@ -129,6 +129,7 @@ public class CameraMovement : MonoBehaviour
 
     IEnumerator MoveUpRoutine()
     {
+        speed = 0f;
         // Move up to find HQ
         while (!hq.GetComponentInChildren<Renderer>().isVisible)
         {
@@ -150,7 +151,7 @@ public class CameraMovement : MonoBehaviour
         
         // Wait for a small delay
         float delayStartTime = Time.time;
-        while(delayStartTime + 1f > Time.time)
+        while(delayStartTime + 0.35f > Time.time)
         {
             if (allowMoveUp)
             {
@@ -177,6 +178,7 @@ public class CameraMovement : MonoBehaviour
 
     IEnumerator MoveDownRoutine()
     {
+        speed = 0f;
         // Move down to find HQ
         while (!hq.GetComponentInChildren<Renderer>().isVisible)
         {
@@ -198,7 +200,7 @@ public class CameraMovement : MonoBehaviour
 
         // Wait for a small delay
         float delayStartTime = Time.time;
-        while (delayStartTime + 1f > Time.time)
+        while (delayStartTime + 0.2 > Time.time)
         {
             if (allowMoveDown)
             {
