@@ -16,7 +16,7 @@ public class HQLevelupCanvas : UICanvas
 
     // Events
     public delegate void LevelUPEventHandler();
-    public event LevelUPEventHandler OnCanvasHide;
+    public event LevelUPEventHandler OnLevelUp;
 
     /// <summary>
     /// On Awake, fetches Canvas and subscribe to events
@@ -90,7 +90,6 @@ public class HQLevelupCanvas : UICanvas
 
         // Hide the canvas
         base.Hide();
-        OnCanvasHide?.Invoke();
     }
 
     /// <summary>
@@ -101,6 +100,7 @@ public class HQLevelupCanvas : UICanvas
         if(selectedData != null)
         {
             soldier.Evolve(selectedData);
+            OnLevelUp?.Invoke();
         }
         Hide();
     }

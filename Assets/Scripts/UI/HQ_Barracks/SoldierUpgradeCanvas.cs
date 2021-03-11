@@ -49,9 +49,9 @@ public class SoldierUpgradeCanvas : UICanvas
     public void Setup(Soldier _soldier)
     {
         // Remove events'subscription to avoid button selection
-        changeNameCanvas.OnCanvasHide -= ChangeNameButtonSelection;
-        changeImageCanvas.OnCanvasHide -= ChangeImageButtonSelection;
-        levelupCanvas.OnCanvasHide -= LevelUpButtonSelection;
+        changeNameCanvas.OnHide -= ChangeNameButtonSelection;
+        changeImageCanvas.OnHide -= ChangeImageButtonSelection;
+        levelupCanvas.OnHide -= LevelUpButtonSelection;
 
         if (selectedSoldier != null)
         {
@@ -62,13 +62,13 @@ public class SoldierUpgradeCanvas : UICanvas
         }
 
         changeNameCanvas.Hide();
-        changeNameCanvas.OnCanvasHide += ChangeNameButtonSelection;
+        changeNameCanvas.OnHide += ChangeNameButtonSelection;
 
         changeImageCanvas.Hide();
-        changeImageCanvas.OnCanvasHide += ChangeImageButtonSelection;
+        changeImageCanvas.OnHide += ChangeImageButtonSelection;
 
         levelupCanvas.Hide();
-        levelupCanvas.OnCanvasHide += LevelUpButtonSelection;
+        levelupCanvas.OnHide += LevelUpButtonSelection;
 
         selectedSoldier = _soldier;
 
@@ -207,9 +207,9 @@ public class SoldierUpgradeCanvas : UICanvas
             selectedSoldier.OnImageChange -= UpdateImage;
             selectedSoldier.OnDataChange -= UpdateData;
         }
-        changeNameCanvas.OnCanvasHide -= ChangeNameButtonSelection;
-        changeImageCanvas.OnCanvasHide -= ChangeImageButtonSelection;
-        levelupCanvas.OnCanvasHide -= LevelUpButtonSelection;
+        changeNameCanvas.OnHide -= ChangeNameButtonSelection;
+        changeImageCanvas.OnHide -= ChangeImageButtonSelection;
+        levelupCanvas.OnHide -= LevelUpButtonSelection;
     }
 
     /// <summary>

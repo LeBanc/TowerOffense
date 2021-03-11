@@ -14,6 +14,8 @@ public class HQCanvas : UICanvas
     public HQTabToggle tabs;
     // Default selected component
     public Selectable defaultSelected;
+    // Barrack tab Level up immage
+    public Image barracksLevelUpImage;
 
     /// <summary>
     /// On Awake, get the Canvas component and subscribe to events
@@ -22,11 +24,14 @@ public class HQCanvas : UICanvas
     {
         base.Awake();
 
-        PlayManager.OnWorkforceUpdate += UpdateCoins;
+        PlayManager.OnWorkforceUpdate += UpdateWorkforce;
         PlayManager.OnLoadSquadsOnNewDay += Hide;
         PlayManager.OnHQPhase += Show;
         PlayManager.OnHQPhase += Init;
         PlayManager.OnLoadGame += Init;
+
+        tabs.barracks.soldierUpgrade.levelupCanvas.OnLevelUp += UpdateLevelUp;
+
     }
 
     /// <summary>
@@ -34,11 +39,13 @@ public class HQCanvas : UICanvas
     /// </summary>
     private void OnDestroy()
     {
-        PlayManager.OnWorkforceUpdate -= UpdateCoins;
+        PlayManager.OnWorkforceUpdate -= UpdateWorkforce;
         PlayManager.OnLoadSquadsOnNewDay -= Hide;
         PlayManager.OnHQPhase -= Show;
         PlayManager.OnHQPhase -= Init;
         PlayManager.OnLoadGame -= Init;
+
+        tabs.barracks.soldierUpgrade.levelupCanvas.OnLevelUp -= UpdateLevelUp;
     }
 
     /// <summary>
@@ -58,7 +65,8 @@ public class HQCanvas : UICanvas
         tabs.comCenterTab.isOn = true;
         tabs.Refresh();
         UpdateDay();
-        UpdateCoins();
+        UpdateWorkforce();
+        UpdateLevelUp();
         defaultSelected.Select();
     }
 
@@ -71,10 +79,26 @@ public class HQCanvas : UICanvas
     }
 
     /// <summary>
-    /// UpdateCoins method updates the "Coins" text with the current coins value
+    /// UpdateWorkforce method updates the "Coins" text with the current coins value
     /// </summary>
-    public void UpdateCoins()
+    public void UpdateWorkforce()
     {
         coins.text = PlayManager.workforce.ToString();
+    }
+
+    /// <summary>
+    /// UpdateLevelUp method updates the visibility of the Update icon on the Barracks tab
+    /// </summary>
+    public void UpdateLevelUp()
+    {
+        barracksLevelUpImage.enabled = false;
+        foreach(Soldier _s in PlayManager.soldierList)
+        {
+            if(_s.CanLevelUp && !_s.IsDead)
+            {
+                barracksLevelUpImage.enabled = true;
+                return;
+            }
+        }
     }
 }
