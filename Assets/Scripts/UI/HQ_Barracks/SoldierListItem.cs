@@ -151,6 +151,6 @@ public class SoldierListItem : MonoBehaviour
         hpBar.UpdateValue(soldier.CurrentHP, soldier.MaxHP);
         xpBar.UpdateValue(Mathf.Min(soldier.CurrentXP, soldier.MaxXP), soldier.MaxXP);
 
-        levelUpImage.enabled = (soldier.CurrentXP >= soldier.MaxXP) && (soldier.MaxXP > 0);
+        levelUpImage.enabled = soldier.CanLevelUp && !soldier.IsDead;
     }
 }

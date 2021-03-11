@@ -144,7 +144,7 @@ public class SoldierUnit : Shootable
         // Remove HealthBar
         healthBar.Remove();
         soldier.CurrentHP = hP;
-        soldier.Engage(false);
+        soldier.IsEngaged = false;
         Destroy(gameObject);
     }
 

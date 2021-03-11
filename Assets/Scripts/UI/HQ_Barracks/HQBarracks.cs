@@ -53,7 +53,7 @@ public class HQBarracks : UICanvas
         int number = 0;
         foreach (Soldier _soldier in _soldiers)
         {
-            if (!_soldier.IsDead())
+            if (!_soldier.IsDead)
             {
                 GameObject _go = autoScroll.AddPrefabReturnInstance(soldierListItem);
                 SoldierListItem _item = _go.GetComponent<SoldierListItem>();

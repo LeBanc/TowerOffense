@@ -235,7 +235,7 @@ public class HQ : MonoBehaviour
     {
         foreach (Soldier _s in PlayManager.soldierList)
         {
-            if (!_s.IsEngaged() && !_s.IsDead()) _s.Heal(_hAmount);
+            if (!_s.IsEngaged && !_s.IsDead) _s.Heal(_hAmount);
         }
         healDelayCounter = 0f;
     }

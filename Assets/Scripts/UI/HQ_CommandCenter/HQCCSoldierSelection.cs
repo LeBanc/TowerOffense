@@ -56,7 +56,7 @@ public class HQCCSoldierSelection : MonoBehaviour
         foreach (Soldier _soldier in _soldiers)
         {
             if (_soldier == selectedSoldier) continue; // If the soldier is the selected one, don't display it
-            if (_soldier.IsDead()) continue; // If the soldier is dead, don't display it
+            if (_soldier.IsDead) continue; // If the soldier is dead, don't display it
 
             // Else create a new SoldierSelectionItem and initialize it
             GameObject _item = autoScroll.AddPrefabReturnInstance(soldierSelectionItem);

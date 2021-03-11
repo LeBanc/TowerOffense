@@ -157,7 +157,7 @@ public class SquadUnit : MonoBehaviour
     private SoldierUnit CreateSoldier(string _name, Vector3 _position, Soldier _soldier)
     {
         // Set the soldier as engaged (used to heal soldier not engaged during day)
-        _soldier.Engage(true);
+        _soldier.IsEngaged = true;
 
         // Creates a gameObject from prefab and changes its name
         GameObject _soldierGO = Instantiate(_soldier.Data.prefab, transform.position + _position, transform.rotation, transform);

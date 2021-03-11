@@ -89,6 +89,22 @@ public class Soldier : ScriptableObject
         get { return currentXP; }
     }
 
+    public bool CanLevelUp
+    {
+        get { return (currentXP >= data.maxXP); }
+    }
+
+    public bool IsDead
+    {
+        get { return isDead; }
+    }
+
+    public bool IsEngaged
+    {
+        set { isEngaged = value; }
+        get { return isEngaged; }
+    }
+
     public int ShortRangeAttack
     {
         get { return data.shortRangeAttack + BonusAtkShortRange; }
@@ -224,33 +240,6 @@ public class Soldier : ScriptableObject
         currentHP = _HP;
         currentXP = _XP;
         squad = null;
-    }
-
-    /// <summary>
-    /// IsEngaged method retruns the isEngaged boolean value
-    /// </summary>
-    /// <returns>Boolean isEngaged</returns>
-    public bool IsEngaged()
-    {
-        return isEngaged;
-    }
-
-    /// <summary>
-    /// IsDead method retruns the isDead boolean value
-    /// </summary>
-    /// <returns>Boolean isDead</returns>
-    public bool IsDead()
-    {
-        return isDead;
-    }
-
-    /// <summary>
-    /// Engage method sets the isEngaged boolean
-    /// </summary>
-    /// <param name="engage">Boolean to set isEngaged to</param>
-    public void Engage(bool engage)
-    {
-        isEngaged = engage;
     }
 
     /// <summary>

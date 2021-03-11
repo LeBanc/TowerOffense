@@ -456,7 +456,7 @@ public class PlayManager : Singleton<PlayManager>
     {
         foreach(Soldier _soldier in soldierList)
         {
-            if (!_soldier.IsDead() && _soldier.MaxXP != 0)
+            if (!_soldier.IsDead && _soldier.MaxXP != 0)
             {
                 _soldier.CurrentXP += attackXP / 2;
                 if(_soldier.Squad != null)
