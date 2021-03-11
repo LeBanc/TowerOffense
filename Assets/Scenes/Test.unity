@@ -10152,7 +10152,10 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 247f1504294932c4aaf0a8bad9d39712, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  maxSpeed: 100
+  keyboardMaxSpeed: 150
+  keyboardSensitivity: 0.5
+  wheelMaxSpeed: 200
+  wheelSensitivity: 10
   accel: 20
 --- !u!1001 &1396224748
 PrefabInstance:

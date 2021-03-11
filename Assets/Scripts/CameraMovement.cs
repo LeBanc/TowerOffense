@@ -4,8 +4,14 @@ using UnityEngine;
 
 public class CameraMovement : MonoBehaviour
 {
-    // Max Speed (m/s)
-    public float maxSpeed = 100f;
+    // Keyboard & controller data
+    public float keyboardMaxSpeed = 100f;
+    public float keyboardSensitivity = 0.5f;
+
+    // Mouse wheel data
+    public float wheelMaxSpeed = 200f;
+    public float wheelSensitivity = 10f;
+
     // Accelearation (m/s²)
     public float accel = 5f;
 
@@ -20,6 +26,8 @@ public class CameraMovement : MonoBehaviour
     private bool allowMoveUp;
 
     private float speed;
+    private float currentMaxSpeed;
+    private float destination;
 
     private HQ hq;
 
@@ -45,6 +53,9 @@ public class CameraMovement : MonoBehaviour
 
         hq = FindObjectOfType<HQ>();
         if (hq == null) Debug.LogError("[CameraMovement] Cannot find HQ!");
+
+        destination = 0f;
+        currentMaxSpeed = keyboardMaxSpeed;
     }
 
     private void OnDestroy()
@@ -67,35 +78,75 @@ public class CameraMovement : MonoBehaviour
 
     void CameraUpdate()
     {
-        // Camera movement with Vertical axe (keyboard & controller)
-        if ((Input.GetAxis("Vertical") > 0) && allowMoveUp)
+        float _keyboardInput = Input.GetAxis("Vertical");
+        float _mouseInput = Input.mouseScrollDelta.y;
+
+        // Get destination from keyboard and controller
+        if (_keyboardInput != 0f)
         {
+            currentMaxSpeed = keyboardMaxSpeed;
+            if (Mathf.Sign(destination) != Mathf.Sign(_keyboardInput) && destination != 0f)
+            {
+                destination = 0f;
+            }
+            else
+            {
+                destination += keyboardSensitivity * _keyboardInput;
+            }
+        }
+
+        // Get destination from mouse wheel
+        if(_mouseInput != 0f)
+        {
+            currentMaxSpeed = wheelMaxSpeed;
+            if (Mathf.Sign(destination) != Mathf.Sign(_mouseInput) && destination != 0f)
+            {
+                destination = 0f;
+            }
+            else
+            {
+                destination += wheelSensitivity * _mouseInput;
+            }
+        }
+
+
+        // Move the camera to the destination (with accel and decel)
+        if(destination > 0f && allowMoveUp)
+        {
+            // Move up to destination
             speed += accel;
-            if (speed > maxSpeed) speed = maxSpeed;
+            if (speed > currentMaxSpeed) speed = currentMaxSpeed;
 
             // Move Camera up and update HealthBars
-            transform.position += new Vector3(0f, 0f, speed*Time.deltaTime);
+            transform.position += new Vector3(0f, 0f, speed * Time.deltaTime);
+            destination -= speed * Time.deltaTime;
+            if (destination < 0f) destination = 0f;
             OnCameraMovement?.Invoke();
+
         }
-        else if ((Input.GetAxis("Vertical") < 0) && allowMoveDown)
+        else if (destination < 0f && allowMoveDown)
         {
+            // Move down to destination
             speed -= accel;
-            if (speed < -maxSpeed) speed = -maxSpeed;
+            if (speed < -currentMaxSpeed) speed = -currentMaxSpeed;
 
             // Move Camera down and update HealthBars
             transform.position += new Vector3(0f, 0f, speed * Time.deltaTime);
+            destination -= speed * Time.deltaTime;
+            if (destination > 0f) destination = 0f;
+
             OnCameraMovement?.Invoke();
         }
         else
         {
-            // Stop movement
-            if(speed > accel)
+            // Reduce speed and stop movement
+            if (speed > accel)
             {
                 speed -= accel;
                 transform.position += new Vector3(0f, 0f, speed * Time.deltaTime);
                 OnCameraMovement?.Invoke();
             }
-            else if(speed < -accel)
+            else if (speed < -accel)
             {
                 speed += accel;
                 transform.position += new Vector3(0f, 0f, speed * Time.deltaTime);
@@ -103,7 +154,7 @@ public class CameraMovement : MonoBehaviour
             }
             else
             {
-                speed = 0;
+                speed = 0f;
             }
         }
     }
@@ -133,13 +184,13 @@ public class CameraMovement : MonoBehaviour
         // Move up to find HQ
         while (!hq.GetComponentInChildren<Renderer>().isVisible)
         {
-            if (speed < 2 * maxSpeed)
+            if (speed < 2 * keyboardMaxSpeed)
             {
                 speed += accel;
             }
             else
             {
-                speed = 2 * maxSpeed;
+                speed = 2 * keyboardMaxSpeed;
             }
             if (allowMoveUp)
             {
@@ -182,13 +233,13 @@ public class CameraMovement : MonoBehaviour
         // Move down to find HQ
         while (!hq.GetComponentInChildren<Renderer>().isVisible)
         {
-            if (speed > -2 * maxSpeed)
+            if (speed > -2 * keyboardMaxSpeed)
             {
                 speed -= accel;
             }
             else
             {
-                speed = -2 * maxSpeed;
+                speed = -2 * keyboardMaxSpeed;
             }
             if (allowMoveDown)
             {
