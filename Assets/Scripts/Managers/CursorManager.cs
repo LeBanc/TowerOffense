@@ -62,6 +62,9 @@ public class CursorManager : Singleton<CursorManager>
         //Events
         GameManager.OnPlayToPause += ChangeToBasicState;
         GameManager.OnPauseToPlay += ChangeToPreviousState;
+        GameManager.OnLoadToPlay += ShowCursor;
+        GameManager.OnStartToLoad += HideCursor;
+        GameManager.OnPauseToLoad += HideCursor;
     }
 
     /// <summary>
@@ -71,6 +74,9 @@ public class CursorManager : Singleton<CursorManager>
     {
         GameManager.OnPlayToPause -= ChangeToBasicState;
         GameManager.OnPauseToPlay -= ChangeToPreviousState;
+        GameManager.OnLoadToPlay -= ShowCursor;
+        GameManager.OnStartToLoad -= HideCursor;
+        GameManager.OnPauseToLoad -= HideCursor;
 
         base.OnDestroy();
     }
@@ -366,5 +372,21 @@ public class CursorManager : Singleton<CursorManager>
             }
             currentIcon = _icon;
         }
+    }
+
+    /// <summary>
+    /// HideCursor method hides the cursor (used by subscribing to GameManager events)
+    /// </summary>
+    private void HideCursor()
+    {
+        Cursor.visible = false;
+    }
+
+    /// <summary>
+    /// ShowCursur method shows the cursor (used by subscribing to GameManager events)
+    /// </summary>
+    private void ShowCursor()
+    {
+        Cursor.visible = true;
     }
 }
