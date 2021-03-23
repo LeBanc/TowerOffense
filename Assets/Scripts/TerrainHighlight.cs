@@ -53,11 +53,22 @@ public class TerrainHighlight : MonoBehaviour
     {
         RaycastHit hit;
         Ray ray = Camera.main.ScreenPointToRay(Input.mousePosition);
-        if (Physics.Raycast(ray, out hit, Mathf.Infinity, LayerMask.GetMask("Terrain")))
+        if (Physics.Raycast(ray, out hit, Mathf.Infinity))
         {
-            // Shows the quad and moves it to the nearest grid coordinates of the hit point
-            GetComponent<MeshRenderer>().enabled = true;
-            transform.position = GridAdjustment.GetGridCoordinates(hit.point) + Vector3.up * 0.01f;
+            if(hit.collider.gameObject.layer == LayerMask.NameToLayer("Terrain"))
+            {
+                // Shows the quad and moves it to the nearest grid coordinates of the hit point
+                GetComponent<MeshRenderer>().enabled = true;
+                transform.position = GridAdjustment.GetGridCoordinates(hit.point) + Vector3.up * 0.01f;
+            }
+            else
+            {
+                if(Physics.Raycast(hit.transform.position + Vector3.up,-Vector3.up,out RaycastHit hitTerrain, Mathf.Infinity,LayerMask.GetMask("Terrain")))
+                {
+                    GetComponent<MeshRenderer>().enabled = true;
+                    transform.position = GridAdjustment.GetGridCoordinates(hitTerrain.point) + Vector3.up * 0.01f;
+                }
+            }            
         }
         else
         {
