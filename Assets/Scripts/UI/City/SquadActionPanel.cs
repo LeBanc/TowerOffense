@@ -88,23 +88,29 @@ public class SquadActionPanel : MonoBehaviour
 
         moveToggle.onValueChanged.AddListener(squadUnit.OnActionSelected);
         moveToggle.onValueChanged.AddListener(squadUnit.OnMoveActionSelected);
+        moveToggle.onValueChanged.AddListener(CursorManager.ChangeToMoveAttack);
 
         retreatToggle.onValueChanged.AddListener(squadUnit.OnActionSelected);
+        retreatToggle.onValueChanged.AddListener(CursorManager.ChangeToBasic);
         retreatToggle.onClick += Retreat;
 
         healToggle.onValueChanged.AddListener(squadUnit.OnActionSelected);
+        healToggle.onValueChanged.AddListener(CursorManager.ChangeToBasic);
         healToggle.onClick += Heal;
 
         buildHQToggle.onValueChanged.AddListener(squadUnit.OnActionSelected);
         buildHQToggle.onValueChanged.AddListener(squadUnit.OnBuildHQSelected);
+        buildHQToggle.onValueChanged.AddListener(CursorManager.ChangeToBuildHQ);
         buildHQToggle.onValueChanged.AddListener(BuildHQ);
 
         buildTurretToggle.onValueChanged.AddListener(squadUnit.OnActionSelected);
         buildTurretToggle.onValueChanged.AddListener(squadUnit.OnBuildTurretSelected);
+        buildTurretToggle.onValueChanged.AddListener(CursorManager.ChangeToBuildTurret);
         buildTurretToggle.onValueChanged.AddListener(BuildTurret);
 
         explosivesToggle.onValueChanged.AddListener(squadUnit.OnActionSelected);
         explosivesToggle.onValueChanged.AddListener(squadUnit.OnExplosivesSelected);
+        explosivesToggle.onValueChanged.AddListener(CursorManager.ChangeToExplosives);
         explosivesToggle.onValueChanged.AddListener(Explosives);
 
         squadUnit.OnHQBack += RemoveSquad;

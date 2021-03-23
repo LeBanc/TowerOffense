@@ -319,7 +319,7 @@ GameObject:
   - component: {fileID: 1065785552}
   - component: {fileID: 1065785551}
   - component: {fileID: 1065785550}
-  m_Layer: 0
+  m_Layer: 2
   m_Name: TerrainHighlight
   m_TagString: Untagged
   m_Icon: {fileID: 0}

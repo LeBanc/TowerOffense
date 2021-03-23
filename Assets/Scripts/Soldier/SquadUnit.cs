@@ -183,6 +183,7 @@ public class SquadUnit : MonoBehaviour
     public void Unselect()
     {
         OnUnselection?.Invoke();
+        CursorManager.ChangeToBasic(true);
         //OnActionDone = null;
     }
 
