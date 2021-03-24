@@ -79,6 +79,9 @@ public class GameManager : Singleton<GameManager>
     public GameObject[] managers;
     private List<GameObject> _instanciatedManagers;
 
+    /// <summary>
+    /// InstantiateManagers method instantiates the managers set as parameters
+    /// </summary>
     private void InstantiateManagers()
     {
         if (managers.Length > 0)
@@ -92,6 +95,9 @@ public class GameManager : Singleton<GameManager>
         }
     }
 
+    /// <summary>
+    /// ClearInstantiatedManagers method clears the instantiated managers
+    /// </summary>
     private void ClearInstantiatedManagers()
     {
         foreach (var go in _instanciatedManagers)
@@ -101,11 +107,19 @@ public class GameManager : Singleton<GameManager>
         _instanciatedManagers.Clear();
     }
 
+    /// <summary>
+    /// AddManager method adds a manager to the GameManager list
+    /// </summary>
+    /// <param name="manager"></param>
     private void AddManager(GameObject manager)
     {
         _instanciatedManagers.Add(manager);
     }
 
+    /// <summary>
+    /// RemoveManager method removes a dedicated manager from the GameManager list
+    /// </summary>
+    /// <param name="manager"></param>
     private void RemoveManager(GameObject manager)
     {
         if (_instanciatedManagers.Contains(manager))
@@ -129,34 +143,58 @@ public class GameManager : Singleton<GameManager>
     private List<AsyncOperation> _loadOperations = new List<AsyncOperation>();
     private List<AsyncOperation> _unloadOperations = new List<AsyncOperation>();
 
+    /// <summary>
+    /// LoadLevel method adds the "load scene" operation to the loading async operation list
+    /// </summary>
+    /// <param name="sceneName">Scene to load (string)</param>
     public void LoadLevel(string sceneName)
     {
         AsyncOperation ao = SceneManager.LoadSceneAsync(sceneName, LoadSceneMode.Additive);
         _loadOperations.Add(ao);
     }
 
+    /// <summary>
+    /// UnloadLevel method adds the "unload scene" operation to the unloading async operation list
+    /// </summary>
+    /// <param name="sceneName">Scene to unload (string)</param>
     public void UnloadLevel(string sceneName)
     {
         AsyncOperation ao = SceneManager.UnloadSceneAsync(sceneName);
         _unloadOperations.Add(ao);
     }
 
+    /// <summary>
+    /// ClearLoadedLevel method check witch scene is loaded and unload it
+    /// </summary>
     public void ClearLoadedLevel()
     {
         if (SceneManager.GetSceneByName("Test").IsValid()) UnloadLevel("Test");
         if (SceneManager.GetSceneByName("EmptyScene").IsValid()) UnloadLevel("EmptyScene");
     }
 
+    /// <summary>
+    /// StartNewGame method launch the StartCoroutine for a new game
+    /// </summary>
     public void StartNewGame()
     {
         Instance.StartCoroutine(LoadingSequence(0));
     }
 
+    /// <summary>
+    /// LoadGame method launch the StartCoroutine for a saved game
+    /// </summary>
+    /// <param name="_fileName">Saved game's file name (string)</param>
     public static void LoadGame(string _fileName)
     {
         Instance.StartCoroutine(Instance.LoadingSequence(1,_fileName));
     }
 
+    /// <summary>
+    /// LoadingSequence coroutine load a saved game or a new game
+    /// </summary>
+    /// <param name="_loadingType">0 for a new game, 1 for a saved game (int)</param>
+    /// <param name="_fileName">name a the file to load, only used when _loadingType == 1 (string, default is "")</param>
+    /// <returns></returns>
     private IEnumerator LoadingSequence(int _loadingType, string _fileName = "")
     {
         float startTime = Time.time;
@@ -172,6 +210,8 @@ public class GameManager : Singleton<GameManager>
                 yield return null;
             }
         }
+
+        yield return new WaitForSeconds(2f);
 
         // Load level (Test for new game, EmptyScene for loaded game)
         if (_loadingType == 0)
@@ -319,6 +359,9 @@ public class GameManager : Singleton<GameManager>
         OnPlayToStart -= ClearLoadedLevel;
     }
 
+    /// <summary>
+    /// QuitGame method quits the game (back to desktop)
+    /// </summary>
     public void QuitGame()
     {
 #if UNITY_EDITOR
@@ -327,6 +370,9 @@ public class GameManager : Singleton<GameManager>
         Application.Quit();
     }
 
+    /// <summary>
+    /// QuitGameStatic method is a static method that calls QuitGame
+    /// </summary>
     public static void QuitGameStatic()
     {
         Instance.QuitGame();

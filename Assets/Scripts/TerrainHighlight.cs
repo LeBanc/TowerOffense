@@ -5,13 +5,17 @@
 /// </summary>
 public class TerrainHighlight : MonoBehaviour
 {
+    private Camera currentCamera;
+
     /// <summary>
-    /// On Start, subscribe to PlayManager events
+    /// On Start, subscribe to PlayManager events and fetches the main camera
     /// </summary>
     private void Start()
     {
         PlayManager.OnLoadSquadsOnNewDay += Activate;
         PlayManager.OnEndDay += Deactivate;
+
+        currentCamera = Camera.main;
     }
 
     /// <summary>
@@ -52,7 +56,7 @@ public class TerrainHighlight : MonoBehaviour
     private void GridHighlightUpdate()
     {
         RaycastHit hit;
-        Ray ray = Camera.main.ScreenPointToRay(Input.mousePosition);
+        Ray ray = currentCamera.ScreenPointToRay(Input.mousePosition);
         if (Physics.Raycast(ray, out hit, Mathf.Infinity))
         {
             if(hit.collider.gameObject.layer == LayerMask.NameToLayer("Terrain"))
