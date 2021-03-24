@@ -273,15 +273,36 @@ public class PlayManager : Singleton<PlayManager>
             hqPos = GridAdjustment.GetGridCoordinates(new Vector3(hq.transform.position.x, 0f, hq.transform.position.z));
         }
 
-        // Clear data
+        // Clear data from PlayManager (scriptable objects data)
         soldierList.Clear();
         soldierIDList.Clear();
         squadList.Clear();
+
+        // Clear data from scene (static)
         towerList.Clear();
         buildingList.Clear();
         turretList.Clear();
         turretBaseList.Clear();
         hqCandidateList.Clear();
+        
+        // Clear data from scene (dynamic)
+        foreach(EnemySoldier _enemy in enemyList)
+        {
+            Destroy(_enemy.gameObject);
+        }
+        enemyList.Clear();
+        foreach (SquadUnit _squadUnit in squadUnitList)
+        {
+            Destroy(_squadUnit.gameObject);
+        }
+        squadUnitList.Clear();
+        foreach (Explosives _explosives in explosivesList)
+        {
+            Destroy(_explosives.gameObject);
+        }
+        explosivesList.Clear();
+
+        // Clear global PlayManager data
         nextSoldierID = 0;
         nextSquadID = 0;
     }

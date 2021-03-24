@@ -50,6 +50,7 @@ public class CityCanvas : UICanvas
         hBarList = new List<HealthBar>();
 
         PlayManager.OnNewHealthBarAdded += AddHealthBar;
+        PlayManager.OnReset += Reset;
     }
 
     /// <summary>
@@ -87,6 +88,7 @@ public class CityCanvas : UICanvas
         PlayManager.OnHQPhase -= Hide;
         PlayManager.OnHQPhase -= Reset;
         PlayManager.OnNewHealthBarAdded -= AddHealthBar;
+        PlayManager.OnReset -= Reset;
         PlayManager.OnLoadGame -= FetchCamera;
 
         squad1.OnRetreat -= HideRetreatButton;
@@ -496,6 +498,9 @@ public class CityCanvas : UICanvas
         }
     }
 
+    /// <summary>
+    /// FetchCamera method link the HealthBar update to the camera movement
+    /// </summary>
     private void FetchCamera()
     {
         if (activeCamMove != null) activeCamMove.OnCameraMovement -= UpdateAllHealthBars;

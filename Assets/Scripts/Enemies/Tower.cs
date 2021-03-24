@@ -49,6 +49,8 @@ public class Tower : Enemy
     /// </summary>
     protected override void OnDestroy()
     {
+        // Disable update and spawning
+        DisableUpdate();
         // Unsubscribe to events
         PlayManager.OnLoadSquadsOnNewDay -= EnableUpdate;
         PlayManager.OnEndDay -= DisableUpdate;
