@@ -368,6 +368,9 @@ public class CityCanvas : UICanvas
         squad4.gameObject.SetActive(false);
         retreatButton.gameObject.SetActive(false);
 
+        // Hide the SlowMo effect (in case of loading while it is active)
+        slowMotionEffect.CrossFadeAlpha(0f, 0f, true);
+
         base.Hide();
     }
 

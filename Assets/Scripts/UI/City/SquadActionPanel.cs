@@ -197,6 +197,8 @@ public class SquadActionPanel : MonoBehaviour
     /// </summary>
     public void Reset()
     {
+        SelectSquad(false);
+
         moveToggle.onValueChanged.RemoveAllListeners();
         retreatToggle.onValueChanged.RemoveAllListeners();
         retreatToggle.onClick -= Retreat;

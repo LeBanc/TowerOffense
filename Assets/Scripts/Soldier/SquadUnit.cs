@@ -143,6 +143,13 @@ public class SquadUnit : MonoBehaviour
         // Unlinks event
         GameManager.PlayUpdate -= SquadUpdate;
         PlayManager.OnReset -= ResetSquadUnit;
+
+        GameManager.PlayUpdate -= SquadUnselection;
+        GameManager.PlayUpdate -= SquadMoveSelection;
+        GameManager.PlayUpdate -= SquadBuildHQSelection;
+        GameManager.PlayUpdate -= SquadBuildTurretSelection;
+        GameManager.PlayUpdate -= SquadBuildExplosivesSelection;
+
         OnUnselection = null;
         OnActionDone = null;
     }
