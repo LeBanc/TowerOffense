@@ -18,6 +18,7 @@ public class PlayManager : Singleton<PlayManager>
     public static GameData data;
     public static NavMeshSurface soldierNav;
     public static NavMeshSurface squadNav;
+    public static float gameSpeed = 1f;
 
     // Level properties
     public static HQ hq;
@@ -91,6 +92,8 @@ public class PlayManager : Singleton<PlayManager>
     public delegate HealthBar PlayManagerHealthBarEvents(Transform _t, float _maxW);
     public static event PlayManagerHealthBarEvents OnNewHealthBarAdded;
 
+    #endregion
+
     /// <summary>
     /// NewDay event is used to launch a new day and instantiate the squads
     /// </summary>
@@ -152,7 +155,6 @@ public class PlayManager : Singleton<PlayManager>
     {
         EndOfAttack();
     }
-    #endregion
 
     /// <summary>
     /// EndOfAttack (by user call or by time), calls the RetreatAll event, set the game speed to normal and increment the day number
@@ -216,7 +218,7 @@ public class PlayManager : Singleton<PlayManager>
     }
 
     /// <summary>
-    /// Instantiate PlayManager singleton and load game data
+    /// At Awake, instantiates PlayManager singleton, load game data and subscribe to GameManager events
     /// </summary>
     protected override void Awake()
     {
@@ -241,6 +243,19 @@ public class PlayManager : Singleton<PlayManager>
         soldierList = new List<Soldier>();
         soldierIDList = new List<int>();
         squadUnitList = new List<SquadUnit>();
+
+        GameManager.OnPlayToPause += PauseSpeed;
+        GameManager.OnPauseToPlay += ResumeSpeed;
+    }
+
+    /// <summary>
+    /// OnDestroy, unsubscribe from events
+    /// </summary>
+    protected override void OnDestroy()
+    {
+        GameManager.OnPlayToPause -= PauseSpeed;
+        GameManager.OnPauseToPlay -= ResumeSpeed;
+        base.OnDestroy();
     }
 
     /// <summary>
@@ -305,6 +320,9 @@ public class PlayManager : Singleton<PlayManager>
         // Clear global PlayManager data
         nextSoldierID = 0;
         nextSquadID = 0;
+        gameSpeed = 1f;
+
+        NormalSpeed();
     }
 
     /// <summary>
@@ -449,7 +467,6 @@ public class PlayManager : Singleton<PlayManager>
     /// </summary>
     public static void SlowSpeed()
     {
-        // There is a boolean because the method is called by events and can be activated with false value
         Time.timeScale = 0.5f;
     }
 
@@ -459,6 +476,23 @@ public class PlayManager : Singleton<PlayManager>
     public static void NormalSpeed()
     {
         Time.timeScale = 1f;
+    }
+
+    /// <summary>
+    /// Pause the game and register the current game speed
+    /// </summary>
+    private void PauseSpeed()
+    {
+        gameSpeed = Time.timeScale;
+        Time.timeScale = 0f;
+    }
+
+    /// <summary>
+    /// Resume the game by setting the last game speed
+    /// </summary>
+    private void ResumeSpeed()
+    {
+        Time.timeScale = gameSpeed;
     }
 
     /// <summary>
