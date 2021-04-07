@@ -99,6 +99,13 @@ public class PlayManager : Singleton<PlayManager>
     /// </summary>
     public void NewDayButton()
     {
+        // Reset engagement of all soldiers (in case of error at the previous NewDay)
+        foreach (Soldier _s in soldierList)
+        {
+            _s.IsEngaged = false;
+        }
+
+
         bool engagedSquad = false;
         // If an engaged squad is not full, display an error message and stop
         foreach(Squad _squad in squadList)
@@ -106,10 +113,20 @@ public class PlayManager : Singleton<PlayManager>
             // Check if the squad is engaged and add this data to the engagedSquad boolean
             engagedSquad = engagedSquad || _squad.isEngaged;
 
-            if(_squad.isEngaged && !_squad.IsFull())
+            if(_squad.isEngaged)
             {
-                UIManager.InitErrorMessage("At least one of the engaged squads has not four soldiers assigned!");
-                return;
+                if(!_squad.IsFull())
+                {
+                    UIManager.InitErrorMessage("At least one of the engaged squads has not four soldiers assigned!");
+                    return;
+                }
+                else
+                {
+                    foreach(Soldier _soldier in _squad.Soldiers)
+                    {
+                        _soldier.IsEngaged = true;
+                    }
+                }                
             }
         }
 
@@ -121,21 +138,27 @@ public class PlayManager : Singleton<PlayManager>
         }
 
         // Get how many doctor stayed in the HQ and add 1 to the heal amount for each one of them
-        int med = 0;
+        int _med = 0;
         foreach(Soldier _s in soldierList)
         {
+            if (_s.IsEngaged) continue;
+
             foreach (SoldierData.Capacities _c in _s.Data.capacities)
             {
                 if (_c.Equals(SoldierData.Capacities.Heal))
                 {
-                    med += 1;
+                    _med += 1;
                     break;
                 }
             }
         }
 
-        // Set the heal amount as the base heal amount + the medics bonus and the infirmary bonus (3 per level).
-        hq.HealAmount = data.baseHealAmount + data.facilities.healBonus * healLevel + med;
+        // Get the infirmary bonus
+        int _healBonus = ((healLevel >= 1) ? data.facilities.heal1Bonus : 0) + ((healLevel >= 2) ? data.facilities.heal2Bonus : 0) + ((healLevel >= 3) ? data.facilities.heal3Bonus : 0);
+        
+        // Set the heal amount as the base heal amount + the medics bonus and the infirmary bonus.
+        hq.HealAmount = data.baseHealAmount + _healBonus + _med;
+
         // Set the attack time as base attack time + unlocked bons
         float attackTime = data.baseAttackTime + attackTimeLevel * data.facilities.timeBonus;
         hq.AttackTime = attackTime;
@@ -213,7 +236,7 @@ public class PlayManager : Singleton<PlayManager>
             newSoldier = true;
             OnRecruit?.Invoke();
             Debug.Log("New Soldier at " + recruitment + "% chances");
-            recruitment = data.baseRecruitAmount;
+            recruitment = data.baseRecruitAmount + ((recruitmentLevel>=1)?data.facilities.recruiting1Bonus:0) + ((recruitmentLevel >= 2) ? data.facilities.recruiting2Bonus : 0) + ((recruitmentLevel >= 3) ? data.facilities.recruiting3Bonus : 0);
         }
     }
 
@@ -518,6 +541,7 @@ public class PlayManager : Singleton<PlayManager>
                 {
                     if (_soldier.Squad.isEngaged) _soldier.CurrentXP += attackXP / 2 + attackXP % 2;
                 }
+                Debug.Log("Soldier " + _soldier.ID + " at " + _soldier.CurrentXP + " XP");
             }
         }
     }

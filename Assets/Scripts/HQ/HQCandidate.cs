@@ -10,6 +10,7 @@ public class HQCandidate : Buildable
     /// </summary>
     protected override void Start()
     {
+        buildingTime = PlayManager.data.hqBuildTime;
         base.Start();
         if(!PlayManager.hqCandidateList.Contains(this)) PlayManager.hqCandidateList.Add(this);
     }
@@ -21,7 +22,7 @@ public class HQCandidate : Buildable
     public override void StartBuilding()
     {
         base.StartBuilding();
-        buildingTime = 20f;
+        buildingTime = PlayManager.data.hqBuildTime;
         builderCapacity = SoldierData.Capacities.HQBuild;
     }
 

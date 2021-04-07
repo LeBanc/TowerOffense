@@ -18,8 +18,17 @@ public class FacilitiesItem : MonoBehaviour
     public Sprite lockedSprite;
     public Sprite unlockedSprite;
 
+    // Colors
+    public Color unlockedColor;
+    public Color availableColor;
+    public Color hiddenColor;
+
+    // Next FacilitiesItem (to set it available when unlocking)
+    private FacilitiesItem nextItem;
+
     // private properties
     int costAmount;
+    bool canBeUnlocked;
 
     // Events
     public delegate void FacilitiesItemEventHandler(FacilitiesItem _item);
@@ -28,6 +37,11 @@ public class FacilitiesItem : MonoBehaviour
     public int Cost
     {
         get { return costAmount; }
+    }
+
+    public FacilitiesItem NextItem
+    {
+        get { return nextItem; }
     }
 
     /// <summary>
@@ -54,13 +68,17 @@ public class FacilitiesItem : MonoBehaviour
     /// <param name="_effect">Effect of the item (string)</param>
     /// <param name="_cost">Cost of the item (int)</param>
     /// <param name="_lockState">State of the item: true=locked, false=unlocked</param>
-    public void Setup(string _title, string _effect, int _cost, bool _lockState)
+    public void Setup(string _title, string _effect, int _cost, bool _lockState, bool _canUnlock, FacilitiesItem _next = null)
     {
         title.text = _title;
         effect.text = _effect;
         costAmount = _cost;
         cost.text = costAmount.ToString();
 
+        nextItem = _next;
+
+        // Set availability before lock state to have the right background color
+        SetAvailable(_canUnlock);
         Lock(_lockState);        
     }
 
@@ -69,8 +87,10 @@ public class FacilitiesItem : MonoBehaviour
     /// </summary>
     public void Activate()
     {
-        Debug.Log("Unlock: " + title.text + "@ " + cost.text);
-        OnActivation?.Invoke(this);
+        if(canBeUnlocked)
+        {
+            OnActivation?.Invoke(this);
+        }        
     }
 
     /// <summary>
@@ -90,6 +110,24 @@ public class FacilitiesItem : MonoBehaviour
         else
         {
             lockImage.sprite = unlockedSprite;
+            backgroundButton.image.color = unlockedColor;
+        }
+    }
+
+    /// <summary>
+    /// SetAvailable method change the background color of the item to display it as available or not
+    /// </summary>
+    /// <param name="_available">True if the item should be available, false otherwise (boolean)</param>
+    public void SetAvailable(bool _available)
+    {
+        canBeUnlocked = _available;
+        if(_available)
+        {
+            backgroundButton.image.color = availableColor;
+        }
+        else
+        {
+            backgroundButton.image.color = hiddenColor;
         }
     }
 

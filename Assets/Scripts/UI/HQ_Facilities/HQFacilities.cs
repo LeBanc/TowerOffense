@@ -106,27 +106,37 @@ public class HQFacilities : UICanvas
     private void Setup()
     {
         // Get PlayManager static values and setup buttons backgrounds & interactability
-        squad2Item.Setup("Operation center", "Unlock a 2nd squad", PlayManager.data.facilities.squad2Cost, (PlayManager.squadList.Count < 2));
-        squad3Item.Setup("Dormitory", "Unlock a 3rd squad", PlayManager.data.facilities.squad3Cost, (PlayManager.squadList.Count < 3));
-        squad4Item.Setup("Bunk beds", "Unlock a 4th squad", PlayManager.data.facilities.squad4Cost, (PlayManager.squadList.Count < 4));
+        squad2Item.Setup("Operation center", "Unlock a 2nd squad", PlayManager.data.facilities.squad2Cost, (PlayManager.squadList.Count < 2),true, squad3Item);
+        squad3Item.Setup("Dormitory", "Unlock a 3rd squad", PlayManager.data.facilities.squad3Cost, (PlayManager.squadList.Count < 3), (PlayManager.squadList.Count > 1), squad4Item);
+        squad4Item.Setup("Bunk beds", "Unlock a 4th squad", PlayManager.data.facilities.squad4Cost, (PlayManager.squadList.Count < 4), (PlayManager.squadList.Count > 2));
 
-        attackTime1Item.Setup("Teamwork", "Attack time +15s", PlayManager.data.facilities.attackTime1Cost, (PlayManager.attackTimeLevel < 1));
-        attackTime2Item.Setup("Advanced communication", "Attack time +15s", PlayManager.data.facilities.attackTime2Cost, (PlayManager.attackTimeLevel < 2));
-        attackTime3Item.Setup("Protein pills", "Attack time +15s", PlayManager.data.facilities.attackTime3Cost, (PlayManager.attackTimeLevel < 3));
+        string _text = "Attack time +" + PlayManager.data.facilities.timeBonus.ToString() + "s";
+        attackTime1Item.Setup("Teamwork", _text, PlayManager.data.facilities.attackTime1Cost, (PlayManager.attackTimeLevel < 1), true, attackTime2Item);
+        attackTime2Item.Setup("Advanced communication", _text, PlayManager.data.facilities.attackTime2Cost, (PlayManager.attackTimeLevel < 2), (PlayManager.attackTimeLevel > 1), attackTime3Item);
+        attackTime3Item.Setup("Protein pills", _text, PlayManager.data.facilities.attackTime3Cost, (PlayManager.attackTimeLevel < 3), (PlayManager.attackTimeLevel > 2));
 
-        healAmount1Item.Setup("Infirmary", "Heal capacity +5", PlayManager.data.facilities.healing1Cost, PlayManager.healLevel < 1);
-        healAmount2Item.Setup("Surgery", "Heal capacity +5", PlayManager.data.facilities.healing2Cost, PlayManager.healLevel < 2);
-        healAmount3Item.Setup("Nanomedicine", "Heal capacity +5", PlayManager.data.facilities.healing3Cost, PlayManager.healLevel < 3);
+        _text = "HQ heal capacity +" + PlayManager.data.facilities.heal1Bonus.ToString();
+        healAmount1Item.Setup("Infirmary", _text, PlayManager.data.facilities.healing1Cost, PlayManager.healLevel < 1, true, healAmount2Item);
+        _text = "HQ heal capacity +" + PlayManager.data.facilities.heal2Bonus.ToString();
+        healAmount2Item.Setup("Surgery", _text, PlayManager.data.facilities.healing2Cost, PlayManager.healLevel < 2, PlayManager.healLevel > 1, healAmount3Item);
+        _text = "HQ heal capacity +" + PlayManager.data.facilities.heal3Bonus.ToString();
+        healAmount3Item.Setup("Nanomedicine", _text, PlayManager.data.facilities.healing3Cost, PlayManager.healLevel < 3, PlayManager.healLevel > 2);
 
-        recruitingChance1Item.Setup("Humanitarian effort ", "Recruiting chances +5%", PlayManager.data.facilities.recruiting1Cost, (PlayManager.recruitmentLevel < 1));
-        recruitingChance2Item.Setup("Propaganda", "Recruiting chances +5%", PlayManager.data.facilities.recruiting2Cost, (PlayManager.recruitmentLevel < 2));
-        recruitingChance3Item.Setup("City rebuilding", "Recruiting chances +5%", PlayManager.data.facilities.recruiting3Cost, (PlayManager.recruitmentLevel < 3));
+        _text = "Recruiting chances +" + PlayManager.data.facilities.recruiting1Bonus.ToString() + "%";
+        recruitingChance1Item.Setup("Humanitarian effort ", _text, PlayManager.data.facilities.recruiting1Cost, (PlayManager.recruitmentLevel < 1), true, recruitingChance2Item);
+        _text = "Recruiting chances +" + PlayManager.data.facilities.recruiting2Bonus.ToString() + "%";
+        recruitingChance2Item.Setup("Propaganda", _text, PlayManager.data.facilities.recruiting2Cost, (PlayManager.recruitmentLevel < 2), (PlayManager.recruitmentLevel > 1), recruitingChance3Item);
+        _text = "Recruiting chances +" + PlayManager.data.facilities.recruiting3Bonus.ToString() + "%";
+        recruitingChance3Item.Setup("City rebuilding", _text, PlayManager.data.facilities.recruiting3Cost, (PlayManager.recruitmentLevel < 3), (PlayManager.recruitmentLevel > 2));
 
-        explosiveDamages1Item.Setup("Enhanced chemistry", "Explosives damages +50", PlayManager.data.facilities.explosive1Cost, (PlayManager.explosivesLevel < 1));
-        explosiveDamages2Item.Setup("Enhanced brisance", "Explosives damages +50", PlayManager.data.facilities.explosive2Cost, (PlayManager.explosivesLevel < 2));
-        explosiveDamages3Item.Setup("Chemical weapons", "Explosives damages +50", PlayManager.data.facilities.explosive3Cost, (PlayManager.explosivesLevel < 3));
+        _text = "Explosives damages +" + PlayManager.data.facilities.exploDamages1Bonus.ToString();
+        explosiveDamages1Item.Setup("Enhanced chemistry", _text, PlayManager.data.facilities.explosive1Cost, (PlayManager.explosivesLevel < 1), true, explosiveDamages2Item);
+        _text = "Explosives damages +" + PlayManager.data.facilities.exploDamages2Bonus.ToString();
+        explosiveDamages2Item.Setup("Enhanced brisance", _text, PlayManager.data.facilities.explosive2Cost, (PlayManager.explosivesLevel < 2), (PlayManager.explosivesLevel > 1), explosiveDamages3Item);
+        _text = "Explosives damages +" + PlayManager.data.facilities.exploDamages3Bonus.ToString();
+        explosiveDamages3Item.Setup("Chemical weapons", _text, PlayManager.data.facilities.explosive3Cost, (PlayManager.explosivesLevel < 3), (PlayManager.explosivesLevel > 2));
 
-        recruitingWithXPItem.Setup("Basic training", "Recruit soldiers at Private rank", PlayManager.data.facilities.soldierXPCost, (PlayManager.recruitingWithXP < 1));
+        recruitingWithXPItem.Setup("Basic training", "Recruit soldiers at Private rank", PlayManager.data.facilities.soldierXPCost, (PlayManager.recruitingWithXP < 1), true);
     }
 
     /// <summary>
@@ -142,6 +152,8 @@ public class HQFacilities : UICanvas
             PlayManager.UpdateWorkforce(-_item.Cost);
             // Unlock the facilities item
             _item.Lock(false);
+            // Set the next item as available
+            if (_item.NextItem != null) _item.NextItem.SetAvailable(true);
             return true;
         }
         else
@@ -197,6 +209,20 @@ public class HQFacilities : UICanvas
         if (Unlock(_item))
         {
             PlayManager.recruitmentLevel++;
+
+            // Add immediatelty recruiting bonus to the recruitment variable
+            switch(PlayManager.recruitmentLevel)
+            {
+                case 1:
+                    PlayManager.recruitment += PlayManager.data.facilities.recruiting1Bonus;
+                    break;
+                case 2:
+                    PlayManager.recruitment += PlayManager.data.facilities.recruiting2Bonus;
+                    break;
+                case 3:
+                    PlayManager.recruitment += PlayManager.data.facilities.recruiting3Bonus;
+                    break;
+            }
         }
     }
 

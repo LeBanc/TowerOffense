@@ -7,20 +7,21 @@ using UnityEngine;
 public class Explosives : Buildable
 {
     // Delay before explosion
-    private float explosionTime = 5f;
+    private float explosionTime;
     // Counter for time between building and explosion
     private float explosionCounter;
 
     // Target od the explosives
     private Tower target;
-    // Damages of the explosives
-    private int explosiveDamages = 50;
 
     /// <summary>
     /// At Start, subscribe to events, Start the building routine
     /// </summary>
     protected override void Start()
     {
+        explosionTime = PlayManager.data.baseExplosivesTime;
+        buildingTime = PlayManager.data.explosivesBuildTime;
+
         base.Start();
         StartBuilding();
 
@@ -45,7 +46,7 @@ public class Explosives : Buildable
     public override void StartBuilding()
     {
         base.StartBuilding();
-        buildingTime = 10f;
+        buildingTime = PlayManager.data.explosivesBuildTime;
         builderCapacity = SoldierData.Capacities.Explosives;
         PlayManager.explosivesList.Add(this);
     }
@@ -109,8 +110,11 @@ public class Explosives : Buildable
 
         // SFX and VFX (TBD)
 
+        // Compute the damage amount
+        int _explosiveDamages = PlayManager.data.baseExplosivesDamage + ((PlayManager.explosivesLevel >= 1) ? PlayManager.data.facilities.exploDamages1Bonus : 0) + ((PlayManager.explosivesLevel >= 2) ? PlayManager.data.facilities.exploDamages2Bonus : 0) + ((PlayManager.explosivesLevel >= 3) ? PlayManager.data.facilities.exploDamages3Bonus : 0);        
+
         // Damage the target (tower)
-        target.DamageExplosive(explosiveDamages);
+        target.DamageExplosive(_explosiveDamages);
 
         // Damage the soldier (own and enemies) that are on the same position as the explosives
         Collider[] _foundTransforms;
@@ -121,11 +125,11 @@ public class Explosives : Buildable
             {
                 if (c.TryGetComponent<SoldierUnit>(out SoldierUnit _soldier))
                 {
-                    _soldier.DamageExplosive(explosiveDamages);
+                    _soldier.DamageExplosive(_explosiveDamages);
                 }
                 if (c.TryGetComponent<EnemySoldier>(out EnemySoldier _enemy))
                 {
-                    _enemy.DamageExplosive(explosiveDamages);
+                    _enemy.DamageExplosive(_explosiveDamages);
                 }
             }
         }

@@ -168,6 +168,9 @@ MonoBehaviour:
   backgroundSprite: {fileID: 0}
   lockedSprite: {fileID: 21300000, guid: 0b4424cceeef9d14dbd2090c9bb3641f, type: 3}
   unlockedSprite: {fileID: 21300000, guid: b055b066f5e2e4149b32bf71ecdacdcf, type: 3}
+  unlockedColor: {r: 1, g: 1, b: 1, a: 1}
+  availableColor: {r: 0.9019608, g: 0.9019608, b: 0.9019608, a: 1}
+  hiddenColor: {r: 0.60784316, g: 0.60784316, b: 0.60784316, a: 1}
 --- !u!1001 &4932504015034703439
 PrefabInstance:
   m_ObjectHideFlags: 0

@@ -16,18 +16,25 @@ MonoBehaviour:
   middleRange: 30
   longRange: 50
   baseAttackTime: 45
-  baseHealAmount: 30
+  baseHealAmount: 25
   baseRecruitAmount: 10
+  baseExplosivesDamage: 50
+  baseExplosivesTime: 5
+  hqBuildTime: 20
+  explosivesBuildTime: 10
+  turretBuildTime: 10
   facilities: {fileID: 11400000, guid: c973f6b2a1b732744a13f1ae3eb693cd, type: 2}
   ranks:
-  - Soldier
   - Private
+  - Private First Class
   - Corporal
   - Sergeant
+  - Staff Sergeant
   playerRank: Major
   squadPrefab: {fileID: 16989649490458422, guid: 4115a4419e61bb34a9a08f353b0cc578,
     type: 3}
   defaultSquadType: {fileID: 11400000, guid: 3ba13929eb5df914f93a858a1f8a067e, type: 2}
+  turretData: {fileID: 11400000, guid: f5e84b9f4a8bdfe4bb886ac743fa5a82, type: 2}
   buildingPrefab: {fileID: 2133285659921738435, guid: ad41d2318e39bad44b672be779ccf16b,
     type: 3}
   turretBasePrefab: {fileID: 6257947811021738995, guid: 963d8db33f330e64b87269a7f965d0d6,

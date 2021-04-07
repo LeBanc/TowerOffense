@@ -21,17 +21,17 @@ public class Turret : Shootable
     /// </summary>
     private void Start()
     {
-        if(hP == 0) hP = 100;
-        maxHP = 100;
-        shortRangeAtk = 1;
-        middleRangeAtk = 1;
-        longRangeAtk = 0;
+        if(hP == 0) hP = PlayManager.data.turretData.maxHP;
+        maxHP = PlayManager.data.turretData.maxHP;
+        shortRangeAtk = PlayManager.data.turretData.shortRangeAttack;
+        middleRangeAtk = PlayManager.data.turretData.middleRangeAttack;
+        longRangeAtk = PlayManager.data.turretData.longRangeAttack;
         explosiveAtk = 0;
-        shortRangeDef = 1;
-        middleRangeDef = 1;
-        longRangeDef = 1;
-        explosiveDef = 0;
-        shootingDataDuration = 2f;
+        shortRangeDef = PlayManager.data.turretData.shortRangeDefense;
+        middleRangeDef = PlayManager.data.turretData.middleRangeDefense;
+        longRangeDef = PlayManager.data.turretData.longRangeDefense;
+        explosiveDef = PlayManager.data.turretData.explosiveDefense;
+        shootingDataDuration = PlayManager.data.turretData.shootingDelay;
 
         OnHPDown += DestroyTurret;
         PlayManager.OnLoadSquadsOnNewDay += Activate;

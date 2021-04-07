@@ -14,6 +14,7 @@ public class TurretBase : Buildable
     /// </summary>
     protected override void Start()
     {
+        buildingTime = PlayManager.data.turretBuildTime;
         base.Start();
         PlayManager.turretBaseList.Add(this);
         StartBuilding();
@@ -25,8 +26,8 @@ public class TurretBase : Buildable
     /// </summary>
     public override void StartBuilding()
     {
+        buildingTime = PlayManager.data.turretBuildTime;
         base.StartBuilding();
-        buildingTime = 10f;
         builderCapacity = SoldierData.Capacities.TurretBuild;
     }
 

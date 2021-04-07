@@ -22,6 +22,15 @@ public class GameData: ScriptableObject
     public int baseHealAmount = 30;
     // Recruitment basic amount
     public int baseRecruitAmount = 10;
+    // Explosives basic damages
+    public int baseExplosivesDamage = 50;
+    // Explosives time to explode
+    public float baseExplosivesTime = 5f;
+
+    [Header("Build time")]
+    public float hqBuildTime = 20f;
+    public float explosivesBuildTime = 10f;
+    public float turretBuildTime = 10f;
 
     [Header("Facilities bonus")]
     public FacilitiesData facilities;
@@ -35,6 +44,10 @@ public class GameData: ScriptableObject
     [Header("First squad")]
     public GameObject squadPrefab;
     public SquadData defaultSquadType;
+
+    // SoldierData for turret
+    [Header("Turret data")]
+    public SoldierData turretData;
 
     // Multiple prefabs instatiated in game
     [Header("Prefabs")]
