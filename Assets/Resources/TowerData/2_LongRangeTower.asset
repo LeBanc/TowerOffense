@@ -17,7 +17,7 @@ MonoBehaviour:
   spawnSoldier: 1
   shortRangeAttack: 0
   middleRangeAttack: 8
-  longRangeAttack: 48
+  longRangeAttack: 25
   explosiveAttack: 0
   shortRangeDefense: 1
   middleRangeDefense: 1

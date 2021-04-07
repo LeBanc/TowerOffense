@@ -18,7 +18,7 @@ MonoBehaviour:
   shortRangeAttack: 0
   middleRangeAttack: 0
   longRangeAttack: 0
-  explosiveAttack: 50
+  explosiveAttack: 25
   shortRangeDefense: 2
   middleRangeDefense: 2
   longRangeDefense: 2

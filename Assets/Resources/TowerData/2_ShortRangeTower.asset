@@ -15,7 +15,7 @@ MonoBehaviour:
   towerLevel: 2
   towerType: ShortRange2
   spawnSoldier: 1
-  shortRangeAttack: 20
+  shortRangeAttack: 16
   middleRangeAttack: 9
   longRangeAttack: 0
   explosiveAttack: 0
