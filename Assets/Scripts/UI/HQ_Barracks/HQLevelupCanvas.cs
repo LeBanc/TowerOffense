@@ -51,9 +51,21 @@ public class HQLevelupCanvas : UICanvas
             soldier = _soldier;
             item1.gameObject.SetActive(true);
             item1.Setup(soldier, soldier.Data.improveTo[0]);
+            item1.gameObject.SetActive(true);
             item2.Setup(soldier, soldier.Data.improveTo[1]);
             item3.gameObject.SetActive(true);
             item3.Setup(soldier, soldier.Data.improveTo[2]);
+
+            Show();
+        }
+        else if (_soldier.Data.improveTo.Count == 2) // If there are 2 possible evolutions
+        {
+            soldier = _soldier;
+            item1.gameObject.SetActive(true);
+            item1.Setup(soldier, soldier.Data.improveTo[0]);
+            item2.gameObject.SetActive(false);
+            item3.gameObject.SetActive(true);
+            item3.Setup(soldier, soldier.Data.improveTo[1]);
 
             Show();
         }
@@ -61,6 +73,7 @@ public class HQLevelupCanvas : UICanvas
         {
             soldier = _soldier;
             item1.gameObject.SetActive(false);
+            item2.gameObject.SetActive(true);
             item2.Setup(soldier, soldier.Data.improveTo[0]);
             item3.gameObject.SetActive(false);
 
@@ -130,7 +143,7 @@ public class HQLevelupCanvas : UICanvas
     /// </summary>
     public void SelectClass3()
     {
-        selectedData = soldier.Data.improveTo[2];
+        selectedData = soldier.Data.improveTo[(soldier.Data.improveTo.Count > 2) ? 2 : 1]; //2 possibilities depending of 3 or only 2 evolutions
         item1.Unselect();
         item2.Unselect();
     }
