@@ -26,7 +26,9 @@ MonoBehaviour:
   speed: 100
   maxHP: 110
   shootingDelay: 3
-  maxXP: 0
+  maxXP: 12000
   shootingSound: {fileID: 8300000, guid: cf5c4803435bf5d4f920a0533150c10d, type: 3}
   capacities: 
-  improveTo: []
+  improveTo:
+  - {fileID: 11400000, guid: 8cc1773fbb593634b87fa910603303b4, type: 2}
+  - {fileID: 11400000, guid: fc459ea122f2d6c448c1aa8ddc14c9f9, type: 2}

@@ -10,25 +10,23 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 330704c9c90b4834a9c3bf61c96dfa2c, type: 3}
-  m_Name: 3_Special_GrenadierData
+  m_Name: 4_Special_AtkGrenadierData
   m_EditorClassIdentifier: 
   soldierType: 3
-  soldierLevel: 3
-  typeName: Adv. Grenadier
+  soldierLevel: 4
+  typeName: Exp. Grenadier I
   prefab: {fileID: 7775684171843242171, guid: a94ed999e9085c8449fefeb00d29a8bd, type: 3}
-  shortRangeAttack: 8
-  middleRangeAttack: 7
+  shortRangeAttack: 10
+  middleRangeAttack: 9
   longRangeAttack: 0
   shortRangeDefense: 4
   middleRangeDefense: 2
   longRangeDefense: 1
-  explosiveDefense: 3
+  explosiveDefense: 4
   speed: 100
   maxHP: 100
   shootingDelay: 3
-  maxXP: 12000
+  maxXP: 0
   shootingSound: {fileID: 8300000, guid: cf5c4803435bf5d4f920a0533150c10d, type: 3}
   capacities: 0400000004000000
-  improveTo:
-  - {fileID: 11400000, guid: 86d1b5ee0224b93418c64ceee48c614e, type: 2}
-  - {fileID: 11400000, guid: a9e2c76897a5a974486b63ca9c3529b6, type: 2}
+  improveTo: []
