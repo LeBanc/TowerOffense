@@ -192,7 +192,7 @@ public class HQ : MonoBehaviour
         // Set attack as finished
         attacking = false;
         // Heal soldiers of an amount corresponding to the rest of the night time
-        int _heal = (int)Mathf.Floor((180f-attackTime - nightTimeCounter)*healAmount/(180f-attackTime));
+        int _heal = (int)Mathf.Floor((attackTime - nightTimeCounter)*healAmount/attackTime);
         HealSoldiers(_heal);
     }
     

@@ -29,7 +29,7 @@ public class HealthBar : MonoBehaviour
     /// </summary>
     private void Awake()
     {
-        if(bar == null) bar = GetComponent<Image>();
+        bar = GetComponent<Image>();
         if (bar == null) Debug.LogError("[HealthBar] Cannot find Image component!");
     }
 
@@ -57,7 +57,7 @@ public class HealthBar : MonoBehaviour
             bar.color = green;
             bar.rectTransform.SetSizeWithCurrentAnchors(RectTransform.Axis.Horizontal, maxWidth);
             bar.rectTransform.SetSizeWithCurrentAnchors(RectTransform.Axis.Vertical, height);
-        }  
+        }
     }
 
     /// <summary>
