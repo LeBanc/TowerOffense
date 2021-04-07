@@ -89,9 +89,29 @@ public class Tower : Enemy
         spawnDelayRandom = Random.Range(data.spawnDelay - 5f, data.spawnDelay + 5f);
 
         // Compute the soldier data
-        soldierHP = maxHP / 5;
-        soldierAttack = Mathf.FloorToInt(Mathf.Max(1, Mathf.Max(shortRangeAtk, middleRangeAtk, longRangeAtk)/10));
-        soldierDefense = Mathf.FloorToInt(Mathf.Max(0,(Mathf.Max(shortRangeDef, middleRangeDef, longRangeDef)/2)));
+        switch(data.towerLevel)
+        {
+            case 0:
+                soldierHP = 80;
+                break;
+            case 1:
+                soldierHP = 100;
+                break;
+            case 2:
+                soldierHP = 120;
+                break;
+            case 3:
+                soldierHP = 150;
+                break;
+            case 4:
+                soldierHP = 200;
+                break;
+            default:
+                soldierHP = 80;
+                break;
+        }
+        soldierAttack = data.towerLevel + 1;
+        soldierDefense = data.towerLevel;
 
         //SFX
         fireSFX.clip = data.shootingSound;

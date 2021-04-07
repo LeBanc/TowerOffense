@@ -84,7 +84,7 @@ public class EnemySoldier : Enemy
         longRangeAtk = 0;
         shortRangeDef = _defense;
         middleRangeDef = _defense;
-        longRangeDef = 0;
+        longRangeDef = _defense;
         shootingDataDuration = 3f;
         shootingDelay = shootingDataDuration;
         active = true;
