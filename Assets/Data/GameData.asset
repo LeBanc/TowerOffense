@@ -16,9 +16,9 @@ MonoBehaviour:
   middleRange: 30
   longRange: 50
   baseAttackTime: 45
-  baseHealAmount: 25
+  baseHealAmount: 15
   baseRecruitAmount: 10
-  baseExplosivesDamage: 50
+  baseExplosivesDamage: 25
   baseExplosivesTime: 5
   hqBuildTime: 20
   explosivesBuildTime: 10

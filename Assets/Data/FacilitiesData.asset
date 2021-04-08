@@ -19,9 +19,9 @@ MonoBehaviour:
   attackTime1Cost: 10
   attackTime2Cost: 25
   attackTime3Cost: 50
-  heal1Bonus: 5
-  heal2Bonus: 5
-  heal3Bonus: 10
+  heal1Bonus: 2
+  heal2Bonus: 3
+  heal3Bonus: 5
   healing1Cost: 15
   healing2Cost: 40
   healing3Cost: 100
@@ -31,9 +31,9 @@ MonoBehaviour:
   recruiting1Cost: 15
   recruiting2Cost: 30
   recruiting3Cost: 80
-  exploDamages1Bonus: 50
-  exploDamages2Bonus: 50
-  exploDamages3Bonus: 100
+  exploDamages1Bonus: 25
+  exploDamages2Bonus: 25
+  exploDamages3Bonus: 75
   explosive1Cost: 20
   explosive2Cost: 40
   explosive3Cost: 100
