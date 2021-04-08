@@ -31,6 +31,7 @@ public class HQCanvas : UICanvas
         PlayManager.OnLoadGame += Init;
 
         tabs.barracks.soldierUpgrade.levelupCanvas.OnLevelUp += UpdateLevelUp;
+        NewSoldierCanvas.OnRecruitWithXP += UpdateLevelUp;
 
     }
 
@@ -46,6 +47,7 @@ public class HQCanvas : UICanvas
         PlayManager.OnLoadGame -= Init;
 
         tabs.barracks.soldierUpgrade.levelupCanvas.OnLevelUp -= UpdateLevelUp;
+        NewSoldierCanvas.OnRecruitWithXP -= UpdateLevelUp;
     }
 
     /// <summary>

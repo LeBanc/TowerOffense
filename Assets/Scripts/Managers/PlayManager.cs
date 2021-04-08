@@ -34,7 +34,7 @@ public class PlayManager : Singleton<PlayManager>
     public static int workforce;
     public static int day;
     public static int recruitment;
-    public static bool newSoldier;
+    public static bool isRecruiting;
     public static int nextSoldierID;
     public static int nextSquadID;
     public static SquadData defaultSquadType;
@@ -223,8 +223,9 @@ public class PlayManager : Singleton<PlayManager>
         // Switch UI from City phase to HQ phase
         OnHQPhase?.Invoke();
 
-        // Autosave
-        AutoSaveGame();
+        // Autosave only if not recruiting (otherwise this will make 2 saves for the same day as the game is saving when the recruit is accepted or dismissed)
+        if(!isRecruiting) AutoSaveGame();
+        isRecruiting = false;
 
     }
 
@@ -233,7 +234,7 @@ public class PlayManager : Singleton<PlayManager>
         int _value = Random.Range(0, 100);
         if (_value <= recruitment)
         {
-            newSoldier = true;
+            isRecruiting = true;
             OnRecruit?.Invoke();
             Debug.Log("New Soldier at " + recruitment + "% chances");
             recruitment = data.baseRecruitAmount + ((recruitmentLevel>=1)?data.facilities.recruiting1Bonus:0) + ((recruitmentLevel >= 2) ? data.facilities.recruiting2Bonus : 0) + ((recruitmentLevel >= 3) ? data.facilities.recruiting3Bonus : 0);
@@ -490,7 +491,7 @@ public class PlayManager : Singleton<PlayManager>
     /// </summary>
     public static void SlowSpeed()
     {
-        Time.timeScale = 0.5f;
+        Time.timeScale = 0.3f;
     }
 
     /// <summary>
@@ -541,7 +542,7 @@ public class PlayManager : Singleton<PlayManager>
                 {
                     if (_soldier.Squad.isEngaged) _soldier.CurrentXP += attackXP / 2 + attackXP % 2;
                 }
-                Debug.Log("Soldier " + _soldier.ID + " at " + _soldier.CurrentXP + " XP");
+                //Debug.Log("Soldier " + _soldier.ID + " at " + _soldier.CurrentXP + " XP");
             }
         }
     }

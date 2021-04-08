@@ -1,4 +1,5 @@
-﻿using UnityEngine;
+﻿using System;
+using UnityEngine;
 using UnityEngine.UI;
 
 /// <summary>
@@ -9,6 +10,9 @@ public class NewSoldierCanvas : UICanvas
     public Text soldierNameText;
     public Image soldierAvatar;
     public Button validateButton;
+
+    public delegate void NewSoldierCanvasEventHandler();
+    public static event NewSoldierCanvasEventHandler OnRecruitWithXP;
 
     /// <summary>
     /// At Awake, init Canvas and subscribe to event
@@ -52,13 +56,30 @@ public class NewSoldierCanvas : UICanvas
         _soldier.ChangeName(soldierNameText.text);
         _soldier.ChangeImage(soldierAvatar.sprite);
 
-        // Add XP to soldier if the facility is unlocked
-        if (PlayManager.recruitingWithXP > 0) _soldier.CurrentXP += _soldier.MaxXP;
-
         // Add soldier to the PlayManager list
         PlayManager.soldierList.Add(_soldier);
-        PlayManager.soldierIDList.Add(_soldier.ID);        
+        PlayManager.soldierIDList.Add(_soldier.ID);
 
+        // Add XP to soldier if the facility is unlocked
+        if (PlayManager.recruitingWithXP > 0)
+        {
+            _soldier.CurrentXP += _soldier.MaxXP;
+            OnRecruitWithXP?.Invoke();
+        }       
+
+        // Save and hide the Canvas
+        PlayManager.Instance.AutoSaveGame();
+        Hide();
+    }
+
+    /// <summary>
+    /// Dismiss method is used to hide the Canvas when the player click and the "Dismiss" button
+    /// It just calls the Hide method after calling an autosave from PlayManager
+    /// </summary>
+    public void Dismiss()
+    {
+        // Save and hide the Canvas
+        PlayManager.Instance.AutoSaveGame();
         Hide();
     }
 }
