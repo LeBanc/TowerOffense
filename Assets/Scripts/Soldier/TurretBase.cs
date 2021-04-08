@@ -38,7 +38,8 @@ public class TurretBase : Buildable
     protected override void EndBuilding()
     {
         // Instanciate a new turret at position
-        Instantiate(turretPrefab, transform.position, Quaternion.identity, GameObject.Find("Turrets").transform);
+        GameObject _go = Instantiate(turretPrefab, transform.position, Quaternion.identity, GameObject.Find("Turrets").transform);
+        _go.GetComponent<Turret>().SetActive();
 
         base.EndBuilding();
 

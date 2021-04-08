@@ -40,10 +40,8 @@ public class Turret : Shootable
 
         SetupHealthBar(30f);
         RaiseOnDamage(hP, maxHP);
-        Activate();
 
         PlayManager.turretList.Add(this);
-
     }
 
     /// <summary>
@@ -52,12 +50,23 @@ public class Turret : Shootable
     protected override void OnDestroy()
     {
         Deactivate();
+
+        PlayManager.turretList.Remove(this);
+
         OnHPDown -= DestroyTurret;
         PlayManager.OnLoadSquadsOnNewDay -= Activate;
         PlayManager.OnEndDay -= EndOfTurn;
         PlayManager.OnEndDay -= Deactivate;
 
         base.OnDestroy();
+    }
+
+    /// <summary>
+    /// SetActive method is used from other class to Activate the turret with a delay (to ensure the Start method was done before)
+    /// </summary>
+    public void SetActive()
+    {
+        Invoke("Activate", Time.deltaTime);
     }
 
     /// <summary>
