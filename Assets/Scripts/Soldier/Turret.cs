@@ -152,7 +152,7 @@ public class Turret : Shootable
             isDestroyed = true;
             PlayManager.turretList.Remove(this);
             Destroy(gameObject);
-        }        
+        }
     }
 
     /// <summary>
