@@ -737,8 +737,9 @@ public class SquadUnit : MonoBehaviour
     /// GetDestinationFromTower method returns the position to which the SquadUnit will attack the targeted tower
     /// </summary>
     /// <param name="_tower">Tower to attack</param>
+    /// <param name="_removeSquadPos">True to remove the squad current position, false (default value) otherwise</param>
     /// <returns>Vector3 to go to</returns>
-    private Vector3 GetDestinationFromTower(Tower _tower)
+    private Vector3 GetDestinationFromTower(Tower _tower, bool _removeSquadPos = false)
     {
         // Get the empty position from Tower
         List<Vector3> _lgRange = new List<Vector3>(_tower.LongRangeCells);
@@ -752,6 +753,14 @@ public class SquadUnit : MonoBehaviour
             _lgRange.Remove(GridAdjustment.GetGridCoordinates(_su.Destination));
             _mdRange.Remove(GridAdjustment.GetGridCoordinates(_su.Destination));
             _shRange.Remove(GridAdjustment.GetGridCoordinates(_su.Destination));
+        }
+
+        // Remove the squad current position if needed
+        if(_removeSquadPos)
+        {
+            _lgRange.Remove(GridAdjustment.GetGridCoordinates(transform.position));
+            _mdRange.Remove(GridAdjustment.GetGridCoordinates(transform.position));
+            _shRange.Remove(GridAdjustment.GetGridCoordinates(transform.position));
         }
 
         // Get the destination taking into account the Squad preferred range
@@ -825,10 +834,20 @@ public class SquadUnit : MonoBehaviour
     /// </summary>
     public void MoveAfterReplaced()
     {
-        // If there is a target, the nearest position to go is from it
+        if (retreatActive) return;
+
+        // If there is a target
         if(target != null)
         {
-            navAgent.SetDestination(GetDestinationFromTower(target.GetComponent<Tower>()));
+            // If the target is a tower, the nearest position to go is from it
+            if (target.TryGetComponent(out Tower _tower))
+            {
+                navAgent.SetDestination(GetDestinationFromTower(_tower, true));
+            }
+            else // else the nearest destination is around the SquadUnit
+            {
+                navAgent.SetDestination(GetNearestEmptyDestination());
+            }            
         }
         else // else the nearest destination is around the SquadUnit
         {
