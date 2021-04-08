@@ -51,7 +51,7 @@ public class HQLevelupCanvas : UICanvas
             soldier = _soldier;
             item1.gameObject.SetActive(true);
             item1.Setup(soldier, soldier.Data.improveTo[0]);
-            item1.gameObject.SetActive(true);
+            item2.gameObject.SetActive(true);
             item2.Setup(soldier, soldier.Data.improveTo[1]);
             item3.gameObject.SetActive(true);
             item3.Setup(soldier, soldier.Data.improveTo[2]);
