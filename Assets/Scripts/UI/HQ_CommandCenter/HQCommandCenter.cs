@@ -37,6 +37,8 @@ public class HQCommandCenter : UICanvas
 
         squad4Header.OnSelection += SelectSquadHeader;
         squad4Header.OnSelection += delegate { squad2Header.select.Unselect(); squad3Header.select.Unselect(); squad1Header.select.Unselect(); };
+
+        HQFacilities.OnNewSquad += UpdateSquadHeaders;
     }
 
     /// <summary>
@@ -57,6 +59,8 @@ public class HQCommandCenter : UICanvas
 
         squad4Header.OnSelection -= SelectSquadHeader;
         squad4Header.OnSelection -= delegate { squad2Header.select.Unselect(); squad3Header.select.Unselect(); squad1Header.select.Unselect(); };
+
+        HQFacilities.OnNewSquad -= UpdateSquadHeaders;
     }
 
     /// <summary>

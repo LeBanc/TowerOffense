@@ -32,6 +32,10 @@ public class HQFacilities : UICanvas
     public Sprite lockedSprite;
     public Sprite unlockedSprite;
 
+    // Event
+    public delegate void FacilitiesEventHandler();
+    public static event FacilitiesEventHandler OnNewSquad;
+
     /// <summary>
     /// On Awake, subscribe to events
     /// </summary>
@@ -176,6 +180,7 @@ public class HQFacilities : UICanvas
             Squad _squad = ScriptableObject.CreateInstance("Squad") as Squad;
             _squad.InitData();
             PlayManager.squadList.Add(_squad);
+            OnNewSquad?.Invoke();
         }
     }
 

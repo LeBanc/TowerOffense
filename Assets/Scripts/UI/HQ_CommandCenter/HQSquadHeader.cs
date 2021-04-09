@@ -59,10 +59,6 @@ public class HQSquadHeader : MonoBehaviour
 
         // Events
         select.OnSelection += Select;
-        PlayManager.OnHQPhase += UpdateSoldier1;
-        PlayManager.OnHQPhase += UpdateSoldier2;
-        PlayManager.OnHQPhase += UpdateSoldier3;
-        PlayManager.OnHQPhase += UpdateSoldier4;
     }
 
     #region Canvas
@@ -122,6 +118,17 @@ public class HQSquadHeader : MonoBehaviour
 
         // Reset UI navigation
         ResetUINav();
+
+        // Clear the event subscription then resubscribe
+        PlayManager.OnHQPhase -= UpdateSoldier1;
+        PlayManager.OnHQPhase -= UpdateSoldier2;
+        PlayManager.OnHQPhase -= UpdateSoldier3;
+        PlayManager.OnHQPhase -= UpdateSoldier4;
+
+        PlayManager.OnHQPhase += UpdateSoldier1;
+        PlayManager.OnHQPhase += UpdateSoldier2;
+        PlayManager.OnHQPhase += UpdateSoldier3;
+        PlayManager.OnHQPhase += UpdateSoldier4;
     }
 
     /// <summary>
@@ -134,6 +141,19 @@ public class HQSquadHeader : MonoBehaviour
         PlayManager.OnHQPhase -= UpdateSoldier2;
         PlayManager.OnHQPhase -= UpdateSoldier3;
         PlayManager.OnHQPhase -= UpdateSoldier4;
+
+        if (squad != null)
+        {
+            squad.OnColorChange -= UpdateColor;
+            squad.OnSoldier1Change -= UpdateSoldier1;
+            squad.OnSoldier2Change -= UpdateSoldier2;
+            squad.OnSoldier3Change -= UpdateSoldier3;
+            squad.OnSoldier4Change -= UpdateSoldier4;
+            squad.OnValueChange -= UpdateSquadValues;
+            squad.OnPrefRangeChange -= UpdateRangeChoice;
+            squad.OnEngageChange -= UpdateEngageValue;
+            squad = null;
+        }
     }
 
     /// <summary>
