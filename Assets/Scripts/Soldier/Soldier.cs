@@ -91,7 +91,7 @@ public class Soldier : ScriptableObject
 
     public bool CanLevelUp
     {
-        get { return (currentXP >= data.maxXP); }
+        get { return ((currentXP >= data.maxXP) && (data.maxXP >0)); }
     }
 
     public bool IsDead
