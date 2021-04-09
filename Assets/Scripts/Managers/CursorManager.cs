@@ -60,7 +60,7 @@ public class CursorManager : Singleton<CursorManager>
         currentIcon = CursorIcon.Basic;
 
         //Events
-        GameManager.OnPlayToPause += ChangeToBasicState;
+        GameManager.OnPlayToPause += ForceToBasicState;
         GameManager.OnPauseToPlay += ChangeToPreviousState;
         GameManager.OnLoadToPlay += ShowCursor;
         GameManager.OnStartToLoad += HideCursor;
@@ -72,7 +72,7 @@ public class CursorManager : Singleton<CursorManager>
     /// </summary>
     protected override void OnDestroy()
     {
-        GameManager.OnPlayToPause -= ChangeToBasicState;
+        GameManager.OnPlayToPause -= ForceToBasicState;
         GameManager.OnPauseToPlay -= ChangeToPreviousState;
         GameManager.OnLoadToPlay -= ShowCursor;
         GameManager.OnStartToLoad -= HideCursor;
@@ -157,6 +157,16 @@ public class CursorManager : Singleton<CursorManager>
     }
 
     /// <summary>
+    /// ForceToBasicState method change the cursor stat to Basic and save the previous state
+    /// This method should be used when going in Pause to save the previous state and going back to it when coming back from Pause
+    /// </summary>
+    private void ForceToBasicState()
+    {
+        previousState = currentState;
+        ChangeToBasicState();
+    }
+
+    /// <summary>
     /// On Update, change the state id needed and Raycast the scene to know which cursor icon should be displayed
     /// </summary>
     private void Update()
@@ -166,7 +176,6 @@ public class CursorManager : Singleton<CursorManager>
         {
             // Default is basic cursor
             SetCursorIcon(CursorIcon.Basic);
-            previousState = currentState;
             currentState = nextState;
         }
 
