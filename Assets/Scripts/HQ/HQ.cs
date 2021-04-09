@@ -52,7 +52,7 @@ public class HQ : MonoBehaviour
     {
         hqCandidateInstance = hqCandidate;
         PlayManager.OnLoadSquadsOnNewDay += InstantiateSquads;
-        PlayManager.OnEndDay += EndDayAtHQ;
+        //PlayManager.OnEndDay += EndDayAtHQ;
     }
 
     /// <summary>
@@ -61,7 +61,7 @@ public class HQ : MonoBehaviour
     private void OnDestroy()
     {
         PlayManager.OnLoadSquadsOnNewDay -= InstantiateSquads;
-        PlayManager.OnEndDay -= EndDayAtHQ;
+        //PlayManager.OnEndDay -= EndDayAtHQ;
         GameManager.PlayUpdate -= HQUpdate;
     }
 
@@ -194,8 +194,11 @@ public class HQ : MonoBehaviour
         // Heal soldiers of an amount corresponding to the rest of the night time
         int _heal = (int)Mathf.Floor((attackTime - nightTimeCounter)*healAmount/attackTime);
         HealSoldiers(_heal);
+
+        // Notify the PlayManager that the HQ End of day actions are ended by calling SwitchToHQPhase
+        PlayManager.SwitchToHQPhase();
     }
-    
+
     /// <summary>
     /// HQUpdate is the Update method of the HQ
     /// </summary>

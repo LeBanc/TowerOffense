@@ -213,32 +213,39 @@ public class PlayManager : Singleton<PlayManager>
         // Add recruitment chances and reset the enemy list
         recruitment += enemyList.Count;
         recruitment++;
-        RecruitTest();
-        enemyList.Clear();
 
-        // Compute PlayManager data
-        SetXP();
-        UpdateWorkforce(attackWorkforce);
-
-        // Switch UI from City phase to HQ phase
-        OnHQPhase?.Invoke();
-
-        // Autosave only if not recruiting (otherwise this will make 2 saves for the same day as the game is saving when the recruit is accepted or dismissed)
-        if(!isRecruiting) AutoSaveGame();
-        isRecruiting = false;
-
-    }
-
-    static void RecruitTest()
-    {
+        // Recruitment test
         int _value = Random.Range(0, 100);
         if (_value <= recruitment)
         {
             isRecruiting = true;
             OnRecruit?.Invoke();
             Debug.Log("New Soldier at " + recruitment + "% chances");
-            recruitment = data.baseRecruitAmount + ((recruitmentLevel>=1)?data.facilities.recruiting1Bonus:0) + ((recruitmentLevel >= 2) ? data.facilities.recruiting2Bonus : 0) + ((recruitmentLevel >= 3) ? data.facilities.recruiting3Bonus : 0);
+            recruitment = data.baseRecruitAmount + ((recruitmentLevel >= 1) ? data.facilities.recruiting1Bonus : 0) + ((recruitmentLevel >= 2) ? data.facilities.recruiting2Bonus : 0) + ((recruitmentLevel >= 3) ? data.facilities.recruiting3Bonus : 0);
         }
+
+        // Clear the enemy list
+        enemyList.Clear();
+
+        // Compute PlayManager data
+        SetXP();
+        UpdateWorkforce(attackWorkforce);
+
+        // Call the End day at HQ to heal soldiers, this method will then call SwitchToHQPhase to continue the end day routine
+        hq.EndDayAtHQ();
+    }
+
+    /// <summary>
+    /// SwitchToHQPhase method is called by HQ when all the end day
+    /// </summary>
+    public static void SwitchToHQPhase()
+    {
+        // Switch UI from City phase to HQ phase
+        OnHQPhase?.Invoke();
+
+        // Autosave only if not recruiting (otherwise this will make 2 saves for the same day as the game is saving when the recruit is accepted or dismissed)
+        if (!isRecruiting) Instance.AutoSaveGame();
+        isRecruiting = false;
     }
 
     /// <summary>
