@@ -13,7 +13,7 @@ MonoBehaviour:
   m_Name: 2_ShortRangeTower
   m_EditorClassIdentifier: 
   towerLevel: 2
-  towerType: ShortRange2
+  towerType: Short Range Tower
   spawnSoldier: 1
   shortRangeAttack: 16
   middleRangeAttack: 9

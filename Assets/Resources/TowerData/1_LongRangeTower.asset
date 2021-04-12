@@ -13,7 +13,7 @@ MonoBehaviour:
   m_Name: 1_LongRangeTower
   m_EditorClassIdentifier: 
   towerLevel: 1
-  towerType: LongRange1
+  towerType: Long Range Tower
   spawnSoldier: 1
   shortRangeAttack: 0
   middleRangeAttack: 6

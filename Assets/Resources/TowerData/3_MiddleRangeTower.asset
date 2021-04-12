@@ -13,7 +13,7 @@ MonoBehaviour:
   m_Name: 3_MiddleRangeTower
   m_EditorClassIdentifier: 
   towerLevel: 3
-  towerType: MiddleRange3
+  towerType: Middle Range Tower
   spawnSoldier: 1
   shortRangeAttack: 10
   middleRangeAttack: 28

@@ -13,7 +13,7 @@ MonoBehaviour:
   m_Name: 4_FinaleTower
   m_EditorClassIdentifier: 
   towerLevel: 4
-  towerType: Finale
+  towerType: Enemy HQ
   spawnSoldier: 1
   shortRangeAttack: 28
   middleRangeAttack: 28

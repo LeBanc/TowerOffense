@@ -13,7 +13,7 @@ MonoBehaviour:
   m_Name: 3_ExplosiveTower
   m_EditorClassIdentifier: 
   towerLevel: 3
-  towerType: Explosive2
+  towerType: Explosive Tower
   spawnSoldier: 0
   shortRangeAttack: 0
   middleRangeAttack: 0
