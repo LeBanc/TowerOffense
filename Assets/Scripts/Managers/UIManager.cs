@@ -25,6 +25,16 @@ public class UIManager : Singleton<UIManager>
     private Selectable loadMenuLastSelected;
     private Selectable saveMenuLastSelected;
 
+    public delegate void UIManagerEventHandler();
+    public static event UIManagerEventHandler OnHideActiveCanvas;
+
+    public static Selectable LastSelected
+    {
+        get { return Instance.playUILastSelected; }
+        set { Instance.playUILastSelected = value; }
+    }
+
+
     /// <summary>
     /// At Start, checks for missing UI Canvas and subscribes to GameManager events
     /// </summary>
@@ -518,7 +528,11 @@ public class UIManager : Singleton<UIManager>
             else
             {
                 GameManager.ChangeGameStateRequest(GameManager.GameState.play);
-                if (playUILastSelected != null) playUILastSelected.Select();
+                if (playUILastSelected != null)
+                {
+                    playUILastSelected.Select();
+                    playUILastSelected = null;
+                }
             }            
         }
     }
@@ -531,7 +545,16 @@ public class UIManager : Singleton<UIManager>
         // On Plau UI, Esc. key is used to hide any window (confirm, error) or to go to pause Menu (via pause gamestate)
         if (Input.GetKeyDown(KeyCode.Escape))
         {
-            if(confirmMessage.IsVisible)
+            if (OnHideActiveCanvas != null)
+            {
+                OnHideActiveCanvas?.Invoke();
+                if (playUILastSelected != null)
+                {
+                    playUILastSelected.Select();
+                    playUILastSelected = null;
+                }
+            }
+            else if (confirmMessage.IsVisible)
             {
                 HideConfirmMessage();
             }

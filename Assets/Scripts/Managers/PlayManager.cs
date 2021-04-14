@@ -80,6 +80,7 @@ public class PlayManager : Singleton<PlayManager>
 
     #region Events
     public delegate void PlayManagerEvents();
+    public static event PlayManagerEvents OnNewDayConfirm;
     public static event PlayManagerEvents OnLoadSquadsOnNewDay;
     public static event PlayManagerEvents OnRetreatAll;
     public static event PlayManagerEvents OnEndDay;
@@ -95,9 +96,32 @@ public class PlayManager : Singleton<PlayManager>
     #endregion
 
     /// <summary>
-    /// NewDay event is used to launch a new day and instantiate the squads
+    /// NewDayButton method is used to open the confirmation Canvas to launch a new day
     /// </summary>
     public void NewDayButton()
+    {
+        bool engagedSquad = false;
+        // If an engaged squad is not full, display an error message and stop
+        foreach (Squad _squad in squadList)
+        {
+            // Check if the squad is engaged and add this data to the engagedSquad boolean
+            engagedSquad = engagedSquad || _squad.isEngaged;
+        }
+        // Check if there is a squad engaged for the new day
+        if(!engagedSquad)
+        {
+            UIManager.InitErrorMessage("You need to engage at least on squad!");
+            return;
+        }
+
+        // Call the event to show the confirm Canvas
+        OnNewDayConfirm?.Invoke();
+    }
+
+    /// <summary>
+    /// NewDayLaunchAttack method is used to launch a new day and instantiate the squads (after confirmation)
+    /// </summary>
+    public static void NewDayLaunchAttack()
     {
         // Reset engagement of all soldiers (in case of error at the previous NewDay)
         foreach (Soldier _s in soldierList)
@@ -108,38 +132,31 @@ public class PlayManager : Singleton<PlayManager>
 
         bool engagedSquad = false;
         // If an engaged squad is not full, display an error message and stop
-        foreach(Squad _squad in squadList)
+        foreach (Squad _squad in squadList)
         {
             // Check if the squad is engaged and add this data to the engagedSquad boolean
             engagedSquad = engagedSquad || _squad.isEngaged;
 
-            if(_squad.isEngaged)
+            if (_squad.isEngaged)
             {
-                if(!_squad.IsFull())
+                if (!_squad.IsFull())
                 {
                     UIManager.InitErrorMessage("At least one of the engaged squads has not four soldiers assigned!");
                     return;
                 }
                 else
                 {
-                    foreach(Soldier _soldier in _squad.Soldiers)
+                    foreach (Soldier _soldier in _squad.Soldiers)
                     {
                         _soldier.IsEngaged = true;
                     }
-                }                
+                }
             }
-        }
-
-        // Check if there is a squad engaged for the new day
-        if(!engagedSquad)
-        {
-            UIManager.InitErrorMessage("You need to engage at least on squad!");
-            return;
         }
 
         // Get how many doctor stayed in the HQ and add 1 to the heal amount for each one of them
         int _med = 0;
-        foreach(Soldier _s in soldierList)
+        foreach (Soldier _s in soldierList)
         {
             if (_s.IsEngaged) continue;
 
@@ -155,7 +172,7 @@ public class PlayManager : Singleton<PlayManager>
 
         // Get the infirmary bonus
         int _healBonus = ((healLevel >= 1) ? data.facilities.heal1Bonus : 0) + ((healLevel >= 2) ? data.facilities.heal2Bonus : 0) + ((healLevel >= 3) ? data.facilities.heal3Bonus : 0);
-        
+
         // Set the heal amount as the base heal amount + the medics bonus and the infirmary bonus.
         hq.HealAmount = data.baseHealAmount + _healBonus + _med;
 
