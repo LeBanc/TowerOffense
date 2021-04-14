@@ -2802,10 +2802,35 @@ PrefabInstance:
       propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[1].m_Arguments.m_ObjectArgumentAssemblyTypeName
       value: UnityEngine.Object, UnityEngine
       objectReference: {fileID: 0}
+    - target: {fileID: 3114387931897716887, guid: afd196f789ca19942acf0fe6cdf44f09,
+        type: 3}
+      propertyPath: m_Colors.m_DisabledColor.r
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 3114387931897716887, guid: afd196f789ca19942acf0fe6cdf44f09,
+        type: 3}
+      propertyPath: m_Colors.m_DisabledColor.g
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 3114387931897716887, guid: afd196f789ca19942acf0fe6cdf44f09,
+        type: 3}
+      propertyPath: m_Colors.m_DisabledColor.b
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 3114387931897716887, guid: afd196f789ca19942acf0fe6cdf44f09,
+        type: 3}
+      propertyPath: m_Interactable
+      value: 1
+      objectReference: {fileID: 0}
     - target: {fileID: 3677120927153136443, guid: afd196f789ca19942acf0fe6cdf44f09,
         type: 3}
       propertyPath: m_Name
       value: ButtonWithSelectionBorder
+      objectReference: {fileID: 0}
+    - target: {fileID: 3830553804007230018, guid: afd196f789ca19942acf0fe6cdf44f09,
+        type: 3}
+      propertyPath: m_Enabled
+      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 7304178138451372125, guid: afd196f789ca19942acf0fe6cdf44f09,
         type: 3}
