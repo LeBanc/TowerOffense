@@ -44,9 +44,6 @@ public class HQSquadEdition : UICanvas
     // Private Squad that is displayed
     private Squad selectedSquad;
 
-    // Private canvas component
-    private Button lastSelectedButton;
-
     #region Properties access
     public Squad SelectedSquad
     {
@@ -64,7 +61,6 @@ public class HQSquadEdition : UICanvas
         squadRangeSelection.onValueChanged.AddListener(delegate { ChangePlayerRange(squadRangeSelection.value); });
         colorPickerCanvas.Hide();
         soldierSelectionCanvas.Hide();
-        soldierSelectionCanvas.OnCanvasHide += SelectLastButton;
     }
 
     /// <summary>
@@ -79,8 +75,6 @@ public class HQSquadEdition : UICanvas
         // If the squad changes, update display and events
         if (selectedSquad != _squad)
         {
-            lastSelectedButton = null;
-
             // If the previous squad was not null, unsubscribe events
             if(selectedSquad != null)
             {
@@ -126,16 +120,15 @@ public class HQSquadEdition : UICanvas
 
             UpdateDropdowns();
 
-            soldier1Change.onClick.AddListener(delegate { soldierSelectionCanvas.Show(selectedSquad, 1, selectedSquad.Soldiers[0]); lastSelectedButton = soldier1Change; });
-            soldier2Change.onClick.AddListener(delegate { soldierSelectionCanvas.Show(selectedSquad, 2, selectedSquad.Soldiers[1]); lastSelectedButton = soldier2Change; });
-            soldier3Change.onClick.AddListener(delegate { soldierSelectionCanvas.Show(selectedSquad, 3, selectedSquad.Soldiers[2]); lastSelectedButton = soldier3Change; });
-            soldier4Change.onClick.AddListener(delegate { soldierSelectionCanvas.Show(selectedSquad, 4, selectedSquad.Soldiers[3]); lastSelectedButton = soldier4Change; });
+            soldier1Change.onClick.AddListener(delegate { soldierSelectionCanvas.Show(selectedSquad, 1, selectedSquad.Soldiers[0]); });
+            soldier2Change.onClick.AddListener(delegate { soldierSelectionCanvas.Show(selectedSquad, 2, selectedSquad.Soldiers[1]); });
+            soldier3Change.onClick.AddListener(delegate { soldierSelectionCanvas.Show(selectedSquad, 3, selectedSquad.Soldiers[2]); });
+            soldier4Change.onClick.AddListener(delegate { soldierSelectionCanvas.Show(selectedSquad, 4, selectedSquad.Soldiers[3]); });
 
             soldier1Clear.onClick.AddListener(delegate { selectedSquad.ChangeSoldier(1, null); });
             soldier2Clear.onClick.AddListener(delegate { selectedSquad.ChangeSoldier(2, null); });
             soldier3Clear.onClick.AddListener(delegate { selectedSquad.ChangeSoldier(3, null); });
             soldier4Clear.onClick.AddListener(delegate { selectedSquad.ChangeSoldier(4, null); });
-
         }
         else
         {
@@ -400,20 +393,8 @@ public class HQSquadEdition : UICanvas
             selectedSquad.OnSoldier4Change -= UpdateSoldier4;
         }
 
-        soldierSelectionCanvas.OnCanvasHide -= SelectLastButton;
         squadTypeDropdown.onValueChanged.RemoveAllListeners();
         squadPositionChoice.onValueChanged.RemoveAllListeners();
         squadRangeSelection.onValueChanged.RemoveAllListeners();
-    }
-
-    /// <summary>
-    /// SelectLastButton method select the last selected button of the canvas
-    /// </summary>
-    private void SelectLastButton()
-    {
-        if(lastSelectedButton != null)
-        {
-            lastSelectedButton.Select();
-        }
     }
 }

@@ -1,12 +1,11 @@
 ﻿using System;
 using System.Collections.Generic;
 using UnityEngine;
-using UnityEngine.UI;
 
 /// <summary>
 /// HQCCSoldierSelection is the class managing the HQ - Command Center - Soldier Selection Canvas
 /// </summary>
-public class HQCCSoldierSelection : MonoBehaviour
+public class HQCCSoldierSelection : CancelableUICanvas
 {
     // public elements of the canvas
     public AutoScroll autoScroll;
@@ -18,10 +17,6 @@ public class HQCCSoldierSelection : MonoBehaviour
     private Squad squad;
     private int position;
     private SoldierSelectionItem selectedItem;
-
-    // Events
-    public delegate void SoldierSelectionEventHandler();
-    public event SoldierSelectionEventHandler OnCanvasHide;
 
     /// <summary>
     /// Show method shows the Selection canvas, filling it with all living soldiers except the seleced one
@@ -39,8 +34,7 @@ public class HQCCSoldierSelection : MonoBehaviour
         CreateSoldierList(PlayManager.soldierList);
 
         // Display the canvas
-        GetComponent<Canvas>().enabled = true;
-        transform.SetAsLastSibling();
+        Show();       
 
         GameObject _selection = autoScroll.SelectFirtsItem();
         if (_selection != null) selectedItem = _selection.GetComponent<SoldierSelectionItem>();
@@ -68,12 +62,10 @@ public class HQCCSoldierSelection : MonoBehaviour
     /// <summary>
     /// Hide method hides and clears the canvas
     /// </summary>
-    public void Hide()
+    public override void Hide()
     {
-        transform.SetAsFirstSibling();
-        GetComponent<Canvas>().enabled = false;
+        base.Hide();
         Clear();
-        OnCanvasHide?.Invoke();
     }
 
     /// <summary>
@@ -143,5 +135,4 @@ public class HQCCSoldierSelection : MonoBehaviour
         squad.ChangeSoldier(position, selectedItem.Soldier);
         Hide();
     }
-
 }

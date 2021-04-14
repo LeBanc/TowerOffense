@@ -4,7 +4,7 @@ using UnityEngine;
 /// <summary>
 /// HQChangeImageCanvas class is the class of the Change Image Canvas
 /// </summary>
-public class HQChangeImageCanvas : UICanvas
+public class HQChangeImageCanvas : CancelableUICanvas
 {
     // public UI elements
     public AutoScroll autoScroll;
@@ -39,7 +39,7 @@ public class HQChangeImageCanvas : UICanvas
     /// Show method displays the canvas
     /// </summary>
     /// <param name="_soldier"></param>
-    public void Show(Soldier _soldier = null)
+    public void Show(Soldier _soldier)
     {
         Show();
 

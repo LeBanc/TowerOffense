@@ -4,7 +4,7 @@ using UnityEngine.UI;
 /// <summary>
 /// HQChangeNameCanvas class is used by the Change Name Canvas
 /// </summary>
-public class HQChangeNameCanvas : UICanvas
+public class HQChangeNameCanvas : CancelableUICanvas
 {
     // public UI elements
     public InputField inputField;

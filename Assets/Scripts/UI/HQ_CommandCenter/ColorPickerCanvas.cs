@@ -4,7 +4,7 @@
 /// ColorPickerCanvas is the Canvas of the ColorPicker
 /// It sets up the ColorPicker element, Show and Hode the canvas and implements the return buttons
 /// </summary>
-public class ColorPickerCanvas : UICanvas
+public class ColorPickerCanvas : CancelableUICanvas
 {
     // ColorPicker element
     public ColorPicker colorPicker;
@@ -64,9 +64,9 @@ public class ColorPickerCanvas : UICanvas
     /// <summary>
     /// OnDestroy methods unliks the may be still linked event listeners
     /// </summary>
-    private void OnDestroy()
+    protected override void OnDestroy()
     {
         GameManager.PlayUpdate -= colorPicker.ColorPickerUpdate;
+        base.OnDestroy();
     }
-
 }

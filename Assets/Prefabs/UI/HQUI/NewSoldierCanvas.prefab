@@ -698,7 +698,7 @@ PrefabInstance:
     - target: {fileID: 1356943840837939768, guid: 2de71f222f4125b4e960e84af14d3cbf,
         type: 3}
       propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[0].m_MethodName
-      value: Dismiss
+      value: Hide
       objectReference: {fileID: 0}
     - target: {fileID: 1356943840837939768, guid: 2de71f222f4125b4e960e84af14d3cbf,
         type: 3}

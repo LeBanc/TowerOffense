@@ -1,11 +1,11 @@
-﻿using System;
-using UnityEngine;
+﻿using UnityEngine;
 using UnityEngine.UI;
+using UnityEngine.EventSystems;
 
 /// <summary>
 /// NewSoldierCanvas class defines the UI Canvas that appears when a new soldier is available
 /// </summary>
-public class NewSoldierCanvas : UICanvas
+public class NewSoldierCanvas : CancelableUICanvas
 {
     public Text soldierNameText;
     public Image soldierAvatar;
@@ -20,16 +20,16 @@ public class NewSoldierCanvas : UICanvas
     protected override void Awake()
     {
         base.Awake();
-
         PlayManager.OnRecruit += Show;
     }
 
     /// <summary>
     /// OnDestroy, unsubscribe events
     /// </summary>
-    private void OnDestroy()
+    protected override void OnDestroy()
     {
         PlayManager.OnRecruit -= Show;
+        base.OnDestroy();
     }
 
     /// <summary>
@@ -37,13 +37,15 @@ public class NewSoldierCanvas : UICanvas
     /// </summary>
     public override void Show()
     {
+        UIManager.LastSelected = EventSystem.current.currentSelectedGameObject.GetComponent<Selectable>();
+
         soldierNameText.text = PlayManager.GetRandomSoldierName();
         soldierAvatar.sprite = PlayManager.GetRandomSoldierImage();
 
         base.Show();
 
         validateButton.Select();
-    }
+}
 
     /// <summary>
     /// Recruit method add the new soldier to the PlayManager list and hides the Canvas
@@ -67,19 +69,16 @@ public class NewSoldierCanvas : UICanvas
             OnRecruitWithXP?.Invoke();
         }       
 
-        // Save and hide the Canvas
-        PlayManager.Instance.AutoSaveGame();
+        // Hide the Canvas at the end of the soldier creation
         Hide();
     }
 
     /// <summary>
-    /// Dismiss method is used to hide the Canvas when the player click and the "Dismiss" button
-    /// It just calls the Hide method after calling an autosave from PlayManager
+    /// Hide method hides the canvas after saving the game (recruit or dismiss)
     /// </summary>
-    public void Dismiss()
+    public override void Hide()
     {
-        // Save and hide the Canvas
+        base.Hide();
         PlayManager.Instance.AutoSaveGame();
-        Hide();
     }
 }

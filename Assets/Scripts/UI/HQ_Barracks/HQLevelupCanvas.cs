@@ -3,7 +3,7 @@
 /// <summary>
 /// HQLevelupCanvas class manages the Level Up Canvas
 /// </summary>
-public class HQLevelupCanvas : UICanvas
+public class HQLevelupCanvas : CancelableUICanvas
 {
     // public UI elements
     public LevelUpItem item1;
@@ -33,11 +33,13 @@ public class HQLevelupCanvas : UICanvas
     /// <summary>
     /// OnDestroy, unsubscribe from events
     /// </summary>
-    private void OnDestroy()
+    protected override void OnDestroy()
     {
         if (item1 != null) item1.OnSelection -= SelectClass1;
         if (item2 != null) item2.OnSelection -= SelectClass2;
         if (item3 != null) item3.OnSelection -= SelectClass3;
+
+        base.OnDestroy();
     }
 
     /// <summary>
