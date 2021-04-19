@@ -37,7 +37,10 @@ public class NewSoldierCanvas : CancelableUICanvas
     /// </summary>
     public override void Show()
     {
-        UIManager.LastSelected = EventSystem.current.currentSelectedGameObject.GetComponent<Selectable>();
+        if(EventSystem.current.currentSelectedGameObject != null)
+        {
+            UIManager.LastSelected = EventSystem.current.currentSelectedGameObject.GetComponent<Selectable>();
+        }
 
         soldierNameText.text = PlayManager.GetRandomSoldierName();
         soldierAvatar.sprite = PlayManager.GetRandomSoldierImage();

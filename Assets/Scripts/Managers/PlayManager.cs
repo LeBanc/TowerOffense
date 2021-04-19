@@ -236,7 +236,7 @@ public class PlayManager : Singleton<PlayManager>
         if (_value <= recruitment)
         {
             isRecruiting = true;
-            OnRecruit?.Invoke();
+            // Canvas call by event is no more done here to avoid null event system error
             Debug.Log("New Soldier at " + recruitment + "% chances");
             recruitment = data.baseRecruitAmount + ((recruitmentLevel >= 1) ? data.facilities.recruiting1Bonus : 0) + ((recruitmentLevel >= 2) ? data.facilities.recruiting2Bonus : 0) + ((recruitmentLevel >= 3) ? data.facilities.recruiting3Bonus : 0);
         }
@@ -260,8 +260,15 @@ public class PlayManager : Singleton<PlayManager>
         // Switch UI from City phase to HQ phase
         OnHQPhase?.Invoke();
 
-        // Autosave only if not recruiting (otherwise this will make 2 saves for the same day as the game is saving when the recruit is accepted or dismissed)
-        if (!isRecruiting) Instance.AutoSaveGame();
+        // Test if recruiting to display the right Canvas
+        if (isRecruiting)
+        {
+            OnRecruit?.Invoke();
+        }
+        else // Autosave only if not recruiting (otherwise this will make 2 saves for the same day as the game is saving when the recruit is accepted or dismissed)
+        {
+            Instance.AutoSaveGame();
+        }            
         isRecruiting = false;
     }
 

@@ -11,7 +11,11 @@ public class CancelableUICanvas : UICanvas
     /// </summary>
     public override void Show()
     {
-        UIManager.LastSelected = EventSystem.current.currentSelectedGameObject.GetComponent<Selectable>();
+        if (EventSystem.current.currentSelectedGameObject != null)
+        {
+            UIManager.LastSelected = EventSystem.current.currentSelectedGameObject.GetComponent<Selectable>();
+        }
+
         base.Show();
         UIManager.OnHideActiveCanvas += Hide;
     }
