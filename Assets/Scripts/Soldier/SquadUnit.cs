@@ -973,6 +973,7 @@ public class SquadUnit : MonoBehaviour
     /// </summary>
     public void BackToHQ()
     {
+        squad.ComputeFriendshipPoints();
         OnHQBack?.Invoke();
         PlayManager.RemoveSquadUnit(this);
         Destroy(gameObject);
@@ -983,6 +984,8 @@ public class SquadUnit : MonoBehaviour
     /// </summary>
     public void Die()
     {
+        squad.ComputeFriendshipPoints();
+        //squad.ComputeSoldierDeath();
         OnDeath?.Invoke();
         PlayManager.RemoveSquadUnit(this);
         Destroy(gameObject);

@@ -1,4 +1,5 @@
-﻿using UnityEngine;
+﻿using System.Collections.Generic;
+using UnityEngine;
 
 /// <summary>
 /// Soldier is the class that represents the soldier with all its data
@@ -38,6 +39,7 @@ public class Soldier : ScriptableObject
     private Squad squad;
 
     // private ??? friendships; => to be implemented
+    private Dictionary<int, int> friendship = new Dictionary<int, int>();
 
     // Events
     public delegate void SoldierEventHandler();
@@ -60,6 +62,11 @@ public class Soldier : ScriptableObject
     public Sprite Image
     {
         get { return image; }
+    }
+
+    public Dictionary<int,int> Friendship
+    {
+        get { return friendship; }
     }
 
     public SoldierData Data
@@ -218,6 +225,7 @@ public class Soldier : ScriptableObject
         // Sets default value
         currentXP = 0;
         squad = null;
+        friendship = new Dictionary<int, int>();
     }
 
     /// <summary>
@@ -229,7 +237,7 @@ public class Soldier : ScriptableObject
     /// <param name="_DATA">Data name</param>
     /// <param name="_HP">HP current value</param>
     /// <param name="_XP">XP current value</param>
-    public void LoadData(int _ID, string _NAME, string _IMAGE, string _DATA, int _HP, int _XP)
+    public void LoadData(int _ID, string _NAME, string _IMAGE, string _DATA, int _HP, int _XP, int[] _friendshipArray)
     {
         iD = _ID;
         soldierName = _NAME;
@@ -240,6 +248,15 @@ public class Soldier : ScriptableObject
         currentHP = _HP;
         currentXP = _XP;
         squad = null;
+
+        if(_friendshipArray.Length > 1)
+        {
+            // Load friendship points
+            for (int i = 0; i < _friendshipArray.Length - 1; i += 2)
+            {
+                friendship.Add(_friendshipArray[i], _friendshipArray[i + 1]);
+            }
+        }        
     }
 
     /// <summary>
@@ -258,6 +275,22 @@ public class Soldier : ScriptableObject
     public void Die()
     {
         isDead = true;
+    }
+
+    /// <summary>
+    /// AddFriendshipPoint method add a friendship point for a dedicated soldier
+    /// </summary>
+    /// <param name="_soldierID">Soldier ID for wich a point has to be added</param>
+    public void AddFriendshipPoint(int _soldierID)
+    {
+        if(friendship.ContainsKey(_soldierID))
+        {
+            friendship[_soldierID]++;
+        }
+        else
+        {
+            friendship.Add(_soldierID, 1);
+        }
     }
 
     /// <summary>

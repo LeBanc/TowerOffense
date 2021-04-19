@@ -477,4 +477,34 @@ public class Squad : ScriptableObject
     {
         return (soldierList[0] != null && soldierList[1] != null && soldierList[2] != null && soldierList[3] != null);
     }
+
+    /// <summary>
+    /// ComputeFriendshipPoints method adds friendship points to soldier of the squad
+    /// </summary>
+    public void ComputeFriendshipPoints()
+    {
+        soldierList[0].AddFriendshipPoint(soldierList[1].ID);
+        soldierList[0].AddFriendshipPoint(soldierList[2].ID);
+        soldierList[0].AddFriendshipPoint(soldierList[3].ID);
+
+        soldierList[1].AddFriendshipPoint(soldierList[0].ID);
+        soldierList[1].AddFriendshipPoint(soldierList[2].ID);
+        soldierList[1].AddFriendshipPoint(soldierList[3].ID);
+
+        soldierList[2].AddFriendshipPoint(soldierList[0].ID);
+        soldierList[2].AddFriendshipPoint(soldierList[1].ID);
+        soldierList[2].AddFriendshipPoint(soldierList[3].ID);
+
+        soldierList[3].AddFriendshipPoint(soldierList[0].ID);
+        soldierList[3].AddFriendshipPoint(soldierList[1].ID);
+        soldierList[3].AddFriendshipPoint(soldierList[2].ID);
+    }
+
+    /*
+    public void ComputeSoldierDeath()
+    {
+        int _r = Random.Range(0, 4);
+        soldierList[_r].Die();
+        RemoveSoldier(soldierList[_r]);
+    }*/
 }

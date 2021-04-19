@@ -1,5 +1,7 @@
 ﻿using UnityEngine;
 using System.Xml.Serialization;
+using System.Collections.Generic;
+using System.Linq;
 
 /// <summary>
 /// SoldierSave defines the methods to load and save a Soldier
@@ -28,6 +30,9 @@ public class SoldierSave
     [XmlAttribute("data")]
     public string dataPath;
 
+    [XmlAttribute("friendship")]
+    public int[] friendship;
+
     /// <summary>
     /// Basic constructor of an empty SquadSave (needed to xml saves)
     /// </summary>
@@ -39,6 +44,7 @@ public class SoldierSave
         dataPath = "";
         currentHP = 0;
         currentXP = 0;
+        friendship = new int[1];
     }
 
     /// <summary>
@@ -53,6 +59,21 @@ public class SoldierSave
         dataPath = _soldier.Data.name;
         currentHP = _soldier.CurrentHP;
         currentXP = _soldier.CurrentXP;
+
+        // Save friendship points
+        List<int> _keysList = _soldier.Friendship.Keys.ToList();
+        List<int> _valuesList = _soldier.Friendship.Values.ToList();
+        friendship = new int[_keysList.Count*2];
+        for(int i=0;i<_keysList.Count;i++)
+        {
+            friendship[2*i] = _keysList[i];
+            friendship[2*i + 1] = _valuesList[i];
+        }
+
+        if (friendship.Length < 2)
+        {
+            friendship = new int[1];
+        }
     }
 
     /// <summary>
@@ -62,7 +83,7 @@ public class SoldierSave
     public Soldier Load()
     {
         Soldier _soldier = ScriptableObject.CreateInstance("Soldier") as Soldier;
-        _soldier.LoadData(iD, soldierName, imagePath, dataPath, currentHP, currentXP);
+        _soldier.LoadData(iD, soldierName, imagePath, dataPath, currentHP, currentXP, friendship);
         return _soldier;
     }
 }
