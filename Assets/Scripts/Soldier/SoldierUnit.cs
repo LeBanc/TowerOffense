@@ -124,14 +124,13 @@ public class SoldierUnit : Shootable
 
     /// <summary>
     /// Die method is called when the SoldierUnit dies.
-    /// It deletes the HealthBar and calls the Die method of the Soldier befor destoying this SoldierUnit
+    /// It deletes the HealthBar before destoying this SoldierUnit
     /// </summary>
     public void Die()
     {
         // Remove HealthBar
         OnDamage -= healthBar.UpdateValue;
         healthBar.Remove();
-        soldier.Die();
         SendMessage("DieMessage");
         Destroy(gameObject);
     }

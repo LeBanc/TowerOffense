@@ -985,7 +985,7 @@ public class SquadUnit : MonoBehaviour
     public void Die()
     {
         squad.ComputeFriendshipPoints();
-        //squad.ComputeSoldierDeath();
+        squad.ComputeSoldierDeath();
         OnDeath?.Invoke();
         PlayManager.RemoveSquadUnit(this);
         Destroy(gameObject);

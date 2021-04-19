@@ -500,11 +500,13 @@ public class Squad : ScriptableObject
         soldierList[3].AddFriendshipPoint(soldierList[2].ID);
     }
 
-    /*
+    /// <summary>
+    /// ComputeSoldierDeath method randomly choose one soldier of the squad and sets it as dead
+    /// </summary>
     public void ComputeSoldierDeath()
     {
         int _r = Random.Range(0, 4);
         soldierList[_r].Die();
         RemoveSoldier(soldierList[_r]);
-    }*/
+    }
 }
