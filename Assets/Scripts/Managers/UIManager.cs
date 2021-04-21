@@ -548,11 +548,6 @@ public class UIManager : Singleton<UIManager>
             if (OnHideActiveCanvas != null)
             {
                 OnHideActiveCanvas?.Invoke();
-                if (playUILastSelected != null)
-                {
-                    playUILastSelected.Select();
-                    playUILastSelected = null;
-                }
             }
             else if (confirmMessage.IsVisible)
             {

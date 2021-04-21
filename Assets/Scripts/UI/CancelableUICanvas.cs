@@ -6,6 +6,9 @@ using UnityEngine.UI;
 /// </summary>
 public class CancelableUICanvas : UICanvas
 {
+    // private previous selected Selectable
+    protected Selectable previousSelected;
+
     /// <summary>
     /// Show method displays the Canvas, save the previous selected selectable and subscribe to UIManager event
     /// </summary>
@@ -13,7 +16,7 @@ public class CancelableUICanvas : UICanvas
     {
         if (EventSystem.current.currentSelectedGameObject != null)
         {
-            UIManager.LastSelected = EventSystem.current.currentSelectedGameObject.GetComponent<Selectable>();
+            previousSelected = EventSystem.current.currentSelectedGameObject.GetComponent<Selectable>();
         }
 
         base.Show();
@@ -26,6 +29,7 @@ public class CancelableUICanvas : UICanvas
     public override void Hide()
     {
         UIManager.OnHideActiveCanvas -= Hide;
+        if (previousSelected != null) previousSelected.Select();
         base.Hide();
     }
 
