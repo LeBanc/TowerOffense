@@ -28,6 +28,15 @@ public class SoldierPreview : MonoBehaviour
     public Text defenseExplosivesValue;
     public Text speedValue;
 
+    public Text attackShortBonus;
+    public Text attackMiddleBonus;
+    public Text attackLongBonus;
+    public Text defenseShortBonus;
+    public Text defenseMiddleBonus;
+    public Text defenseLongBonus;
+    public Text defenseExplosivesBonus;
+    public Text speedBonus;
+
     // Soldier capacities
     [Header("Capacities")]
     public Text capacity1;
@@ -79,23 +88,31 @@ public class SoldierPreview : MonoBehaviour
             UpdateXPBarValue();
 
             attackShortValue.text = soldier.ShortRangeAttack.ToString();
-            attackShortValue.color = GetBonusColor(soldier.BonusAtkShortRange);
+            attackShortBonus.text = (soldier.BonusAtkShortRange > 0) ? ("+" + soldier.BonusAtkShortRange.ToString()) : ((soldier.BonusAtkShortRange < 0)?soldier.BonusAtkShortRange.ToString():"");
+            attackShortBonus.color = GetBonusColor(soldier.BonusAtkShortRange);
             attackMiddleValue.text = soldier.MiddleRangeAttack.ToString();
-            attackMiddleValue.color = GetBonusColor(soldier.BonusAtkMidRange);
+            attackMiddleBonus.text = (soldier.BonusAtkMidRange > 0) ? ("+" + soldier.BonusAtkMidRange.ToString()) : ((soldier.BonusAtkMidRange < 0) ? soldier.BonusAtkMidRange.ToString() : "");
+            attackMiddleBonus.color = GetBonusColor(soldier.BonusAtkMidRange);
             attackLongValue.text = soldier.LongRangeAttack.ToString();
-            attackLongValue.color = GetBonusColor(soldier.BonusAtkLongRange);
+            attackLongBonus.text = (soldier.BonusAtkLongRange >= 0) ? ("+" + soldier.BonusAtkLongRange.ToString()) : ((soldier.BonusAtkLongRange < 0) ? soldier.BonusAtkLongRange.ToString() : "");
+            attackLongBonus.color = GetBonusColor(soldier.BonusAtkLongRange);
 
             defenseShortValue.text = soldier.ShortRangeDefense.ToString();
-            defenseShortValue.color = GetBonusColor(soldier.BonusDefShortRange);
+            defenseShortBonus.text = (soldier.BonusDefShortRange >= 0) ? ("+" + soldier.BonusDefShortRange.ToString()) : ((soldier.BonusDefShortRange < 0) ? soldier.BonusDefShortRange.ToString() : "");
+            defenseShortBonus.color = GetBonusColor(soldier.BonusDefShortRange);
             defenseMiddleValue.text = soldier.MiddleRangeDefense.ToString();
-            defenseMiddleValue.color = GetBonusColor(soldier.BonusDefMidRange);
+            defenseMiddleBonus.text = (soldier.BonusDefMidRange >= 0) ? ("+" + soldier.BonusDefMidRange.ToString()) : ((soldier.BonusDefMidRange < 0) ? soldier.BonusDefMidRange.ToString() : "");
+            defenseMiddleBonus.color = GetBonusColor(soldier.BonusDefMidRange);
             defenseLongValue.text = soldier.LongRangeDefense.ToString();
-            defenseLongValue.color = GetBonusColor(soldier.BonusDefLongRange);
+            defenseLongBonus.text = (soldier.BonusDefLongRange >= 0) ? ("+" + soldier.BonusDefLongRange.ToString()) : ((soldier.BonusDefLongRange < 0) ? soldier.BonusDefLongRange.ToString() : "");
+            defenseLongBonus.color = GetBonusColor(soldier.BonusDefLongRange);
             defenseExplosivesValue.text = soldier.ExplosivesDefense.ToString();
-            defenseExplosivesValue.color = GetBonusColor(soldier.BonusDefExplosives);
+            defenseExplosivesBonus.text = (soldier.BonusDefExplosives >= 0) ? ("+" + soldier.BonusDefExplosives.ToString()) : ((soldier.BonusDefExplosives < 0) ? soldier.BonusDefExplosives.ToString() : "");
+            defenseExplosivesBonus.color = GetBonusColor(soldier.BonusDefExplosives);
 
             speedValue.text = soldier.Speed.ToString();
-            speedValue.color = GetBonusColor(soldier.BonusSpeed);
+            speedBonus.text = (soldier.BonusSpeed >= 0) ? ("+" + soldier.BonusSpeed.ToString()) : ((soldier.BonusSpeed < 0) ? soldier.BonusSpeed.ToString() : "");
+            speedBonus.color = GetBonusColor(soldier.BonusSpeed);
 
             // Update capacities
             GetCapacities();
@@ -168,7 +185,7 @@ public class SoldierPreview : MonoBehaviour
         }
         else
         {
-            return Color.black;
+            return Color.gray;
         }
     }
 

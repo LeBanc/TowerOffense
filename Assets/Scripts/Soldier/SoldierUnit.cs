@@ -68,19 +68,19 @@ public class SoldierUnit : Shootable
         OnHPDown += WoundSoldier;
 
         // Attack values
-        shortRangeAtk = soldier.ShortRangeAttack;
-        middleRangeAtk = soldier.MiddleRangeAttack;
-        longRangeAtk = soldier.LongRangeAttack;
+        shortRangeAtk = soldier.ShortRangeAttack + soldier.BonusAtkShortRange;
+        middleRangeAtk = soldier.MiddleRangeAttack + soldier.BonusAtkMidRange;
+        longRangeAtk = soldier.LongRangeAttack + soldier.BonusAtkLongRange;
 
         // Defense values
-        shortRangeDef = soldier.ShortRangeDefense;
-        middleRangeDef = soldier.MiddleRangeDefense;
-        longRangeDef = soldier.LongRangeDefense;
-        explosiveDef = soldier.ExplosivesDefense;
+        shortRangeDef = soldier.ShortRangeDefense + soldier.BonusDefShortRange;
+        middleRangeDef = soldier.MiddleRangeDefense + soldier.BonusDefMidRange;
+        longRangeDef = soldier.LongRangeDefense + soldier.BonusDefLongRange;
+        explosiveDef = soldier.ExplosivesDefense + soldier.BonusDefExplosives;
 
         // NavAgent        
         navAgent = GetComponent<NavMeshAgent>();
-        navAgent.speed = soldier.Speed * navAgent.speed / 100; // Cross product 100% speed is default navAgent speed
+        navAgent.speed = (soldier.Speed + soldier.BonusSpeed) * navAgent.speed / 100; // Cross product 100% speed is default navAgent speed
         navAgent.enabled = true;
 
         // Shooting

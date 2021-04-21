@@ -71,7 +71,7 @@ public class SoldierSelectionItem : MonoBehaviour
     /// Setup method initialize the Soldier Selection item with Soldier data
     /// </summary>
     /// <param name="_soldier">Soldier to display</param>
-    public void Setup(Soldier _soldier)
+    public void Setup(Soldier _soldier, Squad _squad, Soldier _selectedSoldier)
     {
         soldier = _soldier;
 
@@ -103,7 +103,13 @@ public class SoldierSelectionItem : MonoBehaviour
             defValue.text = string.Format("S:{0} M:{1} L:{2} E:{3}", soldier.ShortRangeDefense, soldier.MiddleRangeDefense, soldier.LongRangeDefense, soldier.ExplosivesDefense);
             speedValue.text = soldier.Speed.ToString();
 
-            friendValue.text = ""; // tbd
+            // Compute friendship points and display a "+" for each point
+            friendValue.text = "";
+            int _friendshipPoints = soldier.ComputeFriendship(_squad, _selectedSoldier);
+            for (int i=0; i < _friendshipPoints; i++)
+            {
+                friendValue.text = friendValue.text + "+";
+            }
         }        
     }
 

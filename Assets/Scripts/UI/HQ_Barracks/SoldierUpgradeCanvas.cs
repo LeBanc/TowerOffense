@@ -93,14 +93,14 @@ public class SoldierUpgradeCanvas : UICanvas
         soldierType.text = selectedSoldier.Data.typeName;
 
         speed.text = selectedSoldier.Speed.ToString();
-        atkShortValue.text = (selectedSoldier.ShortRangeAttack - selectedSoldier.BonusAtkShortRange).ToString();
-        atkMiddleValue.text = (selectedSoldier.MiddleRangeAttack - selectedSoldier.BonusAtkMidRange).ToString();
-        atkLongValue.text = (selectedSoldier.LongRangeAttack - selectedSoldier.BonusAtkLongRange).ToString();
+        atkShortValue.text = (selectedSoldier.ShortRangeAttack).ToString();
+        atkMiddleValue.text = (selectedSoldier.MiddleRangeAttack).ToString();
+        atkLongValue.text = (selectedSoldier.LongRangeAttack).ToString();
 
-        defShortValue.text = (selectedSoldier.ShortRangeDefense - selectedSoldier.BonusDefShortRange).ToString();
-        defMiddleValue.text = (selectedSoldier.MiddleRangeDefense - selectedSoldier.BonusDefMidRange).ToString();
-        defLongValue.text = (selectedSoldier.LongRangeDefense - selectedSoldier.BonusDefLongRange).ToString();
-        defExploValue.text = (selectedSoldier.ExplosivesDefense - selectedSoldier.BonusDefExplosives).ToString();
+        defShortValue.text = (selectedSoldier.ShortRangeDefense).ToString();
+        defMiddleValue.text = (selectedSoldier.MiddleRangeDefense).ToString();
+        defLongValue.text = (selectedSoldier.LongRangeDefense).ToString();
+        defExploValue.text = (selectedSoldier.ExplosivesDefense).ToString();
 
         GetCapacities(selectedSoldier);
 
@@ -292,14 +292,14 @@ public class SoldierUpgradeCanvas : UICanvas
         soldierType.text = selectedSoldier.Data.typeName;
 
         speed.text = selectedSoldier.Speed.ToString();
-        atkShortValue.text = (selectedSoldier.ShortRangeAttack - selectedSoldier.BonusAtkShortRange).ToString();
-        atkMiddleValue.text = (selectedSoldier.MiddleRangeAttack - selectedSoldier.BonusAtkMidRange).ToString();
-        atkLongValue.text = (selectedSoldier.LongRangeAttack - selectedSoldier.BonusAtkLongRange).ToString();
+        atkShortValue.text = (selectedSoldier.ShortRangeAttack).ToString();
+        atkMiddleValue.text = (selectedSoldier.MiddleRangeAttack).ToString();
+        atkLongValue.text = (selectedSoldier.LongRangeAttack).ToString();
 
-        defShortValue.text = (selectedSoldier.ShortRangeDefense - selectedSoldier.BonusDefShortRange).ToString();
-        defMiddleValue.text = (selectedSoldier.MiddleRangeDefense - selectedSoldier.BonusDefMidRange).ToString();
-        defLongValue.text = (selectedSoldier.LongRangeDefense - selectedSoldier.BonusDefLongRange).ToString();
-        defExploValue.text = (selectedSoldier.ExplosivesDefense - selectedSoldier.BonusDefExplosives).ToString();
+        defShortValue.text = (selectedSoldier.ShortRangeDefense).ToString();
+        defMiddleValue.text = (selectedSoldier.MiddleRangeDefense).ToString();
+        defLongValue.text = (selectedSoldier.LongRangeDefense).ToString();
+        defExploValue.text = (selectedSoldier.ExplosivesDefense).ToString();
 
         GetCapacities(selectedSoldier);
     }

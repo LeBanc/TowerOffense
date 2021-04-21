@@ -40,6 +40,10 @@ public class GameData: ScriptableObject
     public string[] ranks = new string[4];
     public string playerRank;
 
+    // Freindship levels
+    [Header("Fiendship days thresholds")]
+    public int[] fiendshipLevels = new int[5];
+
     // First squad data to create the first squad in game
     [Header("First squad")]
     public GameObject squadPrefab;

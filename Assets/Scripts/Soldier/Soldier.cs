@@ -34,6 +34,7 @@ public class Soldier : ScriptableObject
     private int[] attackBonuses = new int[3];
     private int[] defenseBonuses = new int[4];
     private int speedBonus;
+    private int friendshipValue;
 
     // Squad attached to
     private Squad squad;
@@ -114,42 +115,42 @@ public class Soldier : ScriptableObject
 
     public int ShortRangeAttack
     {
-        get { return data.shortRangeAttack + BonusAtkShortRange; }
+        get { return data.shortRangeAttack; }
     }
 
     public int MiddleRangeAttack
     {
-        get { return data.middleRangeAttack + BonusAtkMidRange; }
+        get { return data.middleRangeAttack; }
     }
 
     public int LongRangeAttack
     {
-        get { return data.longRangeAttack + BonusAtkLongRange; }
+        get { return data.longRangeAttack; }
     }
 
     public int ShortRangeDefense
     {
-        get { return data.shortRangeDefense + BonusDefShortRange; }
+        get { return data.shortRangeDefense; }
     }
 
     public int MiddleRangeDefense
     {
-        get { return data.middleRangeDefense + BonusDefMidRange; }
+        get { return data.middleRangeDefense; }
     }
 
     public int LongRangeDefense
     {
-        get { return data.longRangeDefense + BonusDefLongRange; }
+        get { return data.longRangeDefense; }
     }
 
     public int ExplosivesDefense
     {
-        get { return data.explosiveDefense + BonusDefExplosives; }
+        get { return data.explosiveDefense; }
     }
 
     public int Speed
     {
-        get { return data.speed + BonusSpeed; }
+        get { return data.speed; }
     }
 
     public int BonusAtkShortRange
@@ -356,6 +357,103 @@ public class Soldier : ScriptableObject
         OnDataChange?.Invoke();
     }
 
+    #region Friendship and Bonuses
+    /// <summary>
+    /// ComputeBonuses method
+    /// </summary>
+    /// <param name="_squad">Squad from which get the soldiers to compute bonuses (Squad)</param>
+    public void ComputeBonuses(Squad _squad)
+    {
+        attackBonuses = new int[3];
+        defenseBonuses = new int[4];
+        speedBonus = 0;
+
+        foreach (Soldier _s in _squad.Soldiers)
+        {
+            if(_s != null)
+            {
+                if(_s != this) ComputeBonuses(_s);
+            }
+        }
+    }
+
+    /// <summary>
+    /// ComputeBonuses method adds the bonuses given by a dedicated soldier
+    /// </summary>
+    /// <param name="_soldier">Soldier from which get the bonuses (Soldier)</param>
+    public void ComputeBonuses(Soldier _soldier)
+    {
+        int _mult = 0;
+        if (friendship.TryGetValue(_soldier.iD, out int _value))
+        {
+            if (_value >= PlayManager.data.fiendshipLevels[4])
+            {
+                _mult = 4;
+            }
+            else if(_value >= PlayManager.data.fiendshipLevels[3])
+            {
+                _mult = 3;
+            }
+            else if(_value >= PlayManager.data.fiendshipLevels[2])
+            {
+                _mult = 2;
+            }
+            else if(_value >= PlayManager.data.fiendshipLevels[1])
+            {
+                _mult = 1;
+            }
+
+            attackBonuses[0] += _soldier.data.attackBonus[0] * _mult;
+            attackBonuses[1] += _soldier.data.attackBonus[1] * _mult;
+            attackBonuses[2] += _soldier.data.attackBonus[2] * _mult;
+            defenseBonuses[0] += _soldier.data.defenseBonus[0] * _mult;
+            defenseBonuses[1] += _soldier.data.defenseBonus[1] * _mult;
+            defenseBonuses[2] += _soldier.data.defenseBonus[2] * _mult;
+            defenseBonuses[3] += _soldier.data.defenseBonus[3] * _mult;
+            speedBonus += _soldier.data.speedBonus * _mult;
+        }
+    }
+
+    /// <summary>
+    /// ComputeFriendship method compute the friendship value from the selected squad minus the selected soldier (to change)
+    /// </summary>
+    /// <param name="_squad">Selected squad (Squad)</param>
+    /// <param name="_selectedSoldier">Selected Soldier (Soldier)</param>
+    /// <returns></returns>
+    public int ComputeFriendship(Squad _squad, Soldier _selectedSoldier)
+    {
+        // If no squad, this is an error so return default value
+        if (_squad == null) return 0;
+
+        // Init friendship value at 0 then test for each soldier of the squa d(except the selected one) in which friendship category it is
+        friendshipValue = 0;
+        foreach (Soldier _s in _squad.Soldiers)
+        {
+            if (_s == _selectedSoldier || _s == this) continue;
+            if (friendship.TryGetValue(_s.iD, out int _value))
+            {
+                if (_value >= PlayManager.data.fiendshipLevels[4])
+                {
+                    friendshipValue += 4;
+                }
+                else if (_value >= PlayManager.data.fiendshipLevels[3])
+                {
+                    friendshipValue += 3;
+                }
+                else if (_value >= PlayManager.data.fiendshipLevels[2])
+                {
+                    friendshipValue += 2;
+                }
+                else if (_value >= PlayManager.data.fiendshipLevels[1])
+                {
+                    friendshipValue += 1;
+                }
+            }
+        }
+        return friendshipValue;
+    }
+    #endregion
+
     #region Sort methods
 
     /// <summary>
@@ -409,7 +507,15 @@ public class Soldier : ScriptableObject
         }
         if (y == null) return -1; // y is null so x is lower than y
 
-        return x.data.soldierType.CompareTo(y.data.soldierType);
+        int _temp = x.data.soldierType.CompareTo(y.data.soldierType);
+        if(_temp == 0)
+        {
+            return SortByLevelGreater(x, y);
+        }
+        else
+        {
+            return _temp;
+        }
     }
 
     /// <summary>
@@ -471,6 +577,24 @@ public class Soldier : ScriptableObject
         if (y.squad == null) return 1;
 
         return x.squad.ID.CompareTo(y.squad.ID);
+    }
+
+    /// <summary>
+    /// SortByFriendship method compares two soldiers and returns an int depending of soldiers'Friendship value
+    /// </summary>
+    /// <param name="x">First soldier</param>
+    /// <param name="y">Second soldier</param>
+    /// <returns>-1 if lower, 0 if equal and 1 if greater (x compare to y)</returns>
+    public static int SortByFriendship(Soldier x, Soldier y)
+    {
+        if (x == null)
+        {
+            if (y == null) return 0; // If both are null, they are equals
+            return 1; // x is null so it is greater than y
+        }
+        if (y == null) return -1; // y is null so x is lower than y
+
+        return (-1)*x.friendshipValue.CompareTo(y.friendshipValue);
     }
     #endregion
 }

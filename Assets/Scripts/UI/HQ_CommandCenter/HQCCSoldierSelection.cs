@@ -54,8 +54,9 @@ public class HQCCSoldierSelection : CancelableUICanvas
 
             // Else create a new SoldierSelectionItem and initialize it
             GameObject _item = autoScroll.AddPrefabReturnInstance(soldierSelectionItem);
-            _item.GetComponent<SoldierSelectionItem>().Setup(_soldier);
-            _item.GetComponent<SoldierSelectionItem>().OnSelection += ChangeSelection;
+            SoldierSelectionItem _solSelItem = _item.GetComponent<SoldierSelectionItem>();
+            _solSelItem.Setup(_soldier, squad, selectedSoldier);
+            _solSelItem.OnSelection += ChangeSelection;
         }
     }
 
@@ -105,6 +106,9 @@ public class HQCCSoldierSelection : CancelableUICanvas
                 break;
             case 5:
                 _soldiers.Sort(Soldier.SortBySquad);
+                break;
+            case 6:
+                _soldiers.Sort(Soldier.SortByFriendship);
                 break;
             default:
                 _soldiers.Sort(Soldier.SortByID);

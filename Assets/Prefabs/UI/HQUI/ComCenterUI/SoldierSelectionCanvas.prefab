@@ -621,6 +621,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 025ac7f298270ea40b21cd4ca7cb494a, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  webGLObjectsToHide: []
   autoScroll: {fileID: 4363517939370578929}
   soldierSelectionItem: {fileID: 530928690855975475, guid: e726da8ef86143c44abf4166ddf8cb68,
     type: 3}
@@ -1082,7 +1083,7 @@ PrefabInstance:
     - target: {fileID: 4425172192792430968, guid: a3f9d6f55505af34997d98946e547c7b,
         type: 3}
       propertyPath: m_Options.m_Options.Array.size
-      value: 6
+      value: 7
       objectReference: {fileID: 0}
     - target: {fileID: 4425172192792430968, guid: a3f9d6f55505af34997d98946e547c7b,
         type: 3}
@@ -1149,6 +1150,11 @@ PrefabInstance:
       propertyPath: m_Navigation.m_SelectOnLeft
       value: 
       objectReference: {fileID: 8964133771422879282}
+    - target: {fileID: 4425172192792430968, guid: a3f9d6f55505af34997d98946e547c7b,
+        type: 3}
+      propertyPath: m_Options.m_Options.Array.data[6].m_Text
+      value: Sort by Friendship
+      objectReference: {fileID: 0}
     - target: {fileID: 9050820885846668102, guid: a3f9d6f55505af34997d98946e547c7b,
         type: 3}
       propertyPath: m_Text

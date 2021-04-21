@@ -60,6 +60,11 @@ public class SoldierData : ScriptableObject
     public float shootingDelay;
     public int maxXP;
 
+    [Header("Bonuses")]
+    public int[] attackBonus = new int[3];
+    public int[] defenseBonus = new int[4];
+    public int speedBonus;
+
     [Header("Sounds")]
     // Sound when shooting
     public AudioClip shootingSound;

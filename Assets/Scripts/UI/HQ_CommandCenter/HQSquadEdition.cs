@@ -103,16 +103,19 @@ public class HQSquadEdition : UICanvas
             // Set the squad as selected, update displays and subscribe events
             selectedSquad = _squad;
             UpdateSquadType();
-            selectedSquad.OnTypeChange += UpdateSquadType;
             UpdateSquadColor();
+
+            soldier1Image.Setup(selectedSquad.Soldiers[0]);
+            soldier2Image.Setup(selectedSquad.Soldiers[1]);
+            soldier3Image.Setup(selectedSquad.Soldiers[2]);
+            soldier4Image.Setup(selectedSquad.Soldiers[3]);
+            UpdateAllSoldiers();
+
+            selectedSquad.OnTypeChange += UpdateSquadType;
             selectedSquad.OnColorChange += UpdateSquadColor;
-            UpdateSoldier1();
             selectedSquad.OnSoldier1Change += UpdateSoldier1;
-            UpdateSoldier2();
             selectedSquad.OnSoldier2Change += UpdateSoldier2;
-            UpdateSoldier3();
             selectedSquad.OnSoldier3Change += UpdateSoldier3;
-            UpdateSoldier4();
             selectedSquad.OnSoldier4Change += UpdateSoldier4;
 
             engageButton.onClick.AddListener(ChangeEngageState);
@@ -133,10 +136,7 @@ public class HQSquadEdition : UICanvas
         else
         {
             // Else update the soldier values (to update HP and XP values at attack return)
-            UpdateSoldier1();
-            UpdateSoldier2();
-            UpdateSoldier3();
-            UpdateSoldier4();
+            UpdateAllSoldiers();
         }
     }
 
@@ -342,13 +342,22 @@ public class HQSquadEdition : UICanvas
         squadColorBkg.color = selectedSquad.Color;
     }
 
+    private void UpdateAllSoldiers()
+    {
+        selectedSquad.ComputeBonuses();
+        soldier1Preview.Setup(selectedSquad.Soldiers[0]);
+        soldier2Preview.Setup(selectedSquad.Soldiers[1]);
+        soldier3Preview.Setup(selectedSquad.Soldiers[2]);
+        soldier4Preview.Setup(selectedSquad.Soldiers[3]);
+    }
+
     /// <summary>
     /// UpdateSoldier1 updates the soldier 1 image and the soldier 1 preview
     /// </summary>
     private void UpdateSoldier1()
     {
         soldier1Image.Setup(selectedSquad.Soldiers[0]);
-        soldier1Preview.Setup(selectedSquad.Soldiers[0]);
+        UpdateAllSoldiers();
     }
 
     /// <summary>
@@ -357,7 +366,7 @@ public class HQSquadEdition : UICanvas
     private void UpdateSoldier2()
     {
         soldier2Image.Setup(selectedSquad.Soldiers[1]);
-        soldier2Preview.Setup(selectedSquad.Soldiers[1]);
+        UpdateAllSoldiers();
     }
 
     /// <summary>
@@ -366,7 +375,7 @@ public class HQSquadEdition : UICanvas
     private void UpdateSoldier3()
     {
         soldier3Image.Setup(selectedSquad.Soldiers[2]);
-        soldier3Preview.Setup(selectedSquad.Soldiers[2]);
+        UpdateAllSoldiers();
     }
 
     /// <summary>
@@ -375,7 +384,7 @@ public class HQSquadEdition : UICanvas
     private void UpdateSoldier4()
     {
         soldier4Image.Setup(selectedSquad.Soldiers[3]);
-        soldier4Preview.Setup(selectedSquad.Soldiers[3]);
+        UpdateAllSoldiers();
     }
 
     /// <summary>

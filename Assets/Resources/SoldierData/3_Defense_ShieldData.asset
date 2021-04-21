@@ -27,6 +27,9 @@ MonoBehaviour:
   maxHP: 110
   shootingDelay: 3
   maxXP: 12000
+  attackBonus: 000000000000000000000000
+  defenseBonus: 00000000010000000100000000000000
+  speedBonus: 0
   shootingSound: {fileID: 8300000, guid: cf5c4803435bf5d4f920a0533150c10d, type: 3}
   capacities: 
   improveTo:
