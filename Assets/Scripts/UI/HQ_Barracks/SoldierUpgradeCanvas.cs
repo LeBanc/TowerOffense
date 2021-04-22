@@ -26,6 +26,10 @@ public class SoldierUpgradeCanvas : UICanvas
     public Text defLongValue;
     public Text defExploValue;
 
+    public GameObject friendshipPanel;
+    public GameObject friendshipTitlePrefab;
+    public GameObject friendshipItemPrefab;
+
     public Text capacity1;
     public Text capacity2;
     public Text capacity3;
@@ -103,6 +107,7 @@ public class SoldierUpgradeCanvas : UICanvas
         defExploValue.text = (selectedSoldier.ExplosivesDefense).ToString();
 
         GetCapacities(selectedSoldier);
+        GetFriendship(selectedSoldier);
 
         // Subscribe to events
         selectedSoldier.OnNameChange += UpdateName;
@@ -192,6 +197,134 @@ public class SoldierUpgradeCanvas : UICanvas
                     _capacitiesLabel[i].text = "Save Wounded Soldiers" + ((_woundedSaving > 1) ? string.Format(" x{0}", _woundedSaving) : "");
                     break;
             }
+        }
+    }
+
+    /// <summary>
+    /// GetFriendship method sets the list of accointance of the soldier from its friendship list
+    /// </summary>
+    /// <param name="_soldier">Soldier from which get the freindship points (Soldier)</param>
+    private void GetFriendship(Soldier _soldier)
+    {
+        // Clear the previous friendship data
+        foreach(Transform _t in friendshipPanel.transform)
+        {
+            Destroy(_t.gameObject);
+        }
+
+        List<Soldier> _friendsLvl4 = new List<Soldier>();
+        List<Soldier> _friendsLvl3 = new List<Soldier>();
+        List<Soldier> _friendsLvl2 = new List<Soldier>();
+        List<Soldier> _friendsLvl1 = new List<Soldier>();
+        List<Soldier> _friendsLvl0 = new List<Soldier>();
+
+        foreach(int _ID in _soldier.Friendship.Keys)
+        {
+            if(_soldier.Friendship[_ID] >= PlayManager.data.friendshipThresholds[4])
+            {
+                _friendsLvl4.Add(PlayManager.soldierList[_ID]);
+            }
+            else if (_soldier.Friendship[_ID] >= PlayManager.data.friendshipThresholds[3])
+            {
+                _friendsLvl3.Add(PlayManager.soldierList[_ID]);
+            }
+            else if (_soldier.Friendship[_ID] >= PlayManager.data.friendshipThresholds[2])
+            {
+                _friendsLvl2.Add(PlayManager.soldierList[_ID]);
+            }
+            else if (_soldier.Friendship[_ID] >= PlayManager.data.friendshipThresholds[1])
+            {
+                _friendsLvl1.Add(PlayManager.soldierList[_ID]);
+            }
+            else if (_soldier.Friendship[_ID] >= PlayManager.data.friendshipThresholds[0])
+            {
+                _friendsLvl0.Add(PlayManager.soldierList[_ID]);
+            }
+        }
+
+        // List of friends lvl 4
+        Text _title = Instantiate(friendshipTitlePrefab, friendshipPanel.transform).GetComponent<Text>();
+        _title.text = PlayManager.data.friendshipLevelNames[4] + ":";
+        if (_friendsLvl4.Count >0)
+        {
+            foreach(Soldier _s in _friendsLvl4)
+            {
+                Text _friend = Instantiate(friendshipItemPrefab, friendshipPanel.transform).GetComponent<Text>();
+                _friend.text = PlayManager.data.ranks[_s.Data.soldierLevel] + " " + _s.Name;
+            }
+        }
+        else
+        {
+            Text _friend = Instantiate(friendshipItemPrefab, friendshipPanel.transform).GetComponent<Text>();
+            _friend.text = "None";
+        }
+
+        // List of friends lvl3
+        _title = Instantiate(friendshipTitlePrefab, friendshipPanel.transform).GetComponent<Text>();
+        _title.text = PlayManager.data.friendshipLevelNames[3] + ":";
+        if (_friendsLvl3.Count > 0)
+        {
+            foreach (Soldier _s in _friendsLvl3)
+            {
+                Text _friend = Instantiate(friendshipItemPrefab, friendshipPanel.transform).GetComponent<Text>();
+                _friend.text = PlayManager.data.ranks[_s.Data.soldierLevel] + " " + _s.Name;
+            }
+        }
+        else
+        {
+            Text _friend = Instantiate(friendshipItemPrefab, friendshipPanel.transform).GetComponent<Text>();
+            _friend.text = "None";
+        }
+
+        // List of friends lvl2
+        _title = Instantiate(friendshipTitlePrefab, friendshipPanel.transform).GetComponent<Text>();
+        _title.text = PlayManager.data.friendshipLevelNames[2] + ":";
+        if (_friendsLvl2.Count > 0)
+        {
+            foreach (Soldier _s in _friendsLvl2)
+            {
+                Text _friend = Instantiate(friendshipItemPrefab, friendshipPanel.transform).GetComponent<Text>();
+                _friend.text = PlayManager.data.ranks[_s.Data.soldierLevel] + " " + _s.Name;
+            }
+        }
+        else
+        {
+            Text _friend = Instantiate(friendshipItemPrefab, friendshipPanel.transform).GetComponent<Text>();
+            _friend.text = "None";
+        }
+
+        // List of friends lvl1
+        _title = Instantiate(friendshipTitlePrefab, friendshipPanel.transform).GetComponent<Text>();
+        _title.text = PlayManager.data.friendshipLevelNames[1] + ":";
+        if (_friendsLvl1.Count > 0)
+        {
+            foreach (Soldier _s in _friendsLvl1)
+            {
+                Text _friend = Instantiate(friendshipItemPrefab, friendshipPanel.transform).GetComponent<Text>();
+                _friend.text = PlayManager.data.ranks[_s.Data.soldierLevel] + " " + _s.Name;
+            }
+        }
+        else
+        {
+            Text _friend = Instantiate(friendshipItemPrefab, friendshipPanel.transform).GetComponent<Text>();
+            _friend.text = "None";
+        }
+
+        // List of friends lvl0
+        _title = Instantiate(friendshipTitlePrefab, friendshipPanel.transform).GetComponent<Text>();
+        _title.text = PlayManager.data.friendshipLevelNames[0] + ":";
+        if (_friendsLvl0.Count > 0)
+        {
+            foreach (Soldier _s in _friendsLvl0)
+            {
+                Text _friend = Instantiate(friendshipItemPrefab, friendshipPanel.transform).GetComponent<Text>();
+                _friend.text = PlayManager.data.ranks[_s.Data.soldierLevel] + " " + _s.Name;
+            }
+        }
+        else
+        {
+            Text _friend = Instantiate(friendshipItemPrefab, friendshipPanel.transform).GetComponent<Text>();
+            _friend.text = "None";
         }
     }
 

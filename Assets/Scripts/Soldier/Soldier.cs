@@ -386,19 +386,19 @@ public class Soldier : ScriptableObject
         int _mult = 0;
         if (friendship.TryGetValue(_soldier.iD, out int _value))
         {
-            if (_value >= PlayManager.data.fiendshipLevels[4])
+            if (_value >= PlayManager.data.friendshipThresholds[4])
             {
                 _mult = 4;
             }
-            else if(_value >= PlayManager.data.fiendshipLevels[3])
+            else if(_value >= PlayManager.data.friendshipThresholds[3])
             {
                 _mult = 3;
             }
-            else if(_value >= PlayManager.data.fiendshipLevels[2])
+            else if(_value >= PlayManager.data.friendshipThresholds[2])
             {
                 _mult = 2;
             }
-            else if(_value >= PlayManager.data.fiendshipLevels[1])
+            else if(_value >= PlayManager.data.friendshipThresholds[1])
             {
                 _mult = 1;
             }
@@ -432,19 +432,19 @@ public class Soldier : ScriptableObject
             if (_s == _selectedSoldier || _s == this) continue;
             if (friendship.TryGetValue(_s.iD, out int _value))
             {
-                if (_value >= PlayManager.data.fiendshipLevels[4])
+                if (_value >= PlayManager.data.friendshipThresholds[4])
                 {
                     friendshipValue += 4;
                 }
-                else if (_value >= PlayManager.data.fiendshipLevels[3])
+                else if (_value >= PlayManager.data.friendshipThresholds[3])
                 {
                     friendshipValue += 3;
                 }
-                else if (_value >= PlayManager.data.fiendshipLevels[2])
+                else if (_value >= PlayManager.data.friendshipThresholds[2])
                 {
                     friendshipValue += 2;
                 }
-                else if (_value >= PlayManager.data.fiendshipLevels[1])
+                else if (_value >= PlayManager.data.friendshipThresholds[1])
                 {
                     friendshipValue += 1;
                 }
