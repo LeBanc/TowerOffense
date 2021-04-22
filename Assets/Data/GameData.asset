@@ -31,7 +31,13 @@ MonoBehaviour:
   - Sergeant
   - Staff Sergeant
   playerRank: Major
-  fiendshipLevels: 01000000070000000e000000160000001f000000
+  friendshipThresholds: 01000000070000000e000000160000001f000000
+  friendshipLevelNames:
+  - Known soldiers
+  - Squad Comrades
+  - Squad Partners
+  - Friends
+  - Siblings in arms
   squadPrefab: {fileID: 16989649490458422, guid: 4115a4419e61bb34a9a08f353b0cc578,
     type: 3}
   defaultSquadType: {fileID: 11400000, guid: 3ba13929eb5df914f93a858a1f8a067e, type: 2}
