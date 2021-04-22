@@ -68,19 +68,19 @@ public class SoldierUnit : Shootable
         OnHPDown += WoundSoldier;
 
         // Attack values
-        shortRangeAtk = soldier.ShortRangeAttack + soldier.BonusAtkShortRange;
-        middleRangeAtk = soldier.MiddleRangeAttack + soldier.BonusAtkMidRange;
-        longRangeAtk = soldier.LongRangeAttack + soldier.BonusAtkLongRange;
+        shortRangeAtk = Mathf.Max(0, soldier.ShortRangeAttack + soldier.BonusAtkShortRange);
+        middleRangeAtk = Mathf.Max(0, soldier.MiddleRangeAttack + soldier.BonusAtkMidRange);
+        longRangeAtk = Mathf.Max(0, soldier.LongRangeAttack + soldier.BonusAtkLongRange);
 
         // Defense values
-        shortRangeDef = soldier.ShortRangeDefense + soldier.BonusDefShortRange;
-        middleRangeDef = soldier.MiddleRangeDefense + soldier.BonusDefMidRange;
-        longRangeDef = soldier.LongRangeDefense + soldier.BonusDefLongRange;
-        explosiveDef = soldier.ExplosivesDefense + soldier.BonusDefExplosives;
+        shortRangeDef = Mathf.Max(0, soldier.ShortRangeDefense + soldier.BonusDefShortRange);
+        middleRangeDef = Mathf.Max(0, soldier.MiddleRangeDefense + soldier.BonusDefMidRange);
+        longRangeDef = Mathf.Max(0, soldier.LongRangeDefense + soldier.BonusDefLongRange);
+        explosiveDef = Mathf.Max(0, soldier.ExplosivesDefense + soldier.BonusDefExplosives);
 
         // NavAgent        
         navAgent = GetComponent<NavMeshAgent>();
-        navAgent.speed = (soldier.Speed + soldier.BonusSpeed) * navAgent.speed / 100; // Cross product 100% speed is default navAgent speed
+        navAgent.speed = Mathf.Max(40, (soldier.Speed + soldier.BonusSpeed)) * navAgent.speed / 100; // Cross product 100% speed is default navAgent speed
         navAgent.enabled = true;
 
         // Shooting

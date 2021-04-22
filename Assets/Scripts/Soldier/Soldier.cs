@@ -28,7 +28,7 @@ public class Soldier : ScriptableObject
 
     // State boolean (engaged / dead)
     private bool isEngaged = false;
-    private bool isDead = false;
+    private int dayOfDeath = 0;
 
     // Bonuses that can be applied to the soldier
     private int[] attackBonuses = new int[3];
@@ -102,9 +102,14 @@ public class Soldier : ScriptableObject
         get { return ((currentXP >= data.maxXP) && (data.maxXP >0)); }
     }
 
+    public int DayOfDeath
+    {
+        get { return dayOfDeath; }
+    }
+
     public bool IsDead
     {
-        get { return isDead; }
+        get { return dayOfDeath > 0; }
     }
 
     public bool IsEngaged
@@ -238,7 +243,7 @@ public class Soldier : ScriptableObject
     /// <param name="_DATA">Data name</param>
     /// <param name="_HP">HP current value</param>
     /// <param name="_XP">XP current value</param>
-    public void LoadData(int _ID, string _NAME, string _IMAGE, string _DATA, int _HP, int _XP, int[] _friendshipArray)
+    public void LoadData(int _ID, string _NAME, string _IMAGE, string _DATA, int _HP, int _XP,int _dayOfDeath, int[] _friendshipArray)
     {
         iD = _ID;
         soldierName = _NAME;
@@ -249,6 +254,7 @@ public class Soldier : ScriptableObject
         currentHP = _HP;
         currentXP = _XP;
         squad = null;
+        dayOfDeath = _dayOfDeath;
 
         if(_friendshipArray.Length > 1)
         {
@@ -275,7 +281,7 @@ public class Soldier : ScriptableObject
     /// </summary>
     public void Die()
     {
-        isDead = true;
+        dayOfDeath = PlayManager.day;
     }
 
     /// <summary>
@@ -372,16 +378,20 @@ public class Soldier : ScriptableObject
         {
             if(_s != null)
             {
-                if(_s != this) ComputeBonuses(_s);
+                if (_s != this)
+                {
+                    ComputeBonuses(_s);
+                }
             }
         }
+        ComputeMaluses();
     }
 
     /// <summary>
     /// ComputeBonuses method adds the bonuses given by a dedicated soldier
     /// </summary>
     /// <param name="_soldier">Soldier from which get the bonuses (Soldier)</param>
-    public void ComputeBonuses(Soldier _soldier)
+    private void ComputeBonuses(Soldier _soldier)
     {
         int _mult = 0;
         if (friendship.TryGetValue(_soldier.iD, out int _value))
@@ -415,7 +425,53 @@ public class Soldier : ScriptableObject
     }
 
     /// <summary>
-    /// ComputeFriendship method compute the friendship value from the selected squad minus the selected soldier (to change)
+    /// ComputeMaluses method computes the negative bonuses for dead soldiers
+    /// </summary>
+    private void ComputeMaluses()
+    {
+        int _malus = 0;
+
+        foreach (Soldier _s in PlayManager.soldierList)
+        {
+            if(_s.IsDead)
+            {
+                int _mourningDays = 2; // 2 because the day the computing is done is at least one day after the death
+                if (friendship.TryGetValue(_s.iD, out int _value))
+                {
+                    if (_value >= PlayManager.data.friendshipThresholds[4])
+                    {
+                        _mourningDays += 4;
+                    }
+                    else if (_value >= PlayManager.data.friendshipThresholds[3])
+                    {
+                        _mourningDays += 3;
+                    }
+                    else if (_value >= PlayManager.data.friendshipThresholds[2])
+                    {
+                        _mourningDays += 2;
+                    }
+                    else if (_value >= PlayManager.data.friendshipThresholds[1])
+                    {
+                        _mourningDays += 1;
+                    }
+                }
+                int _daysDelay = PlayManager.day - _s.dayOfDeath;
+                if (_daysDelay <= _mourningDays) _malus += (_mourningDays - _daysDelay);
+            }
+        }
+
+        attackBonuses[0] -= _malus;
+        attackBonuses[1] -= _malus;
+        attackBonuses[2] -= _malus;
+        defenseBonuses[0] -= _malus;
+        defenseBonuses[1] -= _malus;
+        defenseBonuses[2] -= _malus;
+        defenseBonuses[3] -= _malus;
+        speedBonus -= 5*_malus;
+    }
+
+    /// <summary>
+    /// ComputeFriendship method compute the friendship value from the selected squad minus the selected soldier to change
     /// </summary>
     /// <param name="_squad">Selected squad (Squad)</param>
     /// <param name="_selectedSoldier">Selected Soldier (Soldier)</param>

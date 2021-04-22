@@ -394,47 +394,47 @@ public class Squad : ScriptableObject
     {
         // Compute attack data
         atkShortRange = 0;
-        atkShortRange += soldierList[0] == null ? 0 : (soldierList[0].ShortRangeAttack + soldierList[0].BonusAtkShortRange);
-        atkShortRange += soldierList[1] == null ? 0 : (soldierList[1].ShortRangeAttack + soldierList[1].BonusAtkShortRange);
-        atkShortRange += soldierList[2] == null ? 0 : (soldierList[2].ShortRangeAttack + soldierList[2].BonusAtkShortRange);
-        atkShortRange += soldierList[3] == null ? 0 : (soldierList[3].ShortRangeAttack + soldierList[3].BonusAtkShortRange);
+        atkShortRange += soldierList[0] == null ? 0 : Mathf.Max(0,(soldierList[0].ShortRangeAttack + soldierList[0].BonusAtkShortRange));
+        atkShortRange += soldierList[1] == null ? 0 : Mathf.Max(0, (soldierList[1].ShortRangeAttack + soldierList[1].BonusAtkShortRange));
+        atkShortRange += soldierList[2] == null ? 0 : Mathf.Max(0, (soldierList[2].ShortRangeAttack + soldierList[2].BonusAtkShortRange));
+        atkShortRange += soldierList[3] == null ? 0 : Mathf.Max(0, (soldierList[3].ShortRangeAttack + soldierList[3].BonusAtkShortRange));
 
         atkMiddleRange = 0;
-        atkMiddleRange += soldierList[0] == null ? 0 : (soldierList[0].MiddleRangeAttack + soldierList[0].BonusAtkMidRange);
-        atkMiddleRange += soldierList[1] == null ? 0 : (soldierList[1].MiddleRangeAttack + soldierList[1].BonusAtkMidRange);
-        atkMiddleRange += soldierList[2] == null ? 0 : (soldierList[2].MiddleRangeAttack + soldierList[2].BonusAtkMidRange);
-        atkMiddleRange += soldierList[3] == null ? 0 : (soldierList[3].MiddleRangeAttack + soldierList[3].BonusAtkMidRange);
+        atkMiddleRange += soldierList[0] == null ? 0 : Mathf.Max(0, (soldierList[0].MiddleRangeAttack + soldierList[0].BonusAtkMidRange));
+        atkMiddleRange += soldierList[1] == null ? 0 : Mathf.Max(0, (soldierList[1].MiddleRangeAttack + soldierList[1].BonusAtkMidRange));
+        atkMiddleRange += soldierList[2] == null ? 0 : Mathf.Max(0, (soldierList[2].MiddleRangeAttack + soldierList[2].BonusAtkMidRange));
+        atkMiddleRange += soldierList[3] == null ? 0 : Mathf.Max(0, (soldierList[3].MiddleRangeAttack + soldierList[3].BonusAtkMidRange));
 
         atkLongRange = 0;
-        atkLongRange += soldierList[0] == null ? 0 : (soldierList[0].LongRangeAttack + soldierList[0].BonusAtkLongRange);
-        atkLongRange += soldierList[1] == null ? 0 : (soldierList[1].LongRangeAttack + soldierList[1].BonusAtkLongRange);
-        atkLongRange += soldierList[2] == null ? 0 : (soldierList[2].LongRangeAttack + soldierList[2].BonusAtkLongRange);
-        atkLongRange += soldierList[3] == null ? 0 : (soldierList[3].LongRangeAttack + soldierList[3].BonusAtkLongRange);
+        atkLongRange += soldierList[0] == null ? 0 : Mathf.Max(0, (soldierList[0].LongRangeAttack + soldierList[0].BonusAtkLongRange));
+        atkLongRange += soldierList[1] == null ? 0 : Mathf.Max(0, (soldierList[1].LongRangeAttack + soldierList[1].BonusAtkLongRange));
+        atkLongRange += soldierList[2] == null ? 0 : Mathf.Max(0, (soldierList[2].LongRangeAttack + soldierList[2].BonusAtkLongRange));
+        atkLongRange += soldierList[3] == null ? 0 : Mathf.Max(0, (soldierList[3].LongRangeAttack + soldierList[3].BonusAtkLongRange));
 
         // Compute defense data
         defShortRange = 0;
-        defShortRange += soldierList[0] == null ? 0 : (soldierList[0].ShortRangeDefense + soldierList[0].BonusDefShortRange);
-        defShortRange += soldierList[1] == null ? 0 : (soldierList[1].ShortRangeDefense + soldierList[1].BonusDefShortRange);
-        defShortRange += soldierList[2] == null ? 0 : (soldierList[2].ShortRangeDefense + soldierList[2].BonusDefShortRange);
-        defShortRange += soldierList[3] == null ? 0 : (soldierList[3].ShortRangeDefense + soldierList[3].BonusDefShortRange);
+        defShortRange += soldierList[0] == null ? 0 : Mathf.Max(0, (soldierList[0].ShortRangeDefense + soldierList[0].BonusDefShortRange));
+        defShortRange += soldierList[1] == null ? 0 : Mathf.Max(0, (soldierList[1].ShortRangeDefense + soldierList[1].BonusDefShortRange));
+        defShortRange += soldierList[2] == null ? 0 : Mathf.Max(0, (soldierList[2].ShortRangeDefense + soldierList[2].BonusDefShortRange));
+        defShortRange += soldierList[3] == null ? 0 : Mathf.Max(0, (soldierList[3].ShortRangeDefense + soldierList[3].BonusDefShortRange));
 
         defMiddleRange = 0;
-        defMiddleRange += soldierList[0] == null ? 0 : (soldierList[0].MiddleRangeDefense + soldierList[0].BonusDefMidRange);
-        defMiddleRange += soldierList[1] == null ? 0 : (soldierList[1].MiddleRangeDefense + soldierList[1].BonusDefMidRange);
-        defMiddleRange += soldierList[2] == null ? 0 : (soldierList[2].MiddleRangeDefense + soldierList[2].BonusDefMidRange);
-        defMiddleRange += soldierList[3] == null ? 0 : (soldierList[3].MiddleRangeDefense + soldierList[3].BonusDefMidRange);
+        defMiddleRange += soldierList[0] == null ? 0 : Mathf.Max(0, (soldierList[0].MiddleRangeDefense + soldierList[0].BonusDefMidRange));
+        defMiddleRange += soldierList[1] == null ? 0 : Mathf.Max(0, (soldierList[1].MiddleRangeDefense + soldierList[1].BonusDefMidRange));
+        defMiddleRange += soldierList[2] == null ? 0 : Mathf.Max(0, (soldierList[2].MiddleRangeDefense + soldierList[2].BonusDefMidRange));
+        defMiddleRange += soldierList[3] == null ? 0 : Mathf.Max(0, (soldierList[3].MiddleRangeDefense + soldierList[3].BonusDefMidRange));
 
         defLongRange = 0;
-        defLongRange += soldierList[0] == null ? 0 : (soldierList[0].LongRangeDefense + soldierList[0].BonusDefLongRange);
-        defLongRange += soldierList[1] == null ? 0 : (soldierList[1].LongRangeDefense + soldierList[1].BonusDefLongRange);
-        defLongRange += soldierList[2] == null ? 0 : (soldierList[2].LongRangeDefense + soldierList[2].BonusDefLongRange);
-        defLongRange += soldierList[3] == null ? 0 : (soldierList[3].LongRangeDefense + soldierList[3].BonusDefLongRange);
+        defLongRange += soldierList[0] == null ? 0 : Mathf.Max(0, (soldierList[0].LongRangeDefense + soldierList[0].BonusDefLongRange));
+        defLongRange += soldierList[1] == null ? 0 : Mathf.Max(0, (soldierList[1].LongRangeDefense + soldierList[1].BonusDefLongRange));
+        defLongRange += soldierList[2] == null ? 0 : Mathf.Max(0, (soldierList[2].LongRangeDefense + soldierList[2].BonusDefLongRange));
+        defLongRange += soldierList[3] == null ? 0 : Mathf.Max(0, (soldierList[3].LongRangeDefense + soldierList[3].BonusDefLongRange));
 
         defExplosives = 0;
-        defExplosives += soldierList[0] == null ? 0 : (soldierList[0].ExplosivesDefense + soldierList[0].BonusDefExplosives);
-        defExplosives += soldierList[1] == null ? 0 : (soldierList[1].ExplosivesDefense + soldierList[1].BonusDefExplosives);
-        defExplosives += soldierList[2] == null ? 0 : (soldierList[2].ExplosivesDefense + soldierList[2].BonusDefExplosives);
-        defExplosives += soldierList[3] == null ? 0 : (soldierList[3].ExplosivesDefense + soldierList[3].BonusDefExplosives);
+        defExplosives += soldierList[0] == null ? 0 : Mathf.Max(0, (soldierList[0].ExplosivesDefense + soldierList[0].BonusDefExplosives));
+        defExplosives += soldierList[1] == null ? 0 : Mathf.Max(0, (soldierList[1].ExplosivesDefense + soldierList[1].BonusDefExplosives));
+        defExplosives += soldierList[2] == null ? 0 : Mathf.Max(0, (soldierList[2].ExplosivesDefense + soldierList[2].BonusDefExplosives));
+        defExplosives += soldierList[3] == null ? 0 : Mathf.Max(0, (soldierList[3].ExplosivesDefense + soldierList[3].BonusDefExplosives));
 
         // Compute speed
         UpdateSpeed();
@@ -454,7 +454,7 @@ public class Squad : ScriptableObject
             // The squad speed is the minimum speed of all soldiers
             if (_soldier != null)
             {
-                speed = Mathf.Min(speed, _soldier.Speed + _soldier.BonusSpeed);
+                speed = Mathf.Min(speed, Mathf.Max(40, _soldier.Speed + _soldier.BonusSpeed));
             }
         }
         if (speed == 999) speed = 0;

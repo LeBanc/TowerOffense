@@ -23,6 +23,10 @@ public class SoldierSave
     [XmlAttribute("XP")]
     public int currentXP;
 
+    //Death data
+    [XmlAttribute("DayOfDeath")]
+    public int dayOfDeath;
+
     // Path of the soldier's avatar
     [XmlAttribute("image")]
     public string imagePath;
@@ -45,6 +49,7 @@ public class SoldierSave
         currentHP = 0;
         currentXP = 0;
         friendship = new int[1];
+        dayOfDeath = 0;
     }
 
     /// <summary>
@@ -59,6 +64,7 @@ public class SoldierSave
         dataPath = _soldier.Data.name;
         currentHP = _soldier.CurrentHP;
         currentXP = _soldier.CurrentXP;
+        dayOfDeath = _soldier.DayOfDeath;
 
         // Save friendship points
         List<int> _keysList = _soldier.Friendship.Keys.ToList();
@@ -83,7 +89,7 @@ public class SoldierSave
     public Soldier Load()
     {
         Soldier _soldier = ScriptableObject.CreateInstance("Soldier") as Soldier;
-        _soldier.LoadData(iD, soldierName, imagePath, dataPath, currentHP, currentXP, friendship);
+        _soldier.LoadData(iD, soldierName, imagePath, dataPath, currentHP, currentXP, dayOfDeath, friendship);
         return _soldier;
     }
 }
