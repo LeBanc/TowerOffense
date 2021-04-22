@@ -88,30 +88,30 @@ public class SoldierPreview : MonoBehaviour
             UpdateXPBarValue();
 
             attackShortValue.text = soldier.ShortRangeAttack.ToString();
-            attackShortBonus.text = (soldier.BonusAtkShortRange > 0) ? ("+" + soldier.BonusAtkShortRange.ToString()) : ((soldier.BonusAtkShortRange < 0)?soldier.BonusAtkShortRange.ToString():"");
+            attackShortBonus.text = (soldier.BonusAtkShortRange > 0) ? ("+" + soldier.BonusAtkShortRange.ToString()) : ((soldier.BonusAtkShortRange < 0) ? soldier.BonusAtkShortRange.ToString() : "");
             attackShortBonus.color = GetBonusColor(soldier.BonusAtkShortRange);
             attackMiddleValue.text = soldier.MiddleRangeAttack.ToString();
             attackMiddleBonus.text = (soldier.BonusAtkMidRange > 0) ? ("+" + soldier.BonusAtkMidRange.ToString()) : ((soldier.BonusAtkMidRange < 0) ? soldier.BonusAtkMidRange.ToString() : "");
             attackMiddleBonus.color = GetBonusColor(soldier.BonusAtkMidRange);
             attackLongValue.text = soldier.LongRangeAttack.ToString();
-            attackLongBonus.text = (soldier.BonusAtkLongRange >= 0) ? ("+" + soldier.BonusAtkLongRange.ToString()) : ((soldier.BonusAtkLongRange < 0) ? soldier.BonusAtkLongRange.ToString() : "");
+            attackLongBonus.text = (soldier.BonusAtkLongRange > 0) ? ("+" + soldier.BonusAtkLongRange.ToString()) : ((soldier.BonusAtkLongRange < 0) ? soldier.BonusAtkLongRange.ToString() : "");
             attackLongBonus.color = GetBonusColor(soldier.BonusAtkLongRange);
 
             defenseShortValue.text = soldier.ShortRangeDefense.ToString();
-            defenseShortBonus.text = (soldier.BonusDefShortRange >= 0) ? ("+" + soldier.BonusDefShortRange.ToString()) : ((soldier.BonusDefShortRange < 0) ? soldier.BonusDefShortRange.ToString() : "");
+            defenseShortBonus.text = (soldier.BonusDefShortRange > 0) ? ("+" + soldier.BonusDefShortRange.ToString()) : ((soldier.BonusDefShortRange < 0) ? soldier.BonusDefShortRange.ToString() : "");
             defenseShortBonus.color = GetBonusColor(soldier.BonusDefShortRange);
             defenseMiddleValue.text = soldier.MiddleRangeDefense.ToString();
-            defenseMiddleBonus.text = (soldier.BonusDefMidRange >= 0) ? ("+" + soldier.BonusDefMidRange.ToString()) : ((soldier.BonusDefMidRange < 0) ? soldier.BonusDefMidRange.ToString() : "");
+            defenseMiddleBonus.text = (soldier.BonusDefMidRange > 0) ? ("+" + soldier.BonusDefMidRange.ToString()) : ((soldier.BonusDefMidRange < 0) ? soldier.BonusDefMidRange.ToString() : "");
             defenseMiddleBonus.color = GetBonusColor(soldier.BonusDefMidRange);
             defenseLongValue.text = soldier.LongRangeDefense.ToString();
-            defenseLongBonus.text = (soldier.BonusDefLongRange >= 0) ? ("+" + soldier.BonusDefLongRange.ToString()) : ((soldier.BonusDefLongRange < 0) ? soldier.BonusDefLongRange.ToString() : "");
+            defenseLongBonus.text = (soldier.BonusDefLongRange > 0) ? ("+" + soldier.BonusDefLongRange.ToString()) : ((soldier.BonusDefLongRange < 0) ? soldier.BonusDefLongRange.ToString() : "");
             defenseLongBonus.color = GetBonusColor(soldier.BonusDefLongRange);
             defenseExplosivesValue.text = soldier.ExplosivesDefense.ToString();
-            defenseExplosivesBonus.text = (soldier.BonusDefExplosives >= 0) ? ("+" + soldier.BonusDefExplosives.ToString()) : ((soldier.BonusDefExplosives < 0) ? soldier.BonusDefExplosives.ToString() : "");
+            defenseExplosivesBonus.text = (soldier.BonusDefExplosives > 0) ? ("+" + soldier.BonusDefExplosives.ToString()) : ((soldier.BonusDefExplosives < 0) ? soldier.BonusDefExplosives.ToString() : "");
             defenseExplosivesBonus.color = GetBonusColor(soldier.BonusDefExplosives);
 
             speedValue.text = soldier.Speed.ToString();
-            speedBonus.text = (soldier.BonusSpeed >= 0) ? ("+" + soldier.BonusSpeed.ToString()) : ((soldier.BonusSpeed < 0) ? soldier.BonusSpeed.ToString() : "");
+            speedBonus.text = (soldier.BonusSpeed > 0) ? ("+" + soldier.BonusSpeed.ToString()) : ((soldier.BonusSpeed < 0) ? soldier.BonusSpeed.ToString() : "");
             speedBonus.color = GetBonusColor(soldier.BonusSpeed);
 
             // Update capacities
