@@ -127,23 +127,23 @@ public class SoldierPreview : MonoBehaviour
             experienceBar.UpdateValue(0, 0);
 
             attackShortValue.text = "";
-            attackShortValue.color = Color.black;
+            attackShortBonus.text = "";
             attackMiddleValue.text = "";
-            attackMiddleValue.color = Color.black;
+            attackMiddleBonus.text = "";
             attackLongValue.text = "";
-            attackLongValue.color = Color.black;
+            attackLongBonus.text = "";
 
             defenseShortValue.text = "";
-            defenseShortValue.color = Color.black;
+            defenseShortBonus.text = "";
             defenseMiddleValue.text = "";
-            defenseMiddleValue.color = Color.black;
+            defenseMiddleBonus.text = "";
             defenseLongValue.text = "";
-            defenseLongValue.color = Color.black;
+            defenseLongBonus.text = "";
             defenseExplosivesValue.text = "";
-            defenseExplosivesValue.color = Color.black;
+            defenseExplosivesBonus.text = "";
 
             speedValue.text = "";
-            speedValue.color = Color.black;
+            speedBonus.text = "";
 
             capacity1.text = "";
             capacity2.text = "";
