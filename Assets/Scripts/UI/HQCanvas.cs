@@ -14,8 +14,10 @@ public class HQCanvas : UICanvas
     public HQTabToggle tabs;
     // Default selected component
     public Selectable defaultSelected;
-    // Barrack tab Level up immage
+    // Barrack tab images
     public Image barracksLevelUpImage;
+    public Image memorialActiveImage;
+    public Image intelServiceImage;
 
     /// <summary>
     /// On Awake, get the Canvas component and subscribe to events
@@ -30,8 +32,13 @@ public class HQCanvas : UICanvas
         PlayManager.OnHQPhase += Init;
         PlayManager.OnLoadGame += Init;
 
+        // Events to update Barracks Levelup Icon
         tabs.barracks.soldierUpgrade.levelupCanvas.OnLevelUp += UpdateLevelUp;
         NewSoldierCanvas.OnRecruitWithXP += UpdateLevelUp;
+
+        // Events to update other tabs icons
+        tabs.memorial.OnDisplayDead += UpdateMemorialIcon;
+        tabs.intelligenceServices.OnDisplayTower += UpdateIntelServiceIcon;
 
     }
 
@@ -48,6 +55,8 @@ public class HQCanvas : UICanvas
 
         tabs.barracks.soldierUpgrade.levelupCanvas.OnLevelUp -= UpdateLevelUp;
         NewSoldierCanvas.OnRecruitWithXP -= UpdateLevelUp;
+        tabs.memorial.OnDisplayDead -= UpdateMemorialIcon;
+        tabs.intelligenceServices.OnDisplayTower -= UpdateIntelServiceIcon;
     }
 
     /// <summary>
@@ -102,5 +111,23 @@ public class HQCanvas : UICanvas
                 return;
             }
         }
+    }
+
+    /// <summary>
+    /// UpdateMemorial method display or hide the Memorial icon
+    /// </summary>
+    /// <param name="_displayIcon">True to display, false to hide</param>
+    public void UpdateMemorialIcon(bool _displayIcon)
+    {
+        memorialActiveImage.enabled = _displayIcon;
+    }
+
+    /// <summary>
+    /// UpdateIntelServiceIcon method display or hide the Intel. Services icon
+    /// </summary>
+    /// <param name="_displayIcon">True to display, false to hide</param>
+    public void UpdateIntelServiceIcon(bool _displayIcon)
+    {
+        intelServiceImage.enabled = _displayIcon;
     }
 }

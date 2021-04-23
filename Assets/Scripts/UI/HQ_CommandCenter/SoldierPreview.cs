@@ -10,8 +10,8 @@ public class SoldierPreview : MonoBehaviour
     // Public elements linked into the prefab
     [Header("Global")]
     public SoldierImage soldierImage; //SoldierImage (background, sprite and border)
-    public Text soldierName; // Soldier level (Trooper, Sergent, etc.)
-    public Text soldierType; // Soldier First and Lats names
+    public Text soldierName; // Soldier Grade & First and Last names
+    public Text soldierType; // Soldier type
 
     // Health and XP bars
     public HealthBar healthBar;

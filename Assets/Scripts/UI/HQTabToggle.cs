@@ -16,9 +16,9 @@ public class HQTabToggle : MonoBehaviour
     // Specific canvas to display
     public HQCommandCenter comCenter;
     public HQBarracks barracks;
-    public UICanvas intelligenceServices;
+    public IntelServiceCanvas intelligenceServices;
     public HQFacilities facilities;
-    public UICanvas memorial;    
+    public MemorialCanvas memorial;
 
     /// <summary>
     /// At Start, initialize the Tab bar to display the ComCenter

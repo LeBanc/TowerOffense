@@ -2,17 +2,14 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-/// <summary>
-/// IntelServiceCanvas class is the Canvas of the Intelligence Services HQ tab
-/// </summary>
-public class IntelServiceCanvas : UICanvas
+public class MemorialCanvas : UICanvas
 {
     // public UI elements
     public RectTransform content;
-    public GameObject intelServItemPrefab;
+    public GameObject memorialItemPrefab;
 
-    public delegate void IntelServicesEventHandler(bool _b);
-    public event IntelServicesEventHandler OnDisplayTower;
+    public delegate void MemorialCanvasEventHandler(bool _b);
+    public event MemorialCanvasEventHandler OnDisplayDead;
 
     /// <summary>
     /// At Start, subscribe to events
@@ -31,27 +28,27 @@ public class IntelServiceCanvas : UICanvas
     }
 
     /// <summary>
-    /// Setup method is used to clear the previous items and creates new ones for each active tower on the city field
+    /// Setup method is used to clear the previous items and creates new ones for each dead soldier
     /// </summary>
     public void Setup()
     {
+        bool _mourning = false;
         // Remove the previous items
         foreach (Transform _child in content.transform)
         {
             Destroy(_child.gameObject);
         }
 
-        bool _display = false;
         // Create and setup new tower items
-        foreach (Tower _t in PlayManager.towerList)
+        foreach (Soldier _s in PlayManager.soldierList)
         {
-            if(_t.IsActive() && !_t.IsDestroyed())
+            if (_s.IsDead)
             {
-                _display = true;
-                GameObject _go = Instantiate(intelServItemPrefab, content);
-                _go.GetComponent<IntelServTowerItem>().Setup(_t);
+                GameObject _go = Instantiate(memorialItemPrefab, content);
+                _mourning = _mourning || _go.GetComponent<DeadSoldierItem>().Setup(_s);
             }
         }
-        OnDisplayTower?.Invoke(_display);
+
+        OnDisplayDead?.Invoke(_mourning);
     }
 }
