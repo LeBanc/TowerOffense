@@ -121,10 +121,10 @@ public class SquadActionPanel : MonoBehaviour
         background.color = squadUnit.Squad.Color;
 
         // Update SoldierImages (background and border) from SquadUnit's Squad data
-        soldier1Image.Setup(squadUnit.Squad.Soldiers[0]);
-        soldier2Image.Setup(squadUnit.Squad.Soldiers[1]);
-        soldier3Image.Setup(squadUnit.Squad.Soldiers[2]);
-        soldier4Image.Setup(squadUnit.Squad.Soldiers[3]);
+        soldier1Image.Setup(squadUnit.Squad.Soldiers[0], true);
+        soldier2Image.Setup(squadUnit.Squad.Soldiers[1], true);
+        soldier3Image.Setup(squadUnit.Squad.Soldiers[2], true);
+        soldier4Image.Setup(squadUnit.Squad.Soldiers[3], true);
         
         // Initialize Capacities amount
         healCapacity = 0;

@@ -76,7 +76,7 @@ public class SoldierUpgradeCanvas : UICanvas
 
         selectedSoldier = _soldier;
 
-        soldierImage.Setup(selectedSoldier);
+        soldierImage.Setup(selectedSoldier, true);
         healthBar.UpdateValue(selectedSoldier.CurrentHP, selectedSoldier.MaxHP);
         if (selectedSoldier.MaxXP > 0)
         {
@@ -386,7 +386,7 @@ public class SoldierUpgradeCanvas : UICanvas
     /// </summary>
     public void UpdateImage()
     {
-        soldierImage.Setup(selectedSoldier);
+        soldierImage.Setup(selectedSoldier, true);
     }
 
     /// <summary>
@@ -403,7 +403,7 @@ public class SoldierUpgradeCanvas : UICanvas
     public void UpdateData()
     {
         // Update image for border color
-        soldierImage.Setup(selectedSoldier);
+        soldierImage.Setup(selectedSoldier, true);
 
         // Update HP and XP bars
         healthBar.UpdateValue(selectedSoldier.CurrentHP, selectedSoldier.MaxHP);

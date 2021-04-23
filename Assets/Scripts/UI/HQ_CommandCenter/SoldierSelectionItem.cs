@@ -11,7 +11,6 @@ public class SoldierSelectionItem : MonoBehaviour
     // Public element of the item
     public SoldierImage soldierImage;
     public Image squadColor;
-    public Text level;
     public Text soldierName;
     public Text type;
     public HealthBar healthBar;
@@ -91,8 +90,7 @@ public class SoldierSelectionItem : MonoBehaviour
             }            
 
             // Display soldier data
-            soldierImage.Setup(_soldier);
-            level.text = soldier.Data.soldierLevel.ToString();
+            soldierImage.Setup(_soldier, true);
             soldierName.text = soldier.Name;
             type.text = soldier.Data.typeName;
 

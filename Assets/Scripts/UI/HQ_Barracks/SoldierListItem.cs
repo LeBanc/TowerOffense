@@ -136,7 +136,7 @@ public class SoldierListItem : MonoBehaviour
     /// </summary>
     public void UpdateImage()
     {
-        soldierImage.Setup(soldier);
+        soldierImage.Setup(soldier, true);
     }
 
     /// <summary>
@@ -145,7 +145,7 @@ public class SoldierListItem : MonoBehaviour
     public void UpdateData()
     {
         // Update image for border color
-        soldierImage.Setup(soldier);
+        soldierImage.Setup(soldier, true);
 
         gradeText.text = PlayManager.data.ranks[soldier.Data.soldierLevel];
         hpBar.UpdateValue(soldier.CurrentHP, soldier.MaxHP);

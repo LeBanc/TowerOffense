@@ -80,7 +80,7 @@ public class SoldierPreview : MonoBehaviour
         if(soldier != null)
         {
             // Update all text and images
-            soldierImage.Setup(soldier);
+            soldierImage.Setup(soldier, true);
             soldierName.text = PlayManager.data.ranks[soldier.Data.soldierLevel] + " " + soldier.Name;
             soldierType.text = soldier.Data.typeName;
 
