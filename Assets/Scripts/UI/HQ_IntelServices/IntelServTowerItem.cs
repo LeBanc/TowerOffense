@@ -30,26 +30,36 @@ public class IntelServTowerItem : MonoBehaviour
         TowerData _data = _tower.data;
 
         // Set the tower level image
+        Sprite _levelSprite = null;
         switch(_data.towerLevel)
         {
             case 0:
-                towerLevelImage.sprite = PlayManager.data.rankImages[0];
+                _levelSprite = PlayManager.data.rankImages[0];
                 break;
             case 1:
-                towerLevelImage.sprite = PlayManager.data.rankImages[1];
+                _levelSprite = PlayManager.data.rankImages[1];
                 break;
             case 2:
-                towerLevelImage.sprite = PlayManager.data.rankImages[2];
+                _levelSprite = PlayManager.data.rankImages[2];
                 break;
             case 3:
-                towerLevelImage.sprite = PlayManager.data.rankImages[3];
+                _levelSprite = PlayManager.data.rankImages[3];
                 break;
             case 4:
-                towerLevelImage.sprite = PlayManager.data.rankImages[4];
+                _levelSprite = PlayManager.data.rankImages[4];
                 break;
             default:
-                towerLevelImage.sprite = PlayManager.data.rankImages[0];
+                _levelSprite = PlayManager.data.rankImages[0];
                 break;
+        }
+        if(_levelSprite != null)
+        {
+            towerLevelImage.enabled = true;
+            towerLevelImage.sprite = _levelSprite;
+        }
+        else
+        {
+            towerLevelImage.enabled = false;
         }
 
         // Get tower type and set image

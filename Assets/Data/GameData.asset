@@ -32,7 +32,7 @@ MonoBehaviour:
   - Staff Sergeant
   playerRank: Major
   rankImages:
-  - {fileID: 21300000, guid: c3d04862cc7c29740925b4d6aa819600, type: 3}
+  - {fileID: 0}
   - {fileID: 21300000, guid: d6429f98cf897064b89acf5d503f6008, type: 3}
   - {fileID: 21300000, guid: 1f537db7cdd73c7419e31416888c98c3, type: 3}
   - {fileID: 21300000, guid: ba86f06c14d1edd4a8e9162f1c3b3ed0, type: 3}
