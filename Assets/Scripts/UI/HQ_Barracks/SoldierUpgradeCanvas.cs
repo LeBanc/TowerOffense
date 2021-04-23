@@ -220,23 +220,23 @@ public class SoldierUpgradeCanvas : UICanvas
 
         foreach(int _ID in _soldier.Friendship.Keys)
         {
-            if(_soldier.Friendship[_ID] >= PlayManager.data.friendshipThresholds[4])
+            if(_soldier.Friendship[_ID] >= PlayManager.data.friendshipLevels[4].threshold)
             {
                 _friendsLvl4.Add(PlayManager.soldierList[_ID]);
             }
-            else if (_soldier.Friendship[_ID] >= PlayManager.data.friendshipThresholds[3])
+            else if (_soldier.Friendship[_ID] >= PlayManager.data.friendshipLevels[3].threshold)
             {
                 _friendsLvl3.Add(PlayManager.soldierList[_ID]);
             }
-            else if (_soldier.Friendship[_ID] >= PlayManager.data.friendshipThresholds[2])
+            else if (_soldier.Friendship[_ID] >= PlayManager.data.friendshipLevels[2].threshold)
             {
                 _friendsLvl2.Add(PlayManager.soldierList[_ID]);
             }
-            else if (_soldier.Friendship[_ID] >= PlayManager.data.friendshipThresholds[1])
+            else if (_soldier.Friendship[_ID] >= PlayManager.data.friendshipLevels[1].threshold)
             {
                 _friendsLvl1.Add(PlayManager.soldierList[_ID]);
             }
-            else if (_soldier.Friendship[_ID] >= PlayManager.data.friendshipThresholds[0])
+            else if (_soldier.Friendship[_ID] >= PlayManager.data.friendshipLevels[0].threshold)
             {
                 _friendsLvl0.Add(PlayManager.soldierList[_ID]);
             }
@@ -244,7 +244,7 @@ public class SoldierUpgradeCanvas : UICanvas
 
         // List of friends lvl 4
         Text _title = Instantiate(friendshipTitlePrefab, friendshipPanel.transform).GetComponent<Text>();
-        _title.text = PlayManager.data.friendshipLevelNames[4] + ":";
+        _title.text = PlayManager.data.friendshipLevels[4].levelName + ":";
         if (_friendsLvl4.Count >0)
         {
             foreach(Soldier _s in _friendsLvl4)
@@ -261,7 +261,7 @@ public class SoldierUpgradeCanvas : UICanvas
 
         // List of friends lvl3
         _title = Instantiate(friendshipTitlePrefab, friendshipPanel.transform).GetComponent<Text>();
-        _title.text = PlayManager.data.friendshipLevelNames[3] + ":";
+        _title.text = PlayManager.data.friendshipLevels[3].levelName + ":";
         if (_friendsLvl3.Count > 0)
         {
             foreach (Soldier _s in _friendsLvl3)
@@ -278,7 +278,7 @@ public class SoldierUpgradeCanvas : UICanvas
 
         // List of friends lvl2
         _title = Instantiate(friendshipTitlePrefab, friendshipPanel.transform).GetComponent<Text>();
-        _title.text = PlayManager.data.friendshipLevelNames[2] + ":";
+        _title.text = PlayManager.data.friendshipLevels[2].levelName + ":";
         if (_friendsLvl2.Count > 0)
         {
             foreach (Soldier _s in _friendsLvl2)
@@ -295,7 +295,7 @@ public class SoldierUpgradeCanvas : UICanvas
 
         // List of friends lvl1
         _title = Instantiate(friendshipTitlePrefab, friendshipPanel.transform).GetComponent<Text>();
-        _title.text = PlayManager.data.friendshipLevelNames[1] + ":";
+        _title.text = PlayManager.data.friendshipLevels[1].levelName + ":";
         if (_friendsLvl1.Count > 0)
         {
             foreach (Soldier _s in _friendsLvl1)
@@ -312,7 +312,7 @@ public class SoldierUpgradeCanvas : UICanvas
 
         // List of friends lvl0
         _title = Instantiate(friendshipTitlePrefab, friendshipPanel.transform).GetComponent<Text>();
-        _title.text = PlayManager.data.friendshipLevelNames[0] + ":";
+        _title.text = PlayManager.data.friendshipLevels[0].levelName + ":";
         if (_friendsLvl0.Count > 0)
         {
             foreach (Soldier _s in _friendsLvl0)

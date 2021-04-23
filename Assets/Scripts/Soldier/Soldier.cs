@@ -396,19 +396,19 @@ public class Soldier : ScriptableObject
         int _mult = 0;
         if (friendship.TryGetValue(_soldier.iD, out int _value))
         {
-            if (_value >= PlayManager.data.friendshipThresholds[4])
+            if (_value >= PlayManager.data.friendshipLevels[4].threshold)
             {
                 _mult = 4;
             }
-            else if(_value >= PlayManager.data.friendshipThresholds[3])
+            else if(_value >= PlayManager.data.friendshipLevels[3].threshold)
             {
                 _mult = 3;
             }
-            else if(_value >= PlayManager.data.friendshipThresholds[2])
+            else if(_value >= PlayManager.data.friendshipLevels[2].threshold)
             {
                 _mult = 2;
             }
-            else if(_value >= PlayManager.data.friendshipThresholds[1])
+            else if(_value >= PlayManager.data.friendshipLevels[1].threshold)
             {
                 _mult = 1;
             }
@@ -438,19 +438,19 @@ public class Soldier : ScriptableObject
                 int _mourningDays = 2; // 2 because the day the computing is done is at least one day after the death
                 if (friendship.TryGetValue(_s.iD, out int _value))
                 {
-                    if (_value >= PlayManager.data.friendshipThresholds[4])
+                    if (_value >= PlayManager.data.friendshipLevels[4].threshold)
                     {
                         _mourningDays += 4;
                     }
-                    else if (_value >= PlayManager.data.friendshipThresholds[3])
+                    else if (_value >= PlayManager.data.friendshipLevels[3].threshold)
                     {
                         _mourningDays += 3;
                     }
-                    else if (_value >= PlayManager.data.friendshipThresholds[2])
+                    else if (_value >= PlayManager.data.friendshipLevels[2].threshold)
                     {
                         _mourningDays += 2;
                     }
-                    else if (_value >= PlayManager.data.friendshipThresholds[1])
+                    else if (_value >= PlayManager.data.friendshipLevels[1].threshold)
                     {
                         _mourningDays += 1;
                     }
@@ -488,19 +488,19 @@ public class Soldier : ScriptableObject
             if (_s == _selectedSoldier || _s == this) continue;
             if (friendship.TryGetValue(_s.iD, out int _value))
             {
-                if (_value >= PlayManager.data.friendshipThresholds[4])
+                if (_value >= PlayManager.data.friendshipLevels[4].threshold)
                 {
                     friendshipValue += 4;
                 }
-                else if (_value >= PlayManager.data.friendshipThresholds[3])
+                else if (_value >= PlayManager.data.friendshipLevels[3].threshold)
                 {
                     friendshipValue += 3;
                 }
-                else if (_value >= PlayManager.data.friendshipThresholds[2])
+                else if (_value >= PlayManager.data.friendshipLevels[2].threshold)
                 {
                     friendshipValue += 2;
                 }
-                else if (_value >= PlayManager.data.friendshipThresholds[1])
+                else if (_value >= PlayManager.data.friendshipLevels[1].threshold)
                 {
                     friendshipValue += 1;
                 }

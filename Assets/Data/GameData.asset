@@ -31,13 +31,23 @@ MonoBehaviour:
   - Sergeant
   - Staff Sergeant
   playerRank: Major
-  friendshipThresholds: 01000000070000000e000000160000001f000000
-  friendshipLevelNames:
-  - Known soldiers
-  - Squad Comrades
-  - Squad Partners
-  - Friends
-  - Siblings in arms
+  rankImages:
+  - {fileID: 0}
+  - {fileID: 21300000, guid: d6429f98cf897064b89acf5d503f6008, type: 3}
+  - {fileID: 21300000, guid: 1f537db7cdd73c7419e31416888c98c3, type: 3}
+  - {fileID: 21300000, guid: ba86f06c14d1edd4a8e9162f1c3b3ed0, type: 3}
+  - {fileID: 21300000, guid: 4c461a8c2150cb94bbc88b7b33dfd77f, type: 3}
+  friendshipLevels:
+  - threshold: 1
+    levelName: Known soldiers
+  - threshold: 7
+    levelName: Squad Comrades
+  - threshold: 14
+    levelName: Squad Partners
+  - threshold: 22
+    levelName: Friends
+  - threshold: 31
+    levelName: Siblings in arms
   squadPrefab: {fileID: 16989649490458422, guid: 4115a4419e61bb34a9a08f353b0cc578,
     type: 3}
   defaultSquadType: {fileID: 11400000, guid: 3ba13929eb5df914f93a858a1f8a067e, type: 2}

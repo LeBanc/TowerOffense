@@ -12,12 +12,10 @@ public class GameData: ScriptableObject
     public float shortRange = 10f;
     public float middleRange = 30f;
     public float longRange = 50f;
-
-    // Base time attack
-    [Header("Time of the attack phase")]
-    public float baseAttackTime = 45f;
-
+        
     [Header("Basic amounts")]
+    // Base time attack
+    public float baseAttackTime = 45f;
     // Heal basic amount
     public int baseHealAmount = 30;
     // Recruitment basic amount
@@ -37,13 +35,13 @@ public class GameData: ScriptableObject
 
     // Soldier ranks titles
     [Header("Soldier ranks")]
-    public string[] ranks = new string[4];
+    public string[] ranks = new string[5];
     public string playerRank;
+    public Sprite[] rankImages = new Sprite[5];
 
     // Freindship levels
     [Header("Fiendship")]
-    public int[] friendshipThresholds = new int[5];
-    public string[] friendshipLevelNames = new string[5];
+    public FriendshipLevel[] friendshipLevels = new FriendshipLevel[5];
 
     // First squad data to create the first squad in game
     [Header("First squad")]
@@ -69,4 +67,11 @@ public class GameData: ScriptableObject
     public List<Sprite> soldierImages;
     public List<string> soldierFirstNames;
     public List<string> soldierLastNames;
+}
+
+[System.Serializable]
+public class FriendshipLevel
+{
+    public int threshold;
+    public string levelName;
 }
