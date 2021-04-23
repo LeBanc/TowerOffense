@@ -21,20 +21,6 @@ public class IntelServTowerItem : MonoBehaviour
     public Image towerLevelImage;
     public Image towerTypeImage;
 
-
-    // public Sprite references
-    public Sprite level0;
-    public Sprite level1;
-    public Sprite level2;
-    public Sprite level3;
-    public Sprite level4;
-
-    public Sprite shortRange;
-    public Sprite middleRange;
-    public Sprite longRange;
-    public Sprite explosives;
-
-
     /// <summary>
     /// Setup method sets all the text field of the IntelServTowerItem
     /// </summary>
@@ -47,48 +33,28 @@ public class IntelServTowerItem : MonoBehaviour
         switch(_data.towerLevel)
         {
             case 0:
-                towerLevelImage.sprite = level0;
+                towerLevelImage.sprite = PlayManager.data.rankImages[0];
                 break;
             case 1:
-                towerLevelImage.sprite = level1;
+                towerLevelImage.sprite = PlayManager.data.rankImages[1];
                 break;
             case 2:
-                towerLevelImage.sprite = level2;
+                towerLevelImage.sprite = PlayManager.data.rankImages[2];
                 break;
             case 3:
-                towerLevelImage.sprite = level3;
+                towerLevelImage.sprite = PlayManager.data.rankImages[3];
                 break;
             case 4:
-                towerLevelImage.sprite = level4;
+                towerLevelImage.sprite = PlayManager.data.rankImages[4];
                 break;
             default:
-                towerLevelImage.sprite = level0;
+                towerLevelImage.sprite = PlayManager.data.rankImages[0];
                 break;
         }
 
         // Get tower type and set image
         towerTypeText.text = _data.towerType.ToString();
-        switch(_data.towerType)
-        {
-            case "Basic Tower":
-                towerTypeImage.sprite = middleRange;
-                break;
-            case "Short Range Tower":
-                towerTypeImage.sprite = shortRange;
-                break;
-            case "Middle Range Tower":
-                towerTypeImage.sprite = middleRange;
-                break;
-            case "Long Range Tower":
-                towerTypeImage.sprite = longRange;
-                break;
-            case "Enemy HQ":
-                towerTypeImage.sprite = level4;
-                break;
-            default:
-                towerTypeImage.sprite = middleRange;
-                break;
-        }
+        towerTypeImage.sprite = _data.towerTypeSprite;
 
         // Display tower position from HQ
         Vector3 _delta = _tower.transform.position - PlayManager.hq.transform.position;

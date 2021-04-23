@@ -10,6 +10,7 @@ public class TowerData : ScriptableObject
     [Header("Level and Type")]
     public int towerLevel;
     public string towerType;
+    public Sprite towerTypeSprite;
     public bool spawnSoldier;
 
     [Header("Attack & Defense")]
