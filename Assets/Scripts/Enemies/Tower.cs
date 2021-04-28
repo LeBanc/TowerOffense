@@ -20,6 +20,7 @@ public class Tower : Enemy
     private int soldierHP;
     private int soldierAttack;
     private int soldierDefense;
+    private bool hasBeenAttacked;
 
      // Tower available cells in ranges
     private List<Vector3> shortRangeCells;
@@ -69,6 +70,7 @@ public class Tower : Enemy
 
         active = false;
         activeFlag.SetActive(false);
+        hasBeenAttacked = false;
 
         maxHP = data.maxHP;
         hP = maxHP;
@@ -149,7 +151,6 @@ public class Tower : Enemy
         // GFX
         healthBar.Show();
         activeFlag.SetActive(true);
-
         // SFX
     }
 
@@ -195,9 +196,13 @@ public class Tower : Enemy
     /// </summary>
     protected virtual void DisableUpdate()
     {
+        // Heal tower if not attacked for this turn
+        if (!hasBeenAttacked) hP = Mathf.Min(hP + PlayManager.data.towerHeal, maxHP);
+
         // Unsubscribe to events
         GameManager.PlayUpdate -= EnemyUpdate;
         StopSpawning();
+        hasBeenAttacked = false;
     }
 
     /// <summary>
@@ -350,5 +355,15 @@ public class Tower : Enemy
             GameObject _soldierInstance = Instantiate(enemySoldier, _cells[0], Quaternion.identity);
             _soldierInstance.GetComponent<EnemySoldier>().Setup(soldierHP, soldierAttack, soldierDefense);
         }
+    }
+
+    /// <summary>
+    /// Damage method for tower with override to set the tower as attacked in this turn
+    /// </summary>
+    /// <param name="dmg"></param>
+    protected override void Damage(int dmg)
+    {
+        base.Damage(dmg);
+        hasBeenAttacked = true;
     }
 }

@@ -24,6 +24,8 @@ public class GameData: ScriptableObject
     public int baseExplosivesDamage = 50;
     // Explosives time to explode
     public float baseExplosivesTime = 5f;
+    // Tower heal amount
+    public int towerHeal = 100;
 
     [Header("Build time")]
     public float hqBuildTime = 20f;
