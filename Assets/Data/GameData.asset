@@ -20,6 +20,7 @@ MonoBehaviour:
   baseRecruitAmount: 10
   baseExplosivesDamage: 25
   baseExplosivesTime: 5
+  towerHeal: 100
   hqBuildTime: 20
   explosivesBuildTime: 10
   turretBuildTime: 10
