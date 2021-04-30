@@ -515,6 +515,7 @@ public class Squad : ScriptableObject
     {
         int _r = Random.Range(0, 4);
         soldierList[_r].Die();
-        RemoveSoldier(soldierList[_r]);
+        PlayManager.deadSoldier.Add(soldierList[_r]);
+        RemoveSoldier(soldierList[_r]);        
     }
 }

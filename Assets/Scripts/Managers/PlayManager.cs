@@ -56,6 +56,9 @@ public class PlayManager : Singleton<PlayManager>
     public static int explosivesLevel = 0;
     public static int recruitingWithXP = 0;
 
+    // To display dead soldier
+    public static List<Soldier> deadSoldier = new List<Soldier>();
+
     #region Properties access
     public static float LongRange
     {
@@ -222,6 +225,9 @@ public class PlayManager : Singleton<PlayManager>
         }
     }
 
+    /// <summary>
+    /// EndDayRoutine method is called at the end of the day and before the UI initialization
+    /// </summary>
     private void EndDayRoutine()
     {
         // Set End of day for all City phase listeners
@@ -253,7 +259,7 @@ public class PlayManager : Singleton<PlayManager>
     }
 
     /// <summary>
-    /// SwitchToHQPhase method is called by HQ when all the end day
+    /// SwitchToHQPhase method is called by HQ when all the end day computation are done
     /// </summary>
     public static void SwitchToHQPhase()
     {
@@ -268,8 +274,26 @@ public class PlayManager : Singleton<PlayManager>
         else // Autosave only if not recruiting (otherwise this will make 2 saves for the same day as the game is saving when the recruit is accepted or dismissed)
         {
             Instance.AutoSaveGame();
-        }            
+        }         
         isRecruiting = false;
+
+        // Display fallen soldiers (after recruiting because the Error Canvas is above the other Canvas)
+        switch (deadSoldier.Count)
+        {
+            case 0:
+                break;
+            case 1:
+                UIManager.InitErrorMessage("The soldiers of the fallen squad have been retrieved but " + deadSoldier[0].Data.typeName + " " + deadSoldier[0].Name + " has succumbed to his/her injuries!", deadSoldier[0].Image);
+                break;
+            case 2:
+                UIManager.InitErrorMessage("The soldiers of the fallen squads have been retrieved but " + deadSoldier[0].Data.typeName + " " + deadSoldier[0].Name + " and 1 other soldier have succumbed to their injuries!", deadSoldier[0].Image);
+                break;
+            default:
+                UIManager.InitErrorMessage("The soldiers of the fallen squads have been retrieved but " + deadSoldier[0].Data.typeName + " " + deadSoldier[0].Name + " and " + (deadSoldier.Count - 1) + " other soldiers have succumbed to their injuries!", deadSoldier[0].Image);
+                break;
+        }
+        deadSoldier.Clear();
+
     }
 
     /// <summary>

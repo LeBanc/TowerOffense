@@ -984,6 +984,7 @@ public class SquadUnit : MonoBehaviour
     /// </summary>
     public void Die()
     {
+        GameManager.PlayUpdate -= SquadUpdate;
         squad.ComputeFriendshipPoints();
         squad.ComputeSoldierDeath();
         OnDeath?.Invoke();

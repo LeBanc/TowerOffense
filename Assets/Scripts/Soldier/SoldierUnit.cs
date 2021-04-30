@@ -131,8 +131,11 @@ public class SoldierUnit : Shootable
         // Remove HealthBar
         OnDamage -= healthBar.UpdateValue;
         healthBar.Remove();
+
+        GameManager.PlayUpdate -= SoldierUpdate;
+        soldier.CurrentHP = hP;
         SendMessage("DieMessage");
-        Destroy(gameObject);
+        Destroy(gameObject,1f);
     }
 
     /// <summary>
