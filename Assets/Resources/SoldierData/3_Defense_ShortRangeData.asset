@@ -30,7 +30,7 @@ MonoBehaviour:
   attackBonus: 000000000000000000000000
   defenseBonus: 01000000010000000000000000000000
   speedBonus: 0
-  shootingSound: {fileID: 8300000, guid: cf5c4803435bf5d4f920a0533150c10d, type: 3}
+  shootingSound: {fileID: 8300000, guid: d5a21ddd6459f934cafb7309c245ad05, type: 3}
   capacities: 
   improveTo:
   - {fileID: 11400000, guid: 8cc1773fbb593634b87fa910603303b4, type: 2}

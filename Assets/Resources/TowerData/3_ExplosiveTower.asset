@@ -27,4 +27,4 @@ MonoBehaviour:
   maxHP: 1000
   shootingDelay: 20
   spawnDelay: 0
-  shootingSound: {fileID: 0}
+  shootingSound: {fileID: 8300000, guid: f10a9665dc1e8d84889a80aae027dd15, type: 3}
