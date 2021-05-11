@@ -1,4 +1,5 @@
 ﻿using System.Collections.Generic;
+using System.Collections;
 using UnityEngine;
 
 /// <summary>
@@ -6,6 +7,9 @@ using UnityEngine;
 /// </summary>
 public class Explosives : Buildable
 {
+    public AudioSource sound;
+    public ParticleSystem particles;
+
     // Delay before explosion
     private float explosionTime;
     // Counter for time between building and explosion
@@ -96,6 +100,11 @@ public class Explosives : Buildable
         explosionCounter += Time.deltaTime;
         if(explosionCounter > explosionTime)
         {
+            // SFX and VFX are here to avoid them at the end of the day (event that also calls Explode)
+            if (sound != null) sound.Play();
+            if (particles != null) particles.Play();
+
+            // Call Explode method
             Explode();
         }
     }
@@ -107,8 +116,6 @@ public class Explosives : Buildable
     {
         // Stop the countdown
         GameManager.PlayUpdate -= Countdown;
-
-        // SFX and VFX (TBD)
 
         // Compute the damage amount
         int _explosiveDamages = PlayManager.data.baseExplosivesDamage + ((PlayManager.explosivesLevel >= 1) ? PlayManager.data.facilities.exploDamages1Bonus : 0) + ((PlayManager.explosivesLevel >= 2) ? PlayManager.data.facilities.exploDamages2Bonus : 0) + ((PlayManager.explosivesLevel >= 3) ? PlayManager.data.facilities.exploDamages3Bonus : 0);        
@@ -139,11 +146,35 @@ public class Explosives : Buildable
     }
 
     /// <summary>
-    /// Remove method removes the Explosives from the PlayManager list and destroy the object
+    /// Remove coroutine removes the Explosives from the PlayManager list and destroy the object
     /// </summary>
     private void Remove()
     {
         PlayManager.explosivesList.Remove(this);
+        StartCoroutine(RemoveWait());
+    }
+
+    /// <summary>
+    /// RemoveWait coroutine waits for the AudioSource and the ParticleSystem to end before the destruction of the object
+    /// </summary>
+    /// <returns></returns>
+    IEnumerator RemoveWait()
+    {
+        if (sound != null)
+        {
+            while (sound.isPlaying)
+            {
+                yield return null;
+            }
+        }
+
+        if (particles != null)
+        {
+            while (particles.isPlaying)
+            {
+                yield return null;
+            }
+        }
         Destroy(gameObject);
     }
 
