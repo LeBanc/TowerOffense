@@ -86,7 +86,7 @@ public class EnemySoldier : Enemy
         middleRangeDef = _defense;
         longRangeDef = _defense;
         shootingDataDuration = 3f;
-        shootingDelay = shootingDataDuration;
+        shootingDelay = 0f;
         active = true;
 
         // Show the health bar at the init values

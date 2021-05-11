@@ -86,7 +86,6 @@ public class SoldierUnit : Shootable
         // Shooting
         fireSFX.clip = soldier.Data.shootingSound;
         shootingDataDuration = soldier.Data.shootingDelay;
-        shootingDelay = shootingDataDuration;
 
         // Setup events
         squadUnit.OnTargetChange += SetTarget;

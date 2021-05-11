@@ -148,6 +148,8 @@ public class Tower : Enemy
     private void Activate()
     {
         active = true;
+        shootingDelay = 0f;
+
         // GFX
         healthBar.Show();
         activeFlag.SetActive(true);

@@ -29,7 +29,7 @@ public class Enemy : Shootable
         longRangeDef = 0;
         explosiveDef = 0;
         shootingDataDuration = 5f;
-        shootingDelay = shootingDataDuration;
+        shootingDelay = 0;
     }    
 
     /// <summary>
@@ -58,7 +58,7 @@ public class Enemy : Shootable
         // Subscribe to events
         GameManager.PlayUpdate += EnemyUpdate;
         // Reset counter
-        shootingDelay = shootingDataDuration;
+        shootingDelay = 0f;
     }
 
      /// <summary>
