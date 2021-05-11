@@ -237,7 +237,7 @@ public class Tower : Enemy
     /// <summary>
     /// SpawnUpdate is an update specific for spawning soldiers. It starts with the EnemyUpdate but stops with RetreatAll event
     /// </summary>
-    private void SpawnUpdate()
+    protected void SpawnUpdate()
     {
         if (destroyed) return;
 

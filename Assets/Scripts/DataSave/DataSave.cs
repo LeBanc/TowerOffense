@@ -321,9 +321,18 @@ public class DataSave
         PlayManager.towerList.Clear();
         foreach (TowerSave _towerSave in _save.towerList)
         {
-            GameObject _instance = GameObject.Instantiate(PlayManager.data.towerPrefab, GameObject.Find("Towers").transform);
-            Tower _tower = _towerSave.Load(_instance);
-            PlayManager.towerList.Add(_tower);
+            if(_towerSave.dataPath.Contains("Explosive"))
+            {
+                GameObject _instance = GameObject.Instantiate(PlayManager.data.towerExploPrefab, GameObject.Find("Towers").transform);
+                Tower _tower = _towerSave.Load(_instance);
+                PlayManager.towerList.Add(_tower);
+            }
+            else
+            {
+                GameObject _instance = GameObject.Instantiate(PlayManager.data.towerPrefab, GameObject.Find("Towers").transform);
+                Tower _tower = _towerSave.Load(_instance);
+                PlayManager.towerList.Add(_tower);
+            }            
         }
 
         // Load Turrets

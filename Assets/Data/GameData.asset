@@ -61,6 +61,8 @@ MonoBehaviour:
     type: 3}
   towerPrefab: {fileID: 8749437313307577339, guid: 09db6afe7623d554cbaa68ebeb6a178a,
     type: 3}
+  towerExploPrefab: {fileID: 8749437313307577339, guid: 676ea8c5ab78ab64c975ff2bc9a7c541,
+    type: 3}
   hqCandidatePrefab: {fileID: 740958671378340033, guid: 282c9b5c6fc444a488fd7af350e85062,
     type: 3}
   turretPrefab: {fileID: 6257947811021738995, guid: ceb8473b5a5b8a147b4d73afcf6671c5,

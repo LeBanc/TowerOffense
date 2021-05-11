@@ -60,6 +60,7 @@ public class GameData: ScriptableObject
     public GameObject turretBasePrefab;
     public GameObject explosivesPrefab;
     public GameObject towerPrefab;
+    public GameObject towerExploPrefab;
     public GameObject hqCandidatePrefab;
     public GameObject turretPrefab;
 
