@@ -149,7 +149,7 @@ Transform:
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children: []
   m_Father: {fileID: 1382366047}
-  m_RootOrder: 36
+  m_RootOrder: 35
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1001 &25019078
 PrefabInstance:
@@ -9781,8 +9781,8 @@ Transform:
   - {fileID: 2124044437}
   - {fileID: 1462186494}
   - {fileID: 1895808978}
-  - {fileID: 1073628577}
   - {fileID: 2450474}
+  - {fileID: 1073628577}
   - {fileID: 2073560050}
   m_Father: {fileID: 0}
   m_RootOrder: 6
@@ -9875,6 +9875,7 @@ GameObject:
   - component: {fileID: 1389876628}
   - component: {fileID: 1389876631}
   - component: {fileID: 1389876632}
+  - component: {fileID: 1389876633}
   m_Layer: 0
   m_Name: Main Camera
   m_TagString: MainCamera
@@ -9995,6 +9996,18 @@ MonoBehaviour:
   wheelMaxSpeed: 200
   wheelSensitivity: 10
   accel: 20
+--- !u!114 &1389876633
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1389876627}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 7f9f22774056c2a4da0a21a263a9455d, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!1001 &1397330355
 PrefabInstance:
   m_ObjectHideFlags: 0
