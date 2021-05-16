@@ -65,6 +65,7 @@ public class SquadActionPanel : MonoBehaviour
     /// </summary>
     private void Start()
     {
+        moveToggle.group.allowSwitchOff = true;
         moveToggle.interactable = false;
         retreatToggle.interactable = false;
         healToggle.interactable = false;
@@ -198,6 +199,7 @@ public class SquadActionPanel : MonoBehaviour
     public void Reset()
     {
         SelectSquad(false);
+        moveToggle.group.allowSwitchOff = true;
 
         moveToggle.onValueChanged.RemoveAllListeners();
         retreatToggle.onValueChanged.RemoveAllListeners();
@@ -407,6 +409,7 @@ public class SquadActionPanel : MonoBehaviour
         if (_b) // Selection
         {
             // Select the first Action button and the associated SquadUnit method
+            moveToggle.group.allowSwitchOff = false;
             moveToggle.isOn = true;
             //moveToggle.Select();
             //selectedButton = moveAction;
@@ -418,6 +421,7 @@ public class SquadActionPanel : MonoBehaviour
             if (isSet)
             {
                 // Make all buttons uninteractable
+                moveToggle.group.allowSwitchOff = true;
                 moveToggle.isOn = false;
                 moveToggle.interactable = false;
                 retreatToggle.isOn = false;
