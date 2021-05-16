@@ -195,7 +195,7 @@ MonoBehaviour:
       m_PersistentCalls:
         m_Calls:
         - m_Target: {fileID: 3115848339214439346}
-          m_MethodName: PlayUISound
+          m_MethodName: PlayUISelection
           m_Mode: 1
           m_Arguments:
             m_ObjectArgument: {fileID: 0}
@@ -210,7 +210,7 @@ MonoBehaviour:
       m_PersistentCalls:
         m_Calls:
         - m_Target: {fileID: 3115848339214439346}
-          m_MethodName: PlayUISound
+          m_MethodName: PlayUIBip
           m_Mode: 1
           m_Arguments:
             m_ObjectArgument: {fileID: 0}
@@ -225,7 +225,7 @@ MonoBehaviour:
       m_PersistentCalls:
         m_Calls:
         - m_Target: {fileID: 3115848339214439346}
-          m_MethodName: PlayUISound
+          m_MethodName: PlayUISelection
           m_Mode: 1
           m_Arguments:
             m_ObjectArgument: {fileID: 0}
@@ -240,7 +240,7 @@ MonoBehaviour:
       m_PersistentCalls:
         m_Calls:
         - m_Target: {fileID: 3115848339214439346}
-          m_MethodName: PlayUISound
+          m_MethodName: PlayUIBip
           m_Mode: 1
           m_Arguments:
             m_ObjectArgument: {fileID: 0}
@@ -262,7 +262,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: da9f66eb83132fc4d8aa08a106b26a2e, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  audioClip: {fileID: 8300000, guid: 0f657fe40279b3d4c80486650c6e0e10, type: 3}
+  audioBip: {fileID: 8300000, guid: 0f657fe40279b3d4c80486650c6e0e10, type: 3}
+  audioSelection: {fileID: 8300000, guid: d188eeed873acd6498a2fbbf1d5ad342, type: 3}
 --- !u!1 &3850795232995871595
 GameObject:
   m_ObjectHideFlags: 0

@@ -49,11 +49,12 @@ public class AudioManager : Singleton<AudioManager>
     /// PlayOnShotUI static method plays one sound on the UI AudioSource
     /// </summary>
     /// <param name="_clip">Sound to be played (AudioClip)</param>
-    public static void PlayOneShotUI(AudioClip _clip)
+    /// <param name="_override">True to override current sound, false otherwise - default is false (bool)</param>
+    public static void PlayOneShotUI(AudioClip _clip, bool _override = false)
     {
         if(Instance.uiAudioSource != null)
         {
-            if(!Instance.uiAudioSource.isPlaying) Instance.uiAudioSource.PlayOneShot(_clip);
+            if(_override || !Instance.uiAudioSource.isPlaying) Instance.uiAudioSource.PlayOneShot(_clip);
         }
     }
 
@@ -63,7 +64,7 @@ public class AudioManager : Singleton<AudioManager>
     /// <param name="_active">True for activation, false otherwise (bool)</param>
     public static void SetActiveDefaultAudioListener(bool _active)
     {
-        Instance.defaultAudioListener.enabled = _active;
+        if(Instance != null) Instance.defaultAudioListener.enabled = _active;
     }
 
     /// <summary>

@@ -5,13 +5,22 @@
 /// </summary>
 public class AudioUI : MonoBehaviour
 {
-    public AudioClip audioClip;
+    public AudioClip audioBip;
+    public AudioClip audioSelection;
 
     /// <summary>
-    /// PlayUISound method plays the UI sound on the AudioManager UI AudioSource
+    /// PlayUIBip method plays the UI bip sound on the AudioManager UI AudioSource
     /// </summary>
-    public void PlayUISound()
+    public void PlayUIBip()
     {
-        if(audioClip != null) AudioManager.PlayOneShotUI(audioClip);
-    }    
+        if(audioBip != null) AudioManager.PlayOneShotUI(audioBip, true);
+    }
+
+    /// <summary>
+    /// PlayUISelection method plays the UI selection sound on the AudioManager UI AudioSource
+    /// </summary>
+    public void PlayUISelection()
+    {
+        if (audioSelection != null) AudioManager.PlayOneShotUI(audioSelection);
+    }
 }
