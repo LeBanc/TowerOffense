@@ -485,7 +485,7 @@ public class Soldier : ScriptableObject
         friendshipValue = 0;
         foreach (Soldier _s in _squad.Soldiers)
         {
-            if (_s == _selectedSoldier || _s == this) continue;
+            if (_s == _selectedSoldier || _s == this || _s == null) continue;
             if (friendship.TryGetValue(_s.iD, out int _value))
             {
                 if (_value >= PlayManager.data.friendshipLevels[4].threshold)
