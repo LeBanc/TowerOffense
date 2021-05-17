@@ -35,6 +35,9 @@ public class SquadActionPanel : MonoBehaviour
     public Toggle buildTurretToggle;
     public Toggle explosivesToggle;
 
+    // Audio UI component
+    private AudioUI audioUI;
+
     // Private data used in the script
     // SquadUnit linked to this panel
     private SquadUnit squadUnit;
@@ -61,7 +64,7 @@ public class SquadActionPanel : MonoBehaviour
     }
 
     /// <summary>
-    /// At Start, sets all buttons not interactable
+    /// At Start, sets all buttons not interactable and fetches AudioUI
     /// </summary>
     private void Start()
     {
@@ -72,6 +75,8 @@ public class SquadActionPanel : MonoBehaviour
         buildHQToggle.interactable = false;
         buildTurretToggle.interactable = false;
         explosivesToggle.interactable = false;
+
+        audioUI = GetComponent<AudioUI>();
     }
 
     /// <summary>
@@ -180,6 +185,11 @@ public class SquadActionPanel : MonoBehaviour
             explosivesToggle.GetComponentInChildren<Text>().text = explosivesCapacity.ToString();
         }
 
+        // Fetch AudioUI if Setup is called before Start
+        if (audioUI == null) audioUI = GetComponent<AudioUI>();
+        squadUnit.OnActionDone += audioUI.PlayUIBip;
+        squadUnit.OnSelectionCancel += audioUI.PlayUISelection;
+
         isSet = true;
         PlayManager.OnRetreatAll += Retreat;
     }
@@ -217,6 +227,9 @@ public class SquadActionPanel : MonoBehaviour
             squadUnit.Soldier3.OnDamage -= soldier3HealthBar.UpdateValue;
             squadUnit.Soldier4.OnDamage -= soldier4HealthBar.UpdateValue;
 
+            squadUnit.OnActionDone -= audioUI.PlayUIBip;
+            squadUnit.OnSelectionCancel -= audioUI.PlayUISelection;
+
             squadUnit.OnHQBack -= RemoveSquad;
             squadUnit.OnDeath -= RemoveSquad;
             squadUnit = null;
@@ -243,6 +256,8 @@ public class SquadActionPanel : MonoBehaviour
         squadUnit.Retreat();
         gameObject.SetActive(false);
         OnRetreat?.Invoke();
+        // Retreat activated is equivalent to Submit sound
+        audioUI.PlayUIBip();
     }
 
     /// <summary>
@@ -255,6 +270,8 @@ public class SquadActionPanel : MonoBehaviour
             healCapacity--;
             healToggle.GetComponentInChildren<Text>().text = healCapacity.ToString();
             squadUnit.Heal();
+            // Heal activated is equivalent to Submit sound
+            audioUI.PlayUIBip();
             if (healCapacity == 0)
             {
                 healToggle.interactable = false;
@@ -303,6 +320,9 @@ public class SquadActionPanel : MonoBehaviour
     {
         squadUnit.OnActionDone -= BuildHQDone;
         squadUnit.OnUnselection -= BuildHQCancel;
+
+        // BuildHQCancel is equivalent to Select sound
+        audioUI.PlayUISelection();
     }
 
     /// <summary>
@@ -347,6 +367,9 @@ public class SquadActionPanel : MonoBehaviour
     {
         squadUnit.OnActionDone -= BuildTurretDone;
         squadUnit.OnUnselection -= BuildTurretCancel;
+
+        // BuildTurretCancel is equivalent to Select sound
+        audioUI.PlayUISelection();
     }
 
     /// <summary>
@@ -390,6 +413,9 @@ public class SquadActionPanel : MonoBehaviour
     {
         squadUnit.OnActionDone -= ExplosivesDone;
         squadUnit.OnUnselection -= ExplosivesCancel;
+
+        // ExplosivesCancel is equivalent to Select sound
+        audioUI.PlayUISelection();
     }
 
     /// <summary>
@@ -411,8 +437,8 @@ public class SquadActionPanel : MonoBehaviour
             // Select the first Action button and the associated SquadUnit method
             moveToggle.group.allowSwitchOff = false;
             moveToggle.isOn = true;
-            //moveToggle.Select();
-            //selectedButton = moveAction;
+            audioUI.PlayUISelection();
+
             ActivateInteractions();
             OnSelection?.Invoke();
         }
@@ -450,7 +476,7 @@ public class SquadActionPanel : MonoBehaviour
         retreatToggle.interactable = true;
         if(healCapacity >0) healToggle.interactable = true;
         if(buildHQCapacity >0) buildHQToggle.interactable = true;
-        if (buildTurretCapacity > 0) buildTurretToggle.interactable = true;
+        if(buildTurretCapacity > 0) buildTurretToggle.interactable = true;
         if(explosivesCapacity > 0) explosivesToggle.interactable = true;
    
         GameManager.PlayUpdate += SquadActionPanelUpdate;
@@ -549,6 +575,8 @@ public class SquadActionPanel : MonoBehaviour
             {
                 moveToggle.isOn = true;
             }
+            // Play UI Select sound for each toggle change
+            audioUI.PlayUISelection();
         }
         if (Input.GetKeyDown(KeyCode.LeftArrow))
         {
@@ -628,6 +656,8 @@ public class SquadActionPanel : MonoBehaviour
                     retreatToggle.isOn = true;
                 }
             }
+            // Play UI Select sound for each toggle change
+            audioUI.PlayUISelection();
         }
     }
 }

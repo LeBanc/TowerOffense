@@ -43,6 +43,7 @@ public class SquadUnit : MonoBehaviour
     public event SquadUnitEventHandler OnDeath;
     public event SquadUnitEventHandler OnHQBack;
     public event SquadUnitEventHandler OnActionDone;
+    public event SquadUnitEventHandler OnSelectionCancel;
 
     #region Properties access
     public Vector3 Destination
@@ -191,7 +192,6 @@ public class SquadUnit : MonoBehaviour
     {
         OnUnselection?.Invoke();
         CursorManager.ChangeToBasic(true);
-        //OnActionDone = null;
     }
 
     /// <summary>
@@ -338,6 +338,7 @@ public class SquadUnit : MonoBehaviour
     {
         if (Input.GetMouseButtonDown(1))
         {
+            OnSelectionCancel?.Invoke();
             Unselect();
         }
     }
@@ -379,8 +380,9 @@ public class SquadUnit : MonoBehaviour
                             fixedDestination = false;
                         }
 
-                        // Unselect the squad
+                        // Unselect the squad and play UI Bip Sound (via OnActionDone)
                         Unselect();
+                        OnActionDone?.Invoke();
                     }
                 }
                 else if (hit.collider.TryGetComponent<EnemySoldier>(out EnemySoldier enemy))
@@ -391,8 +393,9 @@ public class SquadUnit : MonoBehaviour
                     SetTarget(enemy);
                     navAgent.SetDestination(enemy.transform.position);
                     fixedDestination = false;
-                    // Unselect the squad
+                    // Unselect the squad and play UI Bip Sound (via OnActionDone)
                     Unselect();
+                    OnActionDone?.Invoke();
                 }
                 else if (hit.collider.gameObject.CompareTag("Soldiers"))
                 {
@@ -400,13 +403,17 @@ public class SquadUnit : MonoBehaviour
                     {
                         SetDestination(GetNearestCellFromList(_turret.GetAvailablePositions()));
                         fixedDestination = true;
+                        // Unselect the squad and play UI Bip Sound (via OnActionDone)
                         Unselect();
+                        OnActionDone?.Invoke();
                     }
                     else if (hit.collider.TryGetComponent<SoldierUnit>(out SoldierUnit _soldier))
                     {
                         SetDestination(hit.point);
                         fixedDestination = true;
+                        // Unselect the squad and play UI Bip Sound (via OnActionDone)
                         Unselect();
+                        OnActionDone?.Invoke();
                     }
                     else if (hit.collider.transform.parent != null)
                     {
@@ -414,21 +421,25 @@ public class SquadUnit : MonoBehaviour
                         {
                             SetDestination(hit.point);
                             fixedDestination = true;
+                            // Unselect the squad and play UI Bip Sound (via OnActionDone)
                             Unselect();
+                            OnActionDone?.Invoke();
                         }
                     }
                 }
                 else if(hit.collider.TryGetComponent<HQCandidate>(out HQCandidate _candidate))
                 {
                     SetDestination(GetNearestCellFromList(_candidate.GetAvailablePositions()));
-                    //fixedDestination = true;
+                    // Unselect the squad and play UI Bip Sound (via OnActionDone)
                     Unselect();
+                    OnActionDone?.Invoke();
                 }
                 else if (hit.collider.TryGetComponent<TurretBase>(out TurretBase _turretBase))
                 {
                     SetDestination(GetNearestCellFromList(_turretBase.GetAvailablePositions()));
-                    //fixedDestination = true;
+                    // Unselect the squad and play UI Bip Sound (via OnActionDone)
                     Unselect();
+                    OnActionDone?.Invoke();
                 }
                 else if (hit.collider.gameObject.CompareTag("Terrain"))
                 {
@@ -444,8 +455,9 @@ public class SquadUnit : MonoBehaviour
                             SetTarget(_enemy);
                             navAgent.SetDestination(_enemy.transform.position);
                             fixedDestination = false;
-                            // Unselect the squad
+                            // Unselect the squad and play UI Bip Sound (via OnActionDone)
                             Unselect();
+                            OnActionDone?.Invoke();
                             foundEnemy = true;
                         }
                     }
@@ -464,7 +476,9 @@ public class SquadUnit : MonoBehaviour
                                 _squadUnit.MoveAfterReplaced();
                             }
                         }
+                        // Unselect the squad and play UI Bip Sound (via OnActionDone)
                         Unselect();
+                        OnActionDone?.Invoke();
                     }                    
                 }
             }
