@@ -99,7 +99,7 @@ public class HQNewDayConfirmCanvas : CancelableUICanvas
     /// </summary>
     public void Confirm()
     {
-        PlayManager.NewDayLaunchAttack();
         Hide();
+        PlayManager.NewDayLaunchAttack();
     }
 }

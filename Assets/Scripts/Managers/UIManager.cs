@@ -533,6 +533,10 @@ public class UIManager : Singleton<UIManager>
                     playUILastSelected.Select();
                     playUILastSelected = null;
                 }
+                else
+                {
+                    EventSystem.current.SetSelectedGameObject(null);
+                }
             }            
         }
     }

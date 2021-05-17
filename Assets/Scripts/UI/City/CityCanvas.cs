@@ -338,6 +338,9 @@ public class CityCanvas : UICanvas
         if (squad4.isSet) squad4.gameObject.SetActive(true);
         retreatButton.gameObject.SetActive(true);
 
+        // Select 'Retreat All' button to move the event system to the City UI
+        retreatButton.Select();
+
         // Update position of all healthbars
         UpdateAllHealthBars();
     }
