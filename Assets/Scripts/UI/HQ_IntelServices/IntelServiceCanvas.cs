@@ -14,6 +14,8 @@ public class IntelServiceCanvas : UICanvas
     public delegate void IntelServicesEventHandler(bool _b);
     public event IntelServicesEventHandler OnDisplayTower;
 
+    private List<Tower> seenTowers = new List<Tower>();
+
     /// <summary>
     /// At Start, subscribe to events
     /// </summary>
@@ -47,7 +49,11 @@ public class IntelServiceCanvas : UICanvas
         {
             if(_t.IsActive() && !_t.IsDestroyed())
             {
-                _display = true;
+                if(!seenTowers.Exists(x=> x==_t))
+                {
+                    seenTowers.Add(_t);
+                    _display = true;
+                }                
                 GameObject _go = Instantiate(intelServItemPrefab, content);
                 _go.GetComponent<IntelServTowerItem>().Setup(_t);
             }
