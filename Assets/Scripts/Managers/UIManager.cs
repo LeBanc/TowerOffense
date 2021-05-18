@@ -469,7 +469,7 @@ public class UIManager : Singleton<UIManager>
     void StartMenu()
     {
         // On Start menu, Esc. key is used to hide any window (confirm, error, load, save) or to quit the game
-        if (Input.GetKeyDown(KeyCode.Escape))
+        if (Input.GetButtonDown("Cancel"))
         {
             if (confirmMessage.IsVisible)
             {
@@ -487,10 +487,14 @@ public class UIManager : Singleton<UIManager>
             {
                 HideLoadMenu();
             }
-            else
+            else if (Input.GetButtonDown("Pause"))
             {
                 InitConfirmMessage("Are you sure you want to quit to desktop?", delegate { GameManager.QuitGameStatic(); });
-            }            
+            }
+        }
+        else if(Input.GetButtonDown("Pause"))
+        {
+            InitConfirmMessage("Are you sure you want to quit to desktop?", delegate { GameManager.QuitGameStatic(); });
         }
     }
 
@@ -500,7 +504,7 @@ public class UIManager : Singleton<UIManager>
     void PauseMenu()
     {
         // On Pause menu, Esc. key is used to hide any window (confirm, error, load, save) or to return to play mode
-        if (Input.GetKeyDown(KeyCode.Escape))
+        if (Input.GetButtonDown("Cancel"))
         {
             if(confirmMessage.IsVisible)
             {
@@ -525,7 +529,7 @@ public class UIManager : Singleton<UIManager>
             {
                 HideLoadMenu();
             }
-            else
+            else if(Input.GetButtonDown("Pause"))
             {
                 GameManager.ChangeGameStateRequest(GameManager.GameState.play);
                 if (playUILastSelected != null)
@@ -539,6 +543,19 @@ public class UIManager : Singleton<UIManager>
                 }
             }            
         }
+        else if(Input.GetButtonDown("Pause"))
+        {
+            GameManager.ChangeGameStateRequest(GameManager.GameState.play);
+            if (playUILastSelected != null)
+            {
+                playUILastSelected.Select();
+                playUILastSelected = null;
+            }
+            else
+            {
+                EventSystem.current.SetSelectedGameObject(null);
+            }
+        }
     }
 
     /// <summary>
@@ -546,8 +563,8 @@ public class UIManager : Singleton<UIManager>
     /// </summary>
     void PlayUI()
     {
-        // On Plau UI, Esc. key is used to hide any window (confirm, error) or to go to pause Menu (via pause gamestate)
-        if (Input.GetKeyDown(KeyCode.Escape))
+        // On Play UI, Esc. key is used to hide any window (confirm, error) or to go to pause Menu (via pause gamestate)
+        if (Input.GetButtonDown("Cancel"))
         {
             if (OnHideActiveCanvas != null)
             {
@@ -561,12 +578,17 @@ public class UIManager : Singleton<UIManager>
             {
                 HideErrorMessage();
             }
-            else
+            else if(Input.GetButtonDown("Pause"))
             {
                 if (EventSystem.current.currentSelectedGameObject != null) playUILastSelected = EventSystem.current.currentSelectedGameObject.GetComponent<Selectable>();
                 GameManager.ChangeGameStateRequest(GameManager.GameState.pause);
             }
-        }            
+        }
+        else if(Input.GetButtonDown("Pause"))
+        {
+            if (EventSystem.current.currentSelectedGameObject != null) playUILastSelected = EventSystem.current.currentSelectedGameObject.GetComponent<Selectable>();
+            GameManager.ChangeGameStateRequest(GameManager.GameState.pause);
+        }
     }
 
     /// <summary>

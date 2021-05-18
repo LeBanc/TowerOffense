@@ -623,6 +623,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   webGLObjectsToHide: []
   autoScroll: {fileID: 4363517939370578929}
+  sortDropdown: {fileID: 99571805565445057}
   soldierSelectionItem: {fileID: 530928690855975475, guid: e726da8ef86143c44abf4166ddf8cb68,
     type: 3}
 --- !u!1 &4786841185205625472

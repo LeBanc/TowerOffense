@@ -101,7 +101,6 @@ public class HQFacilities : UICanvas
     {
         base.Show();
         Setup();
-        squad2Item.Select();
     }
 
     /// <summary>

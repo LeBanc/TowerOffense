@@ -154,4 +154,57 @@ public class HQTabToggle : MonoBehaviour
         comCenterTab.navigation = _nav;
     }
 
+    /// <summary>
+    /// SelectRightTab method selects the tab at the right of the current selected tab
+    /// </summary>
+    public void SelectRightTab()
+    {
+        if (comCenterTab.isOn)
+        {
+            barracksTab.Select();
+        }
+        else if (barracksTab.isOn)
+        {
+            intelligenceTab.Select();
+        }
+        else if (intelligenceTab.isOn)
+        {
+            facilitiesTab.Select();
+        }
+        else if (facilitiesTab.isOn)
+        {
+            memorialTab.Select();
+        }
+        else if (memorialTab.isOn)
+        {
+            comCenterTab.Select();
+        }
+    }
+
+    /// <summary>
+    /// SelectLeftTab method selects the tab at the left of the current selected tab
+    /// </summary>
+    public void SelectLeftTab()
+    {
+        if (comCenterTab.isOn)
+        {
+            memorialTab.Select();
+        }
+        else if (barracksTab.isOn)
+        {
+            comCenterTab.Select();
+        }
+        else if (intelligenceTab.isOn)
+        {
+            barracksTab.Select();
+        }
+        else if (facilitiesTab.isOn)
+        {
+            intelligenceTab.Select();
+        }
+        else if (memorialTab.isOn)
+        {
+            facilitiesTab.Select();
+        }
+    }
 }

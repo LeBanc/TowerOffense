@@ -130,7 +130,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 22e69eb09b354ad4883030aa15331afb, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  webGLObjectsToHide: []
   colorPicker: {fileID: 8180751229561754905}
+  defaultSelectable: {fileID: 3427651757629774083}
 --- !u!1001 &511041706844106771
 PrefabInstance:
   m_ObjectHideFlags: 0

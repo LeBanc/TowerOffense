@@ -140,6 +140,13 @@ public class HQSquadEdition : UICanvas
         }
     }
 
+    public override void Hide()
+    {
+        colorPickerCanvas.Hide();
+        soldierSelectionCanvas.Hide();
+        base.Hide();
+    }
+
     /// <summary>
     /// UpdateEngageButton initializes the Engage button display
     /// </summary>

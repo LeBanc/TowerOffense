@@ -1,6 +1,7 @@
 ﻿using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
+using UnityEngine.EventSystems;
 
 /// <summary>
 /// CityCanvas class manages the CityCanvas overall functions
@@ -83,7 +84,7 @@ public class CityCanvas : UICanvas
     private void OnDestroy()
     {
         // Unlink update events
-        GameManager.PlayUpdate -= UIUpdate;
+        GameManager.PlayUpdate -= CityCanvasUpdate;
         PlayManager.OnLoadSquadsOnNewDay -= Show;
         PlayManager.OnHQPhase -= Hide;
         PlayManager.OnHQPhase -= Reset;
@@ -329,7 +330,7 @@ public class CityCanvas : UICanvas
         base.Show();
 
         // Link update events
-        GameManager.PlayUpdate += UIUpdate;
+        GameManager.PlayUpdate += CityCanvasUpdate;
 
         // Show set (active) SquadActionPanels and retreat button
         if (squad1.isSet) squad1.gameObject.SetActive(true);
@@ -338,8 +339,8 @@ public class CityCanvas : UICanvas
         if (squad4.isSet) squad4.gameObject.SetActive(true);
         retreatButton.gameObject.SetActive(true);
 
-        // Select 'Retreat All' button to move the event system to the City UI
-        retreatButton.Select();
+        // Clear the selection to avoid clicking on anything not on City UI
+        EventSystem.current.SetSelectedGameObject(null);
 
         // Update position of all healthbars
         UpdateAllHealthBars();
@@ -362,7 +363,7 @@ public class CityCanvas : UICanvas
     public override void Hide()
     {
         // Unlink update events
-        GameManager.PlayUpdate -= UIUpdate;
+        GameManager.PlayUpdate -= CityCanvasUpdate;
 
         // Hide all SquadActionPanels and reatreat button
         squad1.gameObject.SetActive(false);
@@ -394,13 +395,12 @@ public class CityCanvas : UICanvas
     }
 
     /// <summary>
-    /// UIUpdate is the Update method of the CityCanvas
+    /// CityCanvasUpdate is the Update method of the CityCanvas
     /// </summary>
-    private void UIUpdate()
-    {
-        
-        // Selection of SquadActionPanel by Tab key
-        if (Input.GetKeyDown(KeyCode.Tab))
+    private void CityCanvasUpdate()
+    {        
+        // Selection of SquadActionPanel by Right & Left selection buttons
+        if (Input.GetButtonDown("RightSelection"))
         {
             // If no Squad was selected in the whole attack, select first Squad
             if (lastSelected == 0)
@@ -501,6 +501,115 @@ public class CityCanvas : UICanvas
                         break;
                 }
             }
+        }
+        else if (Input.GetButtonDown("LeftSelection"))
+        {
+            // If no Squad was selected in the whole attack, select first Squad
+            if (lastSelected == 0)
+            {
+                SelectSquad1();
+            }
+            // Else, active the last selected squad or change selection
+            else
+            {
+                switch (lastSelected)
+                {
+                    // If the last selected squad was the first
+                    case 1:
+                        // If the selection is empty, select the first squad
+                        if (selectedSquad == null && squad1.gameObject.activeSelf)
+                        {
+                            SelectSquad1();
+                        }
+                        // else (ie the first squad is selected), select the next active squad
+                        else
+                        {
+                            if (squad4.gameObject.activeSelf)
+                            {
+                                SelectSquad4();
+                            }
+                            else if (squad3.gameObject.activeSelf)
+                            {
+                                SelectSquad3();
+                            }
+                            else if (squad2.gameObject.activeSelf)
+                            {
+                                SelectSquad2();
+                            }
+                        }
+                        break;
+                    case 2:
+                        if (selectedSquad == null && squad2.gameObject.activeSelf)
+                        {
+                            SelectSquad2();
+                        }
+                        else
+                        {
+                            if (squad1.gameObject.activeSelf)
+                            {
+                                SelectSquad1();
+                            }
+                            else if (squad4.gameObject.activeSelf)
+                            {
+                                SelectSquad4();
+                            }
+                            else if (squad3.gameObject.activeSelf)
+                            {
+                                SelectSquad3();
+                            }
+                        }
+                        break;
+                    case 3:
+                        if (selectedSquad == null && squad3.gameObject.activeSelf)
+                        {
+                            SelectSquad3();
+                        }
+                        else
+                        {
+                            if (squad2.gameObject.activeSelf)
+                            {
+                                SelectSquad2();
+                            }
+                            else if (squad1.gameObject.activeSelf)
+                            {
+                                SelectSquad1();
+                            }
+                            else if (squad4.gameObject.activeSelf)
+                            {
+                                SelectSquad4();
+                            }
+                        }
+                        break;
+                    case 4:
+                        if (selectedSquad == null && squad4.gameObject.activeSelf)
+                        {
+                            SelectSquad4();
+                        }
+                        else
+                        {
+                            if (squad3.gameObject.activeSelf)
+                            {
+                                SelectSquad3();
+                            }
+                            else if (squad2.gameObject.activeSelf)
+                            {
+                                SelectSquad2();
+                            }
+                            else if (squad1.gameObject.activeSelf)
+                            {
+                                SelectSquad1();
+                            }
+                        }
+                        break;
+                }
+            }
+
+        }
+
+        // Check Inputs for Primary shortcut button => Retreat All
+        if (Input.GetButtonDown("PrimaryShortcut"))
+        {
+            retreatButton.OnSubmit(new BaseEventData(EventSystem.current));
         }
     }
 

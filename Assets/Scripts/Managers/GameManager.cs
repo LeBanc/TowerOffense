@@ -3,6 +3,7 @@ using System.Collections;
 using UnityEngine;
 using UnityEngine.SceneManagement;
 using UnityEditor;
+using UnityEngine.EventSystems;
 
 /// <summary>
 /// GameManager class is the base manager of the game

@@ -1,4 +1,5 @@
 ﻿using UnityEngine;
+using UnityEngine.UI;
 
 /// <summary>
 /// ColorPickerCanvas is the Canvas of the ColorPicker
@@ -8,6 +9,7 @@ public class ColorPickerCanvas : CancelableUICanvas
 {
     // ColorPicker element
     public ColorPicker colorPicker;
+    public Selectable defaultSelectable;
 
     // Squad currently selected (to update the color of the right squad)
     private Squad selectedSquad;
@@ -28,6 +30,8 @@ public class ColorPickerCanvas : CancelableUICanvas
     public override void Show()
     {
         base.Show();
+
+        defaultSelectable.Select();
 
         // Link the ColorPickerUpdate to the GameManager.PlayUpdate event
         GameManager.PlayUpdate += colorPicker.ColorPickerUpdate;

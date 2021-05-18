@@ -336,7 +336,7 @@ public class SquadUnit : MonoBehaviour
     /// </summary>
     private void SquadUnselection()
     {
-        if (Input.GetMouseButtonDown(1))
+        if (Input.GetButtonDown("Unselect"))
         {
             OnSelectionCancel?.Invoke();
             Unselect();

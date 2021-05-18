@@ -51,6 +51,8 @@ public class SquadActionPanel : MonoBehaviour
     private int buildTurretCapacity;
     private int explosivesCapacity;
 
+    static bool buttonDown = false;
+
     // Events
     public delegate void SquadActionPanelEventHandler();
     public event SquadActionPanelEventHandler OnSelection;
@@ -461,6 +463,7 @@ public class SquadActionPanel : MonoBehaviour
                 explosivesToggle.isOn = false;
                 explosivesToggle.interactable = false;
                 GameManager.PlayUpdate -= SquadActionPanelUpdate;
+                buttonDown = false;
             }
         }
         // Enable (or not) the Overlay image and the raycast on the background (to enable the selection)
@@ -497,167 +500,175 @@ public class SquadActionPanel : MonoBehaviour
     /// </summary>
     private void SquadActionPanelUpdate()
     {
-        if (Input.GetKeyDown(KeyCode.RightArrow))
+        if (Input.GetAxisRaw("Horizontal") == 0 && buttonDown)
         {
-            if (moveToggle.isOn)
-            {
-                retreatToggle.isOn = true;
-            }
-            else if (retreatToggle.isOn)
-            {
-                if (healCapacity > 0)
-                {
-                    healToggle.isOn = true;
-                }
-                else if(buildHQCapacity > 0)
-                {
-                    buildHQToggle.isOn = true;
-                }
-                else if(buildTurretCapacity > 0)
-                {
-                    buildTurretToggle.isOn = true;
-                }
-                else if(explosivesCapacity > 0)
-                {
-                    explosivesToggle.isOn = true;
-                }
-                else
-                {
-                    moveToggle.isOn = true;
-                }
-            }
-            else if(healToggle.isOn)
-            {
-                if (buildHQCapacity > 0)
-                {
-                    buildHQToggle.isOn = true;
-                }
-                else if (buildTurretCapacity > 0)
-                {
-                    buildTurretToggle.isOn = true;
-                }
-                else if (explosivesCapacity > 0)
-                {
-                    explosivesToggle.isOn = true;
-                }
-                else
-                {
-                    moveToggle.isOn = true;
-                }
-            }
-            else if(buildHQToggle.isOn)
-            {
-                if (buildTurretCapacity > 0)
-                {
-                    buildTurretToggle.isOn = true;
-                }
-                else if (explosivesCapacity > 0)
-                {
-                    explosivesToggle.isOn = true;
-                }
-                else
-                {
-                    moveToggle.isOn = true;
-                }
-            }
-            else if(buildTurretToggle.isOn)
-            {
-                if (explosivesCapacity > 0)
-                {
-                    explosivesToggle.isOn = true;
-                }
-                else
-                {
-                    moveToggle.isOn = true;
-                }
-            }
-            else if(explosivesToggle.isOn)
-            {
-                moveToggle.isOn = true;
-            }
-            // Play UI Select sound for each toggle change
-            audioUI.PlayUISelection();
+            buttonDown = false;
         }
-        if (Input.GetKeyDown(KeyCode.LeftArrow))
+        else if (Mathf.Abs(Input.GetAxisRaw("Horizontal")) >= 1 && !buttonDown)
         {
-            if (moveToggle.isOn)
+            buttonDown = true;
+            if (Input.GetAxis("Horizontal") > 0)
             {
-                if (explosivesCapacity > 0)
-                {
-                    explosivesToggle.isOn = true;
-                }
-                else if (buildTurretCapacity > 0)
-                {
-                    buildTurretToggle.isOn = true;
-                }
-                else if (buildHQCapacity > 0)
-                {
-                    buildHQToggle.isOn = true;
-                }
-                else if (healCapacity > 0)
-                {
-                    healToggle.isOn = true;
-                }
-                else
+                if (moveToggle.isOn)
                 {
                     retreatToggle.isOn = true;
                 }
-            }
-            else if (retreatToggle.isOn)
-            {
-                moveToggle.isOn = true;
-            }
-            else if (healToggle.isOn)
-            {
-                retreatToggle.isOn = true;
-            }
-            else if (buildHQToggle.isOn)
-            {
-                if (healCapacity > 0)
+                else if (retreatToggle.isOn)
                 {
-                    healToggle.isOn = true;
+                    if (healCapacity > 0)
+                    {
+                        healToggle.isOn = true;
+                    }
+                    else if (buildHQCapacity > 0)
+                    {
+                        buildHQToggle.isOn = true;
+                    }
+                    else if (buildTurretCapacity > 0)
+                    {
+                        buildTurretToggle.isOn = true;
+                    }
+                    else if (explosivesCapacity > 0)
+                    {
+                        explosivesToggle.isOn = true;
+                    }
+                    else
+                    {
+                        moveToggle.isOn = true;
+                    }
                 }
-                else
+                else if (healToggle.isOn)
+                {
+                    if (buildHQCapacity > 0)
+                    {
+                        buildHQToggle.isOn = true;
+                    }
+                    else if (buildTurretCapacity > 0)
+                    {
+                        buildTurretToggle.isOn = true;
+                    }
+                    else if (explosivesCapacity > 0)
+                    {
+                        explosivesToggle.isOn = true;
+                    }
+                    else
+                    {
+                        moveToggle.isOn = true;
+                    }
+                }
+                else if (buildHQToggle.isOn)
+                {
+                    if (buildTurretCapacity > 0)
+                    {
+                        buildTurretToggle.isOn = true;
+                    }
+                    else if (explosivesCapacity > 0)
+                    {
+                        explosivesToggle.isOn = true;
+                    }
+                    else
+                    {
+                        moveToggle.isOn = true;
+                    }
+                }
+                else if (buildTurretToggle.isOn)
+                {
+                    if (explosivesCapacity > 0)
+                    {
+                        explosivesToggle.isOn = true;
+                    }
+                    else
+                    {
+                        moveToggle.isOn = true;
+                    }
+                }
+                else if (explosivesToggle.isOn)
+                {
+                    moveToggle.isOn = true;
+                }
+                // Play UI Select sound for each toggle change
+                audioUI.PlayUISelection();
+            }
+            if (Input.GetAxis("Horizontal") < 0)
+            {
+                if (moveToggle.isOn)
+                {
+                    if (explosivesCapacity > 0)
+                    {
+                        explosivesToggle.isOn = true;
+                    }
+                    else if (buildTurretCapacity > 0)
+                    {
+                        buildTurretToggle.isOn = true;
+                    }
+                    else if (buildHQCapacity > 0)
+                    {
+                        buildHQToggle.isOn = true;
+                    }
+                    else if (healCapacity > 0)
+                    {
+                        healToggle.isOn = true;
+                    }
+                    else
+                    {
+                        retreatToggle.isOn = true;
+                    }
+                }
+                else if (retreatToggle.isOn)
+                {
+                    moveToggle.isOn = true;
+                }
+                else if (healToggle.isOn)
                 {
                     retreatToggle.isOn = true;
                 }
+                else if (buildHQToggle.isOn)
+                {
+                    if (healCapacity > 0)
+                    {
+                        healToggle.isOn = true;
+                    }
+                    else
+                    {
+                        retreatToggle.isOn = true;
+                    }
+                }
+                else if (buildTurretToggle.isOn)
+                {
+                    if (buildHQCapacity > 0)
+                    {
+                        buildHQToggle.isOn = true;
+                    }
+                    else if (healCapacity > 0)
+                    {
+                        healToggle.isOn = true;
+                    }
+                    else
+                    {
+                        retreatToggle.isOn = true;
+                    }
+                }
+                else if (explosivesToggle.isOn)
+                {
+                    if (buildTurretCapacity > 0)
+                    {
+                        buildTurretToggle.isOn = true;
+                    }
+                    else if (buildHQCapacity > 0)
+                    {
+                        buildHQToggle.isOn = true;
+                    }
+                    else if (healCapacity > 0)
+                    {
+                        healToggle.isOn = true;
+                    }
+                    else
+                    {
+                        retreatToggle.isOn = true;
+                    }
+                }
+                // Play UI Select sound for each toggle change
+                audioUI.PlayUISelection();
             }
-            else if (buildTurretToggle.isOn)
-            {
-                if (buildHQCapacity > 0)
-                {
-                    buildHQToggle.isOn = true;
-                }
-                else if (healCapacity > 0)
-                {
-                    healToggle.isOn = true;
-                }
-                else
-                {
-                    retreatToggle.isOn = true;
-                }
-            }
-            else if (explosivesToggle.isOn)
-            {
-                if (buildTurretCapacity > 0)
-                {
-                    buildTurretToggle.isOn = true;
-                }
-                else if (buildHQCapacity > 0)
-                {
-                    buildHQToggle.isOn = true;
-                }
-                else if (healCapacity > 0)
-                {
-                    healToggle.isOn = true;
-                }
-                else
-                {
-                    retreatToggle.isOn = true;
-                }
-            }
-            // Play UI Select sound for each toggle change
-            audioUI.PlayUISelection();
         }
     }
 }

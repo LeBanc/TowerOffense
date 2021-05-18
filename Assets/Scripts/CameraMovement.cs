@@ -78,7 +78,7 @@ public class CameraMovement : MonoBehaviour
 
     void CameraUpdate()
     {
-        float _keyboardInput = Input.GetAxis("Vertical");
+        float _keyboardInput = Input.GetAxis("Camera");
         float _mouseInput = Input.mouseScrollDelta.y;
 
         // Get destination from keyboard and controller

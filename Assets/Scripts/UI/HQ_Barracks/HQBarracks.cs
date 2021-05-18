@@ -36,7 +36,8 @@ public class HQBarracks : UICanvas
             else // else create the list
             {
                 CreateSoldierListItems(PlayManager.soldierList);
-            }            
+            }
+            HQCanvas.OnSecondaryShortcut += sortDropdown.Show;
         }
 
         // Set the first soldier as default navigation from autoscroll exits
@@ -92,6 +93,9 @@ public class HQBarracks : UICanvas
     /// </summary>
     public override void Hide()
     {
+        HQCanvas.OnSecondaryShortcut -= sortDropdown.Show;
+        sortDropdown.Hide();
+
         soldierUpgrade.Hide();
 
         ClearSoldierListItems();

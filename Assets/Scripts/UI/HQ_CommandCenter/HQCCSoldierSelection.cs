@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.UI;
 
 /// <summary>
 /// HQCCSoldierSelection is the class managing the HQ - Command Center - Soldier Selection Canvas
@@ -9,6 +10,7 @@ public class HQCCSoldierSelection : CancelableUICanvas
 {
     // public elements of the canvas
     public AutoScroll autoScroll;
+    public Dropdown sortDropdown;
 
     // public prefab
     public GameObject soldierSelectionItem;
@@ -34,7 +36,9 @@ public class HQCCSoldierSelection : CancelableUICanvas
         CreateSoldierList(PlayManager.soldierList);
 
         // Display the canvas
-        Show();       
+        Show();
+
+        HQCanvas.OnSecondaryShortcut += sortDropdown.Show;
 
         GameObject _selection = autoScroll.SelectFirtsItem();
         if (_selection != null) selectedItem = _selection.GetComponent<SoldierSelectionItem>();
@@ -65,6 +69,8 @@ public class HQCCSoldierSelection : CancelableUICanvas
     /// </summary>
     public override void Hide()
     {
+        HQCanvas.OnSecondaryShortcut -= sortDropdown.Show;
+        sortDropdown.Hide();
         base.Hide();
         Clear();
     }
