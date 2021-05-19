@@ -228,7 +228,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: ee68a80d88096644385a55df87972143, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  inputField: {fileID: 2480365463906922208}
+  webGLObjectsToHide: []
+  inputField: {fileID: 275520343575441165}
   okButton: {fileID: 7792560417929920430}
   cancelButton: {fileID: 6710098505874942593}
 --- !u!1 &3687636294756996315
@@ -901,6 +902,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 99dc1770fd6799d4a9894033f2d14e9a, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  webGLObjectsToHide: []
   autoScroll: {fileID: 8291393797920659622}
   newsavePrefab: {fileID: 8692959261725452331, guid: 4dc6e32fd414bc54ab87afd507b7a7a2,
     type: 3}
@@ -1734,6 +1736,11 @@ PrefabInstance:
   m_Modification:
     m_TransformParent: {fileID: 3694443384082329210}
     m_Modifications:
+    - target: {fileID: -5055541678801560244, guid: f079b92ac33aea345aba93bc00c51b75,
+        type: 3}
+      propertyPath: m_Navigation.m_SelectOnDown
+      value: 
+      objectReference: {fileID: 7792560417929920430}
     - target: {fileID: 1759153550681529505, guid: f079b92ac33aea345aba93bc00c51b75,
         type: 3}
       propertyPath: m_Navigation.m_SelectOnDown
@@ -1857,16 +1864,16 @@ RectTransform:
     type: 3}
   m_PrefabInstance: {fileID: 4180963239022883393}
   m_PrefabAsset: {fileID: 0}
---- !u!114 &2480365463906922208 stripped
+--- !u!114 &275520343575441165 stripped
 MonoBehaviour:
-  m_CorrespondingSourceObject: {fileID: 1759153550681529505, guid: f079b92ac33aea345aba93bc00c51b75,
+  m_CorrespondingSourceObject: {fileID: -5055541678801560244, guid: f079b92ac33aea345aba93bc00c51b75,
     type: 3}
   m_PrefabInstance: {fileID: 4180963239022883393}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 0}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: d199490a83bb2b844b9695cbf13b01ef, type: 3}
+  m_Script: {fileID: 11500000, guid: 53fbeb9263bbd0d4a892f67eea88bdbe, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
 --- !u!1001 &5749929256608241849
@@ -1910,7 +1917,7 @@ PrefabInstance:
         type: 3}
       propertyPath: m_Navigation.m_SelectOnUp
       value: 
-      objectReference: {fileID: 2480365463906922208}
+      objectReference: {fileID: 275520343575441165}
     - target: {fileID: 1356943840837939768, guid: 2de71f222f4125b4e960e84af14d3cbf,
         type: 3}
       propertyPath: m_Navigation.m_SelectOnLeft
@@ -2670,7 +2677,7 @@ PrefabInstance:
         type: 3}
       propertyPath: m_Navigation.m_SelectOnUp
       value: 
-      objectReference: {fileID: 2480365463906922208}
+      objectReference: {fileID: 275520343575441165}
     - target: {fileID: 1356943840837939768, guid: 2de71f222f4125b4e960e84af14d3cbf,
         type: 3}
       propertyPath: m_Navigation.m_SelectOnRight

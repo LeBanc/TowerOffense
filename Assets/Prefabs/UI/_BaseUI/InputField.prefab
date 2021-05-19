@@ -11,7 +11,7 @@ GameObject:
   - component: {fileID: 1759153550681529516}
   - component: {fileID: 1759153550681529506}
   - component: {fileID: 1759153550681529507}
-  - component: {fileID: 1759153550681529505}
+  - component: {fileID: -5055541678801560244}
   m_Layer: 5
   m_Name: InputField
   m_TagString: Untagged
@@ -77,7 +77,7 @@ MonoBehaviour:
   m_FillOrigin: 0
   m_UseSpriteMesh: 0
   m_PixelsPerUnitMultiplier: 1
---- !u!114 &1759153550681529505
+--- !u!114 &-5055541678801560244
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -86,7 +86,7 @@ MonoBehaviour:
   m_GameObject: {fileID: 1759153550681529517}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: d199490a83bb2b844b9695cbf13b01ef, type: 3}
+  m_Script: {fileID: 11500000, guid: 53fbeb9263bbd0d4a892f67eea88bdbe, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
   m_Navigation:
