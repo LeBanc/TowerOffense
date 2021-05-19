@@ -25,6 +25,8 @@ public class UIManager : Singleton<UIManager>
     private Selectable loadMenuLastSelected;
     private Selectable saveMenuLastSelected;
 
+    private LoadSaveMenu saveMenuComponent;
+
     public delegate void UIManagerEventHandler();
     public static event UIManagerEventHandler OnHideActiveCanvas;
 
@@ -101,6 +103,8 @@ public class UIManager : Singleton<UIManager>
 
             // Initialize UI from current GameState
             InitializeUI();
+
+            saveMenuComponent = saveMenu.GetComponent<LoadSaveMenu>();
         }
     }
 
@@ -516,9 +520,9 @@ public class UIManager : Singleton<UIManager>
             }
             else if(saveMenu.IsVisible)
             {
-                if(saveMenu.GetComponent<LoadSaveMenu>().promptNameCanvas.IsVisible)
+                if(saveMenuComponent.promptNameCanvas.IsVisible)
                 {
-                    saveMenu.GetComponent<LoadSaveMenu>().promptNameCanvas.Hide();
+                    saveMenuComponent.promptNameCanvas.Hide();
                 }
                 else
                 {
@@ -529,7 +533,7 @@ public class UIManager : Singleton<UIManager>
             {
                 HideLoadMenu();
             }
-            else if(Input.GetButtonDown("Pause"))
+            else
             {
                 GameManager.ChangeGameStateRequest(GameManager.GameState.play);
                 if (playUILastSelected != null)
@@ -545,9 +549,24 @@ public class UIManager : Singleton<UIManager>
         }
         else if(Input.GetButtonDown("Pause"))
         {
+            if (confirmMessage.IsVisible) confirmMessage.Hide();
+            if (errorMessage.IsVisible) errorMessage.Hide();
+            if (saveMenu.IsVisible)
+            {
+                if (saveMenuComponent.promptNameCanvas.IsVisible)
+                {
+                    saveMenuComponent.SetPromptNameCanvaseEvent(false);
+                    saveMenuComponent.promptNameCanvas.Hide();
+                    saveMenuComponent.SetPromptNameCanvaseEvent(true);
+                }
+                saveMenu.Hide();
+            }
+            if (loadMenu.IsVisible) loadMenu.Hide();
+            
             GameManager.ChangeGameStateRequest(GameManager.GameState.play);
             if (playUILastSelected != null)
             {
+                Debug.Log(playUILastSelected.name);
                 playUILastSelected.Select();
                 playUILastSelected = null;
             }

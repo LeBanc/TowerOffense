@@ -51,6 +51,24 @@ public class LoadSaveMenu : UICanvas
     }
 
     /// <summary>
+    /// SetPromptNameCanvaseEvent method is used to set or reset the subscribtion to the OnHide event of PromptNameCanvas from outside this class
+    /// This is used when exiting the Pause Menu while the PromptNameCanvas is opened to not select the previous
+    /// </summary>
+    /// <param name="_b">True to subscribe, false to unsubscribe</param>
+    public void SetPromptNameCanvaseEvent(bool _b)
+    {
+        if(_b)
+        {
+            promptNameCanvas.OnHide -= SelectNewSaveItem;
+            promptNameCanvas.OnHide += SelectNewSaveItem;
+        }
+        else
+        {
+            promptNameCanvas.OnHide -= SelectNewSaveItem;
+        }
+    }
+
+    /// <summary>
     /// OnDestroy, unsubscribe from events
     /// </summary>
     private void OnDestroy()
