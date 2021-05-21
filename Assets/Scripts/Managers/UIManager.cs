@@ -2,6 +2,7 @@
 using UnityEngine;
 using UnityEngine.UI;
 using UnityEngine.EventSystems;
+using UnityEngine.XR.WSA.Input;
 
 /// <summary>
 /// UIManager is the manager of the UI
@@ -27,15 +28,10 @@ public class UIManager : Singleton<UIManager>
 
     private LoadSaveMenu saveMenuComponent;
 
+    public static Selectable lastSelected;
+
     public delegate void UIManagerEventHandler();
     public static event UIManagerEventHandler OnHideActiveCanvas;
-
-    public static Selectable LastSelected
-    {
-        get { return Instance.playUILastSelected; }
-        set { Instance.playUILastSelected = value; }
-    }
-
 
     /// <summary>
     /// At Start, checks for missing UI Canvas and subscribes to GameManager events
@@ -167,6 +163,14 @@ public class UIManager : Singleton<UIManager>
         HideSaveMenu();
     }
 
+    private void Update()
+    {
+        if(EventSystem.current.currentSelectedGameObject != null)
+        {
+            if (EventSystem.current.currentSelectedGameObject.TryGetComponent(out Selectable _s)) lastSelected = _s;
+        }
+    }
+
     /// <summary>
     /// ShowStartMenu method activates the Start Menu
     /// </summary>
@@ -177,7 +181,11 @@ public class UIManager : Singleton<UIManager>
         // Select default selectable
         if (startMenu.TryGetComponent<DefaultSelectable>(out DefaultSelectable _default))
         {
-            if(_default.defaultSelectable != null) _default.defaultSelectable.Select();
+            if (_default.defaultSelectable != null)
+            {
+                _default.defaultSelectable.Select();
+                startMenuLastSelected = _default.defaultSelectable;
+            }
         }
     }
     /// <summary>
@@ -566,7 +574,6 @@ public class UIManager : Singleton<UIManager>
             GameManager.ChangeGameStateRequest(GameManager.GameState.play);
             if (playUILastSelected != null)
             {
-                Debug.Log(playUILastSelected.name);
                 playUILastSelected.Select();
                 playUILastSelected = null;
             }

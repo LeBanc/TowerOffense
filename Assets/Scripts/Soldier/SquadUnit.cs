@@ -349,10 +349,10 @@ public class SquadUnit : MonoBehaviour
     private void SquadMoveSelection()
     {
         // For now a target is defined by the player with mouse click on terrain or active tower
-        if (Input.GetMouseButtonDown(0))
+        if (Input.GetButtonDown("Submit"))
         {
             RaycastHit hit;
-            Ray ray = mainCamera.ScreenPointToRay(Input.mousePosition);
+            Ray ray = mainCamera.ScreenPointToRay(CustomInputModule.CursorPos);
             if (Physics.Raycast(ray, out hit, Mathf.Infinity, LayerMask.GetMask(new string[] { "Enemies", "Buildings", "Terrain", "Soldiers" })))
             {
                 // If the player click on a tower
@@ -491,10 +491,10 @@ public class SquadUnit : MonoBehaviour
     private void SquadBuildHQSelection()
     {
         // For now a target is defined by the player with mouse click on destroyed tower
-        if (Input.GetMouseButtonDown(0))
+        if (Input.GetButtonDown("Submit"))
         {
             RaycastHit hit;
-            Ray ray = mainCamera.ScreenPointToRay(Input.mousePosition);
+            Ray ray = mainCamera.ScreenPointToRay(CustomInputModule.CursorPos);
             if (Physics.Raycast(ray, out hit, Mathf.Infinity, LayerMask.GetMask(new string[] { "Buildings" })))
             {
                 // If the player click on a HQCandidate
@@ -520,10 +520,10 @@ public class SquadUnit : MonoBehaviour
     private void SquadBuildTurretSelection()
     {
         // For now a target is defined by the player with mouse click on destroyed tower
-        if (Input.GetMouseButtonDown(0))
+        if (Input.GetButtonDown("Submit"))
         {
             RaycastHit hit;
-            Ray ray = mainCamera.ScreenPointToRay(Input.mousePosition);
+            Ray ray = mainCamera.ScreenPointToRay(CustomInputModule.CursorPos);
             if (Physics.Raycast(ray, out hit, Mathf.Infinity, LayerMask.GetMask(new string[] { "Terrain", "Buildings", "Enemies", "Soldiers" })))
             {
                 // If the player clicked on a enemy or a building => Nothing
@@ -588,10 +588,10 @@ public class SquadUnit : MonoBehaviour
     private void SquadBuildExplosivesSelection()
     {
         // For now a target is defined by the player with mouse click on destroyed tower
-        if (Input.GetMouseButtonDown(0))
+        if (Input.GetButtonDown("Submit"))
         {
             RaycastHit hit;
-            Ray ray = mainCamera.ScreenPointToRay(Input.mousePosition);
+            Ray ray = mainCamera.ScreenPointToRay(CustomInputModule.CursorPos);
             if (Physics.Raycast(ray, out hit, Mathf.Infinity, LayerMask.GetMask(new string[] { "Enemies" })))
             {
                 // If the player click on a Tower

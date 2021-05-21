@@ -16,6 +16,8 @@ public class ColorPicker : MonoBehaviour
     // The list of all ColorReturn elements to listen their events
     public List<ColorReturn> colorReturns;
 
+    private Selectable selectable;
+
     /// <summary>
     /// At start, link the UpdateColor and SelectColor methods to the events of each ColorReturn
     /// </summary>
@@ -29,6 +31,8 @@ public class ColorPicker : MonoBehaviour
                 _c.OnSelection += SelectColor;
             }
         }
+
+        selectable = GetComponent<Selectable>();
     }
 
     /// <summary>
@@ -56,6 +60,7 @@ public class ColorPicker : MonoBehaviour
     private void SelectColor(Color _color)
     {
         selected.color = _color;
+        selectable.Select();
     }
 
     /// <summary>
@@ -88,7 +93,7 @@ public class ColorPicker : MonoBehaviour
     public void ColorPickerUpdate()
     {
         // Cast a ray straight down at mouse position
-        Vector2 _mousePos = Input.mousePosition;
+        Vector2 _mousePos = CustomInputModule.CursorPos;
         RaycastHit2D hit = Physics2D.Raycast(_mousePos, Vector2.zero);
         // If it hits something
         if (hit.collider != null)
@@ -99,7 +104,7 @@ public class ColorPicker : MonoBehaviour
                 // Activate the Color Preview (update of preview image via event)
                 _colorReturn.ColorPreview();
                 // And if the left mouse button is clicked, activate the Color Selection (update of select image via event)
-                if (Input.GetMouseButtonDown(0))
+                if (Input.GetButtonDown("Submit"))
                 {
                     _colorReturn.ColorSelection();
                 }

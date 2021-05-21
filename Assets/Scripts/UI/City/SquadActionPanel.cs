@@ -1,5 +1,4 @@
-﻿using System;
-using UnityEngine;
+﻿using UnityEngine;
 using UnityEngine.UI;
 using UnityEngine.EventSystems;
 
@@ -51,6 +50,11 @@ public class SquadActionPanel : MonoBehaviour
     private int buildTurretCapacity;
     private int explosivesCapacity;
 
+    // private UI & Cursor parameters
+    Vector2 cursorCenter;
+    Vector2 cursorMin;
+    Vector2 cursorMax;
+
     static bool buttonDown = false;
 
     // Events
@@ -85,7 +89,7 @@ public class SquadActionPanel : MonoBehaviour
     /// Setup method initializes the panel from Squad data and SquadUnit
     /// </summary>
     /// <param name="_squadUnit">SquadUnit to link to the panel</param>
-    public void Setup(SquadUnit _squadUnit)
+    public void Setup(SquadUnit _squadUnit, Image _cursorAllowedImage)
     {
         // Link squadUnit and subscribe to events
         squadUnit = _squadUnit;
@@ -97,13 +101,16 @@ public class SquadActionPanel : MonoBehaviour
         moveToggle.onValueChanged.AddListener(squadUnit.OnActionSelected);
         moveToggle.onValueChanged.AddListener(squadUnit.OnMoveActionSelected);
         moveToggle.onValueChanged.AddListener(CursorManager.ChangeToMoveAttack);
-
+        moveToggle.onValueChanged.AddListener(MoveAndAttack);
+        
         retreatToggle.onValueChanged.AddListener(squadUnit.OnActionSelected);
         retreatToggle.onValueChanged.AddListener(CursorManager.ChangeToBasic);
+        retreatToggle.onValueChanged.AddListener(HideCursor);
         retreatToggle.onClick += Retreat;
 
         healToggle.onValueChanged.AddListener(squadUnit.OnActionSelected);
         healToggle.onValueChanged.AddListener(CursorManager.ChangeToBasic);
+        healToggle.onValueChanged.AddListener(HideCursor);
         healToggle.onClick += Heal;
 
         buildHQToggle.onValueChanged.AddListener(squadUnit.OnActionSelected);
@@ -194,6 +201,12 @@ public class SquadActionPanel : MonoBehaviour
 
         isSet = true;
         PlayManager.OnRetreatAll += Retreat;
+
+        // Setup the cursor zone for gamePad
+        cursorCenter = (Vector2)_cursorAllowedImage.rectTransform.position;
+        cursorMin = Vector2.Max(cursorCenter + _cursorAllowedImage.rectTransform.rect.min + new Vector2(25,25), Vector2.zero);
+        cursorMax = new Vector2(Screen.width, Screen.height);
+        cursorCenter = (cursorMin + cursorMax) / 2;
     }
 
     /// <summary>
@@ -251,6 +264,26 @@ public class SquadActionPanel : MonoBehaviour
     }
 
     /// <summary>
+    /// HideCursor method calls the CursorManager to hide the cursor (Retreat or Heal selected or Action Done or Cancel)
+    /// </summary>
+    /// <param name="_hide">True to hide, false otherwise (bool)</param>
+    private void HideCursor(bool _hide)
+    {
+        if (_hide) CursorManager.HideCursorAfterAction();
+    }
+
+    /// <summary>
+    /// MoveAndAttack method shows the cursor if needed
+    /// </summary>
+    private void MoveAndAttack(bool _isOn)
+    {
+        if (_isOn)
+        {
+            CursorManager.ShowCursorForAction(cursorCenter, cursorMin, cursorMax);
+        }
+    }
+
+    /// <summary>
     /// Retrat method triggers the Retreat action of the SquadUnit and hides this panel
     /// </summary>
     public void Retreat()
@@ -292,6 +325,7 @@ public class SquadActionPanel : MonoBehaviour
             {
                 squadUnit.OnActionDone += BuildHQDone;
                 squadUnit.OnUnselection += BuildHQCancel;
+                CursorManager.ShowCursorForAction(cursorCenter, cursorMin, cursorMax);
             }
         }
         else
@@ -339,6 +373,7 @@ public class SquadActionPanel : MonoBehaviour
             {
                 squadUnit.OnActionDone += BuildTurretDone;
                 squadUnit.OnUnselection += BuildTurretCancel;
+                CursorManager.ShowCursorForAction(cursorCenter, cursorMin, cursorMax);
             }
         }
         else
@@ -385,6 +420,7 @@ public class SquadActionPanel : MonoBehaviour
             {
                 squadUnit.OnActionDone += ExplosivesDone;
                 squadUnit.OnUnselection += ExplosivesCancel;
+                CursorManager.ShowCursorForAction(cursorCenter, cursorMin, cursorMax);
             }
         }
         else

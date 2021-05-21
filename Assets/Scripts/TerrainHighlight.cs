@@ -6,6 +6,7 @@
 public class TerrainHighlight : MonoBehaviour
 {
     private Camera currentCamera;
+    private MeshRenderer meshReneder;
 
     /// <summary>
     /// On Start, subscribe to PlayManager events and fetches the main camera
@@ -16,6 +17,7 @@ public class TerrainHighlight : MonoBehaviour
         PlayManager.OnEndDay += Deactivate;
 
         currentCamera = Camera.main;
+        meshReneder = GetComponent<MeshRenderer>();
     }
 
     /// <summary>
@@ -56,20 +58,20 @@ public class TerrainHighlight : MonoBehaviour
     private void GridHighlightUpdate()
     {
         RaycastHit hit;
-        Ray ray = currentCamera.ScreenPointToRay(Input.mousePosition);
+        Ray ray = currentCamera.ScreenPointToRay(CustomInputModule.CursorPos);
         if (Physics.Raycast(ray, out hit, Mathf.Infinity))
         {
             if(hit.collider.gameObject.layer == LayerMask.NameToLayer("Terrain"))
             {
                 // Shows the quad and moves it to the nearest grid coordinates of the hit point
-                GetComponent<MeshRenderer>().enabled = true;
+                meshReneder.enabled = true;
                 transform.position = GridAdjustment.GetGridCoordinates(hit.point) + Vector3.up * 0.01f;
             }
             else
             {
                 if(Physics.Raycast(hit.transform.position + Vector3.up,-Vector3.up,out RaycastHit hitTerrain, Mathf.Infinity,LayerMask.GetMask("Terrain")))
                 {
-                    GetComponent<MeshRenderer>().enabled = true;
+                    meshReneder.enabled = true;
                     transform.position = GridAdjustment.GetGridCoordinates(hitTerrain.point) + Vector3.up * 0.01f;
                 }
             }            
@@ -77,7 +79,7 @@ public class TerrainHighlight : MonoBehaviour
         else
         {
             // If not on terrain, hides the quad
-            GetComponent<MeshRenderer>().enabled = false;
+            meshReneder.enabled = false;
         }
     }    
 }

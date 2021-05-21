@@ -1,20 +1,31 @@
 ﻿using UnityEngine;
+using UnityEngine.EventSystems;
+using UnityEngine.UI;
 
 public class CursorManager : Singleton<CursorManager>
 {
-    // Public textures for cursor icons
-    public Texture2D basicCursor;
-    public Texture2D moveCursor;
-    public Texture2D notMoveCursor;
-    public Texture2D attackCursor;
-    public Texture2D buildCursor;
-    public Texture2D notBuildCursor;
-    public Texture2D explosivesCursor;
-    public Texture2D notExplosivesCursor;
+    // Public image for software cursor
+    public Image cursor;
 
-    // Unity Cursor default value
-    private CursorMode cursorMode = CursorMode.Auto;
-    private Vector2 hotSpot = Vector2.zero;
+    // Public textures for cursor icons
+    public Sprite basicCursor;
+    public Sprite moveCursor;
+    public Sprite notMoveCursor;
+    public Sprite attackCursor;
+    public Sprite buildCursor;
+    public Sprite notBuildCursor;
+    public Sprite explosivesCursor;
+    public Sprite notExplosivesCursor;
+
+    public static bool mouseControl;
+
+    private bool forceVisibility;
+    private Vector2 lastPos;
+    private float gamePadSpeed = 2f;
+
+    public delegate void CursorManagerEventHandler();
+    public static event CursorManagerEventHandler OnMouseControlChange;
+    public static event CursorManagerEventHandler OnGamePadeControlChange;
 
     // Cursor state defines the state of the cursor (state can have several cursor's icons)
     public enum CursorState
@@ -56,8 +67,13 @@ public class CursorManager : Singleton<CursorManager>
         nextState = CursorState.Basic;
         previousState = CursorState.Basic;
 
-        Cursor.SetCursor(basicCursor, hotSpot, cursorMode);
+        Cursor.visible = false;
+
         currentIcon = CursorIcon.Basic;
+        cursor.sprite = basicCursor;
+
+        mouseControl = true;
+        ShowCursor();
 
         //Events
         GameManager.OnPlayToPause += ForceToBasicState;
@@ -65,6 +81,9 @@ public class CursorManager : Singleton<CursorManager>
         GameManager.OnLoadToPlay += ShowCursor;
         GameManager.OnStartToLoad += HideCursor;
         GameManager.OnPauseToLoad += HideCursor;
+
+        GameManager.OnPlayToPause += HideCursorOnMenu;
+        GameManager.OnPauseToPlay += ShowCursor;
     }
 
     /// <summary>
@@ -77,6 +96,9 @@ public class CursorManager : Singleton<CursorManager>
         GameManager.OnLoadToPlay -= ShowCursor;
         GameManager.OnStartToLoad -= HideCursor;
         GameManager.OnPauseToLoad -= HideCursor;
+
+        GameManager.OnPlayToPause -= HideCursorOnMenu;
+        GameManager.OnPauseToPlay -= ShowCursor;
 
         base.OnDestroy();
     }
@@ -171,8 +193,26 @@ public class CursorManager : Singleton<CursorManager>
     /// </summary>
     private void Update()
     {
+        CheckForControllerChange();
+
+        // If the cursor is hidden, no need to change its shape or position
+        if (!cursor.enabled) return;
+
+        // Set the current way of handling cursor (mouse or gamepad)
+        if (mouseControl)
+        {
+            CustomInputModule.UpdateCursorPosition(Input.mousePosition);
+        }
+        else
+        {
+            CustomInputModule.MoveCursorPosition(new Vector2(Input.GetAxis("Controller X")*gamePadSpeed, Input.GetAxis("Controller Y")*gamePadSpeed));
+        }
+
+
+
+        // Set the state & shape of the cursor
         // Change the state if needed
-        if(nextState != currentState)
+        if (nextState != currentState)
         {
             // Default is basic cursor
             SetCursorIcon(CursorIcon.Basic);
@@ -184,7 +224,7 @@ public class CursorManager : Singleton<CursorManager>
 
         // Raycast tools
         RaycastHit hit;
-        Ray ray = Camera.main.ScreenPointToRay(Input.mousePosition);
+        Ray ray = Camera.main.ScreenPointToRay(CustomInputModule.CursorPos);
 
         // Change the cursor icon depending of the current state and the object under the mouse
         switch (currentState)
@@ -355,28 +395,28 @@ public class CursorManager : Singleton<CursorManager>
             switch (_icon)
             {
                 case CursorIcon.Basic:
-                    Cursor.SetCursor(basicCursor, hotSpot, cursorMode);
+                    cursor.sprite = basicCursor;
                     break;
                 case CursorIcon.Move:
-                    Cursor.SetCursor(moveCursor, hotSpot, cursorMode);
+                    cursor.sprite = moveCursor;
                     break;
                 case CursorIcon.NotMove:
-                    Cursor.SetCursor(notMoveCursor, hotSpot, cursorMode);
+                    cursor.sprite = notMoveCursor;
                     break;
                 case CursorIcon.Attack:
-                    Cursor.SetCursor(attackCursor, hotSpot, cursorMode);
+                    cursor.sprite = attackCursor;
                     break;
                 case CursorIcon.Build:
-                    Cursor.SetCursor(buildCursor, hotSpot, cursorMode);
+                    cursor.sprite = buildCursor;
                     break;
                 case CursorIcon.NotBuild:
-                    Cursor.SetCursor(notBuildCursor, hotSpot, cursorMode);
+                    cursor.sprite = notBuildCursor;
                     break;
                 case CursorIcon.Explosives:
-                    Cursor.SetCursor(explosivesCursor, hotSpot, cursorMode);
+                    cursor.sprite = explosivesCursor;
                     break;
                 case CursorIcon.NotExplosives:
-                    Cursor.SetCursor(notExplosivesCursor, hotSpot, cursorMode);
+                    cursor.sprite = notExplosivesCursor;
                     break;
             }
             currentIcon = _icon;
@@ -388,7 +428,17 @@ public class CursorManager : Singleton<CursorManager>
     /// </summary>
     private void HideCursor()
     {
-        Cursor.visible = false;
+        cursor.enabled = false;
+    }
+
+    private void HideCursorOnMenu()
+    {
+        if(!mouseControl)
+        {
+            lastPos = CustomInputModule.CursorPos;
+            HideCursor();
+            CustomInputModule.UpdateCursorPosition(Vector2.zero);
+        }
     }
 
     /// <summary>
@@ -396,6 +446,104 @@ public class CursorManager : Singleton<CursorManager>
     /// </summary>
     private void ShowCursor()
     {
-        Cursor.visible = true;
+        if (mouseControl)
+        {
+            cursor.enabled = true;
+            CustomInputModule.ResetMinMaxCursorPosition();
+        }
+        else if(forceVisibility)
+        {
+            cursor.enabled = true;
+            CustomInputModule.UpdateCursorPosition(lastPos);
+            lastPos = Vector2.zero;
+        }
+    }
+
+    /// <summary>
+    /// ShowCursorForAction method shows the cursor if controller is gamepad
+    /// </summary>
+    public static void ShowCursorForAction(Vector2 _position, Vector2 _min, Vector2 _max)
+    {
+        if (!mouseControl)
+        {
+            CustomInputModule.SetMinMaxCursorPosition(_min, _max);
+            if(!Instance.cursor.enabled)CustomInputModule.UpdateCursorPosition(_position);
+            Instance.cursor.enabled = true;
+            Instance.forceVisibility = true;
+        }
+    }
+
+    /// <summary>
+    /// HideCursorAfterAction method hides the cursor if controller is gamepad
+    /// </summary>
+    public static void HideCursorAfterAction()
+    {
+        if (!mouseControl && Instance.forceVisibility)
+        {
+            Instance.cursor.enabled = false;
+            Instance.forceVisibility = false;
+            CustomInputModule.ResetMinMaxCursorPosition();
+            CustomInputModule.UpdateCursorPosition(Vector2.zero);
+        }
+    }
+
+    /// <summary>
+    /// CheckForControllerChange method checks if gamePad or mouse/keyboard is used to change the current controller
+    /// </summary>
+    private void CheckForControllerChange()
+    {
+        bool prevMouseControl = mouseControl;
+        
+        // Mouse movement
+        if (Input.GetAxis("Mouse X") != 0 || Input.GetAxis("Mouse Y") != 0 || Input.mouseScrollDelta.y != 0)
+        {
+            mouseControl = true;
+        }
+        // Mouse buttons
+        if(Input.GetMouseButtonDown(0) || Input.GetMouseButtonDown(1) || Input.GetMouseButtonDown(2))
+        {
+            mouseControl = true;
+        }
+
+        // GamePad axes movement
+        if(Input.GetAxis("Controller X") != 0 || Input.GetAxis("Controller Y") != 0 ||
+           Input.GetAxis("Controller_RightStick Horizontal") != 0 || Input.GetAxis("Controller_RightStick Vertical") != 0 ||
+           Input.GetAxis("Controller_DPad Horizontal") != 0 || Input.GetAxis("Controller_DPad Vertical") != 0 ||
+           Input.GetAxis("Controller_Left Trigger") != 0 || Input.GetAxis("Controller_Right Trigger") != 0)
+        {
+            mouseControl = false;
+        }
+
+        // Any button
+        if(Input.anyKeyDown)
+        {
+            // GamePad button
+            if(Input.GetKeyDown(KeyCode.JoystickButton0) || Input.GetKeyDown(KeyCode.JoystickButton1) || Input.GetKeyDown(KeyCode.JoystickButton2) ||
+                Input.GetKeyDown(KeyCode.JoystickButton3) || Input.GetKeyDown(KeyCode.JoystickButton4) || Input.GetKeyDown(KeyCode.JoystickButton5) ||
+                Input.GetKeyDown(KeyCode.JoystickButton6) || Input.GetKeyDown(KeyCode.JoystickButton7) || Input.GetKeyDown(KeyCode.JoystickButton8) ||
+                Input.GetKeyDown(KeyCode.JoystickButton9))
+            {
+                mouseControl = false;
+            }
+            else // Keyboard button
+            {
+                mouseControl = true;
+            }
+        }
+
+        if (mouseControl && !prevMouseControl)
+        {
+            OnMouseControlChange?.Invoke();
+            ShowCursor();
+        }
+        if (!mouseControl && prevMouseControl)
+        {
+            OnGamePadeControlChange?.Invoke();
+            if(!forceVisibility)
+            {
+                HideCursor();
+                if (EventSystem.current.currentSelectedGameObject == null) EventSystem.current.SetSelectedGameObject(UIManager.lastSelected.gameObject);
+            }            
+        }
     }
 }

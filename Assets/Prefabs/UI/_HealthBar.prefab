@@ -13,7 +13,7 @@ GameObject:
   - component: {fileID: 4732195255168472664}
   - component: {fileID: 4732195255168472665}
   m_Layer: 5
-  m_Name: HealthBar
+  m_Name: _HealthBar
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -94,4 +94,3 @@ MonoBehaviour:
   maxWidth: 50
   minWidth: 5
   height: 5
-  test: 100

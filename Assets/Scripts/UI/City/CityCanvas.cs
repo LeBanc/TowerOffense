@@ -157,7 +157,7 @@ public class CityCanvas : UICanvas
         if (!squad1.gameObject.activeSelf)
         {
             // Setup the SquadActionPanel with SquadUnit data
-            squad1.Setup(_unit);
+            squad1.Setup(_unit, slowMotionEffect);
 
             // Subscribe all needed SquadActionPanel events
             squad1.OnSelectionRequest += SelectSquad1;
@@ -173,7 +173,7 @@ public class CityCanvas : UICanvas
         // If the first SquadActionPanel is already active but the second isn't, use it
         else if (!squad2.gameObject.activeSelf)
         {
-            squad2.Setup(_unit);
+            squad2.Setup(_unit, slowMotionEffect);
 
             squad2.OnSelectionRequest += SelectSquad2;
             OnSquad2Selection += delegate { squad2.SelectSquad(true); };
@@ -187,7 +187,7 @@ public class CityCanvas : UICanvas
         // If the two first SquadActionPanel are already active but the third isn't, use it
         else if (!squad3.gameObject.activeSelf)
         {
-            squad3.Setup(_unit);
+            squad3.Setup(_unit, slowMotionEffect);
 
             squad3.OnSelectionRequest += SelectSquad3;
             OnSquad3Selection += delegate { squad3.SelectSquad(true); };
@@ -201,7 +201,7 @@ public class CityCanvas : UICanvas
         // If the three first SquadActionPanel are already active but the fourth isn't, use it
         else if (!squad4.gameObject.activeSelf)
         {
-            squad4.Setup(_unit);
+            squad4.Setup(_unit, slowMotionEffect);
 
             //SelectSquad4 += _unit.Select;
             squad4.OnSelectionRequest += SelectSquad4;
@@ -611,6 +611,8 @@ public class CityCanvas : UICanvas
         {
             retreatButton.OnSubmit(new BaseEventData(EventSystem.current));
         }
+
+        if (selectedSquad == null) CursorManager.HideCursorAfterAction();
     }
 
     /// <summary>

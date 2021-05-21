@@ -14,6 +14,19 @@ public class ColorPickerCanvas : CancelableUICanvas
     // Squad currently selected (to update the color of the right squad)
     private Squad selectedSquad;
 
+    private Vector2 center;
+    private Vector2 min;
+    private Vector2 max;
+
+    private void Start()
+    {
+        RectTransform rectTransform = colorPicker.GetComponent<RectTransform>();
+        center = (Vector2)rectTransform.position - rectTransform.anchoredPosition;
+        min = center + rectTransform.rect.min;
+        max = center + rectTransform.rect.max;
+        center = (min + max) / 2;
+    }
+
     /// <summary>
     /// Setup method sets the selected squad and sets up the ColorPicker
     /// </summary>
@@ -33,6 +46,17 @@ public class ColorPickerCanvas : CancelableUICanvas
 
         defaultSelectable.Select();
 
+        CursorManager.ShowCursorForAction(center, min, max);
+
+        // Subscribing to PlayUpdate is delayed to avoid multiple UI Selection
+        Invoke("SetColorPickerUpdate", Time.deltaTime);
+    }
+
+    /// <summary>
+    /// SetColorPickerUpdate method subscribe to the PlayUpdate event
+    /// </summary>
+    private void SetColorPickerUpdate()
+    {
         // Link the ColorPickerUpdate to the GameManager.PlayUpdate event
         GameManager.PlayUpdate += colorPicker.ColorPickerUpdate;
     }
@@ -43,6 +67,8 @@ public class ColorPickerCanvas : CancelableUICanvas
     public override void Hide()
     {
         base.Hide();
+
+        CursorManager.HideCursorAfterAction();
 
         // Unlink the ColorPickerUpdate from the GameManager.PlayUpdate event
         GameManager.PlayUpdate -= colorPicker.ColorPickerUpdate;
