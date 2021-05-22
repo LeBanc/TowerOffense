@@ -18,6 +18,8 @@ public class CityCanvas : UICanvas
     // Public Slow motion effect image
     public Image slowMotionEffect;
 
+    public GameObject[] hideOnRetrat;
+
     // Selected squad
     private SquadActionPanel selectedSquad = null;
     private int lastSelected = 0;
@@ -68,6 +70,8 @@ public class CityCanvas : UICanvas
         squad4.gameObject.SetActive(false);
         squad4.OnRetreat += HideRetreatButton;
         retreatButton.gameObject.SetActive(false);
+
+        foreach (GameObject _go in hideOnRetrat) _go.SetActive(false);
 
         slowMotionEffect.CrossFadeAlpha(0f, 0f, true);
 
@@ -338,9 +342,11 @@ public class CityCanvas : UICanvas
         if (squad3.isSet) squad3.gameObject.SetActive(true);
         if (squad4.isSet) squad4.gameObject.SetActive(true);
         retreatButton.gameObject.SetActive(true);
+        foreach (GameObject _go in hideOnRetrat) _go.SetActive(true);
 
         // Clear the selection to avoid clicking on anything not on City UI
         EventSystem.current.SetSelectedGameObject(null);
+        UIManager.lastSelected = null;
 
         // Update position of all healthbars
         UpdateAllHealthBars();
@@ -354,6 +360,7 @@ public class CityCanvas : UICanvas
         if(!squad1.gameObject.activeSelf && !squad2.gameObject.activeSelf && !squad3.gameObject.activeSelf && !squad4.gameObject.activeSelf)
         {
             retreatButton.gameObject.SetActive(false);
+            foreach (GameObject _go in hideOnRetrat) _go.SetActive(false);
         }
     }
 
@@ -371,6 +378,7 @@ public class CityCanvas : UICanvas
         squad3.gameObject.SetActive(false);
         squad4.gameObject.SetActive(false);
         retreatButton.gameObject.SetActive(false);
+        foreach (GameObject _go in hideOnRetrat) _go.SetActive(false);
 
         // Hide the SlowMo effect (in case of loading while it is active)
         slowMotionEffect.CrossFadeAlpha(0f, 0f, true);
