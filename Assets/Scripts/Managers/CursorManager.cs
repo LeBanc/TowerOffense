@@ -84,6 +84,8 @@ public class CursorManager : Singleton<CursorManager>
 
         GameManager.OnPlayToPause += HideCursorOnMenu;
         GameManager.OnPauseToPlay += ShowCursor;
+
+        OnMouseControlChange?.Invoke();
     }
 
     /// <summary>
@@ -193,6 +195,9 @@ public class CursorManager : Singleton<CursorManager>
     /// </summary>
     private void Update()
     {
+        // Check to hide hardware cursor if application is focused
+        if (Application.isFocused && Cursor.visible) Cursor.visible = false;
+
         CheckForControllerChange();
 
         // If the cursor is hidden, no need to change its shape or position
@@ -207,8 +212,6 @@ public class CursorManager : Singleton<CursorManager>
         {
             CustomInputModule.MoveCursorPosition(new Vector2(Input.GetAxis("Controller X")*gamePadSpeed, Input.GetAxis("Controller Y")*gamePadSpeed));
         }
-
-
 
         // Set the state & shape of the cursor
         // Change the state if needed
@@ -429,6 +432,7 @@ public class CursorManager : Singleton<CursorManager>
     private void HideCursor()
     {
         cursor.enabled = false;
+        CustomInputModule.UpdateCursorPosition(Vector2.zero);
     }
 
     private void HideCursorOnMenu()
@@ -437,7 +441,6 @@ public class CursorManager : Singleton<CursorManager>
         {
             lastPos = CustomInputModule.CursorPos;
             HideCursor();
-            CustomInputModule.UpdateCursorPosition(Vector2.zero);
         }
     }
 
@@ -542,7 +545,7 @@ public class CursorManager : Singleton<CursorManager>
             if(!forceVisibility)
             {
                 HideCursor();
-                if (EventSystem.current.currentSelectedGameObject == null) EventSystem.current.SetSelectedGameObject(UIManager.lastSelected.gameObject);
+                if (EventSystem.current.currentSelectedGameObject == null && UIManager.lastSelected != null) EventSystem.current.SetSelectedGameObject(UIManager.lastSelected.gameObject);
             }            
         }
     }
