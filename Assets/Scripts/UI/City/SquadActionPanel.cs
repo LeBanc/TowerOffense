@@ -229,8 +229,10 @@ public class SquadActionPanel : MonoBehaviour
         moveToggle.onValueChanged.RemoveAllListeners();
         retreatToggle.onValueChanged.RemoveAllListeners();
         retreatToggle.onClick -= Retreat;
+        retreatToggle.ForceStopToggleUpdate();
         healToggle.onValueChanged.RemoveAllListeners();
         healToggle.onClick -= Heal;
+        healToggle.ForceStopToggleUpdate();
         buildHQToggle.onValueChanged.RemoveAllListeners();
         buildTurretToggle.onValueChanged.RemoveAllListeners();
         explosivesToggle.onValueChanged.RemoveAllListeners();
@@ -705,6 +707,9 @@ public class SquadActionPanel : MonoBehaviour
                 // Play UI Select sound for each toggle change
                 audioUI.PlayUISelection();
             }
+            // Force on value change call for ToggleClickable
+            retreatToggle.ForceOnValueChanged();
+            healToggle.ForceOnValueChanged();
         }
     }
 }

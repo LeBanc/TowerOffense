@@ -50,16 +50,28 @@ public class ToggleClickable : Toggle
     /// <param name="_isOn"></param>
     private void OnValueChanged(bool _isOn)
     {
+        GameManager.PlayUpdate -= SubmitUpdate;
         if (_isOn)
         {
             // If ON, call the SubmitUpdate at PlayUpdate
             GameManager.PlayUpdate += SubmitUpdate;
         }
-        else
-        {
-            // If OFF, doesn't call the SubmitUpdate anymore
-            GameManager.PlayUpdate -= SubmitUpdate;
-        }
+    }
+
+    /// <summary>
+    /// ForceOnValueChanged method force the call of OnValueChanged toggle method because Unity doesn't call it automatically :(
+    /// </summary>
+    public void ForceOnValueChanged()
+    {
+        OnValueChanged(isOn);
+    }
+
+    /// <summary>
+    /// ForceStopToggleUpdate method force the unsubscription from the GameManager.PlayUpdate
+    /// </summary>
+    public void ForceStopToggleUpdate()
+    {
+        GameManager.PlayUpdate -= SubmitUpdate;
     }
 
     /// <summary>
@@ -67,7 +79,10 @@ public class ToggleClickable : Toggle
     /// </summary>
     private void SubmitUpdate()
     {
-        if (Input.GetButtonDown("Submit")) onClick?.Invoke();
+        if (Input.GetButtonDown("Submit"))
+        {
+            onClick?.Invoke();
+        }
     }
 }
 
