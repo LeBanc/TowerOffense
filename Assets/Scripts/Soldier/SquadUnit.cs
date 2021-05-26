@@ -349,7 +349,7 @@ public class SquadUnit : MonoBehaviour
     private void SquadMoveSelection()
     {
         // For now a target is defined by the player with mouse click on terrain or active tower
-        if (Input.GetButtonDown("Submit"))
+        if (Input.GetButtonDown("Submit") || Input.GetButtonDown("SubmitMouse"))
         {
             RaycastHit hit;
             Ray ray = mainCamera.ScreenPointToRay(CustomInputModule.CursorPos);
@@ -491,7 +491,7 @@ public class SquadUnit : MonoBehaviour
     private void SquadBuildHQSelection()
     {
         // For now a target is defined by the player with mouse click on destroyed tower
-        if (Input.GetButtonDown("Submit"))
+        if (Input.GetButtonDown("Submit") || Input.GetButtonDown("SubmitMouse"))
         {
             RaycastHit hit;
             Ray ray = mainCamera.ScreenPointToRay(CustomInputModule.CursorPos);
@@ -520,7 +520,7 @@ public class SquadUnit : MonoBehaviour
     private void SquadBuildTurretSelection()
     {
         // For now a target is defined by the player with mouse click on destroyed tower
-        if (Input.GetButtonDown("Submit"))
+        if (Input.GetButtonDown("Submit") || Input.GetButtonDown("SubmitMouse"))
         {
             RaycastHit hit;
             Ray ray = mainCamera.ScreenPointToRay(CustomInputModule.CursorPos);
@@ -588,7 +588,7 @@ public class SquadUnit : MonoBehaviour
     private void SquadBuildExplosivesSelection()
     {
         // For now a target is defined by the player with mouse click on destroyed tower
-        if (Input.GetButtonDown("Submit"))
+        if (Input.GetButtonDown("Submit") || Input.GetButtonDown("SubmitMouse"))
         {
             RaycastHit hit;
             Ray ray = mainCamera.ScreenPointToRay(CustomInputModule.CursorPos);
