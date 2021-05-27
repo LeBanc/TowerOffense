@@ -16,7 +16,6 @@ public class Grenade : MonoBehaviour
     public ParticleSystem particles;
 
     // private data
-    private Vector3 origin;
     private Vector3 startPos;
     private Vector3 firstReboundPos;
     private Vector3 secondReboundPos;
@@ -32,10 +31,10 @@ public class Grenade : MonoBehaviour
     /// </summary>
     private void Start()
     {
-        origin = transform.position;
+        bodyRenderer = body.GetComponent<Renderer>();
+        // Set ratio values
         firstRatio = 2.0f / 3.0f;
         secondRatio = 11.0f / 12.0f;
-        bodyRenderer = body.GetComponent<Renderer>();
     }
 
     /// <summary>
@@ -55,10 +54,13 @@ public class Grenade : MonoBehaviour
     /// <param name="_to">Position to where the grenade will go (Vector3)</param>
     public void Launch(Vector3 _from,Vector3 _to)
     {
+        // Check if Start has been done
+        if (bodyRenderer == null) Start();
+
         // Set the grenade as active but hide the explosionWarning go
         body.SetActive(true);
         explosionWarning.SetActive(false);
-
+        
         // Set start and destination positions
         startPos = _from;
         destinationPos = _to;
@@ -166,8 +168,9 @@ public class Grenade : MonoBehaviour
         }
 
         // When the warning is done, make the grenade explode
-        Explode();
         PlayFX(); // Effects in a dedicated method to avoid the sound to be played at day end
+        Explode();
+
     }
 
     /// <summary>
@@ -194,7 +197,11 @@ public class Grenade : MonoBehaviour
 
         if(particles == null) // Else it will be done after playing the particules effect
         {
-            ResetGrenade();
+            Destroy(gameObject);
+        }
+        else
+        {
+            StartCoroutine(WaitForParticlesEnd()); // Reset position only after the particles effect is complete
         }
     }
 
@@ -207,7 +214,6 @@ public class Grenade : MonoBehaviour
         if (particles != null)
         {
             particles.Play();
-            StartCoroutine(ResetPosition()); // Reset position only after the particles effect is complete
         }
     }
 
@@ -215,7 +221,7 @@ public class Grenade : MonoBehaviour
     /// ResetPosition coroutine waits for the particle effect to be complete and then reset the grenade position to its origin
     /// </summary>
     /// <returns></returns>
-    IEnumerator ResetPosition()
+    IEnumerator WaitForParticlesEnd()
     {
         if(particles != null)
         {
@@ -224,7 +230,7 @@ public class Grenade : MonoBehaviour
                 yield return null;
             }
         }
-        ResetGrenade();
+        Destroy(gameObject);
     }
 
     /// <summary>
@@ -234,15 +240,5 @@ public class Grenade : MonoBehaviour
     public void SetDamages(int _damage)
     {
         explosiveDamages = _damage;
-    }
-
-    /// <summary>
-    /// ResetGrenade method resets the grenade to its default position and default state
-    /// </summary>
-    public void ResetGrenade()
-    {
-        transform.position = origin;
-        body.SetActive(false);
-        bodyRenderer.enabled = true;
     }
 }

@@ -9,26 +9,12 @@ public class ExplosiveTower : Tower
     // public Gameobject for the grenade
     public GameObject grenadePrefab;
 
-    // private Grenade component of the grenade GameObject
-    private Grenade grenade;
-
-    /// <summary>
-    /// At Start, fetches the Grenade component in addition of the Tower Start method
-    /// </summary>
-    protected override void Start()
-    {
-        grenade = grenadePrefab.GetComponent<Grenade>();
-        base.Start();
-    }
-
     /// <summary>
     /// Setup method initializes the tower: base init and specific init for Explosive damages
     /// </summary>
     public override void Setup()
     {
         base.Setup();
-        if(grenade == null) grenade = grenadePrefab.GetComponent<Grenade>();
-        grenade.SetDamages(explosiveAtk);
     }
 
     /// <summary>
@@ -38,7 +24,6 @@ public class ExplosiveTower : Tower
     {
         base.EnableUpdate();
         GameManager.PlayUpdate -= SpawnUpdate; // No spawn for explosive tower
-        grenade.ResetGrenade();
     }
 
     /// <summary>
@@ -96,6 +81,8 @@ public class ExplosiveTower : Tower
         Vector3 _launchPosition = hitList.Aggregate((x, y) => (_t.transform.position - x.position).sqrMagnitude < (_t.transform.position - y.position).sqrMagnitude ? x : y).position;
 
         // Launch grenade from launch position to destination position
-        grenade.Launch(_launchPosition,GridAdjustment.GetGridCoordinates(_t.transform.position));
+        Grenade _grenade = Instantiate(grenadePrefab).GetComponent<Grenade>();
+        _grenade.SetDamages(explosiveAtk);
+        _grenade.Launch(_launchPosition,GridAdjustment.GetGridCoordinates(_t.transform.position));
     }
 }
