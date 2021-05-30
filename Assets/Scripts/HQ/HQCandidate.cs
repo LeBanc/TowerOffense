@@ -5,14 +5,31 @@
 /// </summary>
 public class HQCandidate : Buildable
 {
+    public Renderer buldingRenderer;
+
     /// <summary>
-    /// At Start, init the HQCandidate in the PlayManager list
+    /// At Start, init the HQCandidate in the PlayManager list and subscribe to events
     /// </summary>
     protected override void Start()
     {
         buildingTime = PlayManager.data.hqBuildTime;
         base.Start();
         if(!PlayManager.hqCandidateList.Contains(this)) PlayManager.hqCandidateList.Add(this);
+
+        SquadActionPanel.OnShowHQCHighlight += ShowHighlight;
+        SquadActionPanel.OnHideHQCHighlight += HideHighlight;
+
+    }
+
+    /// <summary>
+    /// OnDestroy, unsubscribe from events
+    /// </summary>
+    protected override void OnDestroy()
+    {
+        SquadActionPanel.OnShowHQCHighlight -= ShowHighlight;
+        SquadActionPanel.OnHideHQCHighlight -= HideHighlight;
+
+        base.OnDestroy();
     }
 
     /// <summary>
@@ -46,5 +63,31 @@ public class HQCandidate : Buildable
 
         PlayManager.hqCandidateList.Remove(this);
         Destroy(gameObject, Time.deltaTime);
+    }
+
+    /// <summary>
+    /// ShowHighlight method enables the highlight (emission) on the HQCandidate material
+    /// </summary>
+    private void ShowHighlight()
+    {
+        if (buldingRenderer.material.GetFloat("_EnableHighlight") < 1f)
+        {
+            Material _mat = buldingRenderer.material;
+            _mat.SetFloat("_EnableHighlight", 1f);
+            buldingRenderer.material = _mat;
+        }
+    }
+
+    /// <summary>
+    /// HideHighlight method disables the highlight (emission) on the HQCandidate material
+    /// </summary>
+    private void HideHighlight()
+    {
+        if (buldingRenderer.material.GetFloat("_EnableHighlight") > 0f)
+        {
+            Material _mat = buldingRenderer.material;
+            _mat.SetFloat("_EnableHighlight", 0f);
+            buldingRenderer.material = _mat;
+        }
     }
 }

@@ -8,7 +8,10 @@ public class Tower : Enemy
 {
     // Prefab of soldier to spawn
     public GameObject enemySoldier;
+
+    // Tower components
     public GameObject activeFlag;
+    public Renderer towerRenderer;
 
     public TowerData data;
     private string dataPath = "";
@@ -43,6 +46,9 @@ public class Tower : Enemy
         shortRangeCells = new List<Vector3>();
         middleRangeCells = new List<Vector3>();
         longRangeCells = new List<Vector3>();
+
+        SquadActionPanel.OnShowTowerHighlight += ShowHighlight;
+        SquadActionPanel.OnHideTowerHighlight += HideHighlight;
     }
 
     /// <summary>
@@ -56,6 +62,10 @@ public class Tower : Enemy
         PlayManager.OnLoadSquadsOnNewDay -= EnableUpdate;
         PlayManager.OnEndDay -= DisableUpdate;
         PlayManager.OnRetreatAll -= StopSpawning;
+
+        SquadActionPanel.OnShowTowerHighlight -= ShowHighlight;
+        SquadActionPanel.OnHideTowerHighlight -= HideHighlight;
+
         base.OnDestroy();
     }
 
@@ -367,5 +377,31 @@ public class Tower : Enemy
     {
         base.Damage(dmg);
         hasBeenAttacked = true;
+    }
+
+    /// <summary>
+    /// ShowHighlight method enables the highlight (emission) on the Tower material if the tower is active
+    /// </summary>
+    private void ShowHighlight()
+    {
+        if(active && !destroyed)
+        {
+            Material _mat = towerRenderer.material;
+            _mat.SetFloat("_EnableHighlight", 1f);
+            towerRenderer.material = _mat;
+        }
+    }
+
+    /// <summary>
+    /// HideHighlight method disables the highlight (emission) on the Tower material
+    /// </summary>
+    private void HideHighlight()
+    {
+        if(towerRenderer.material.GetFloat("_EnableHighlight") > 0f)
+        {
+            Material _mat = towerRenderer.material;
+            _mat.SetFloat("_EnableHighlight", 0f);
+            towerRenderer.material = _mat;
+        }
     }
 }

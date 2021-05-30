@@ -1,0 +1,43 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!21 &2100000
+Material:
+  serializedVersion: 6
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_Name: TowerHighlight_mat
+  m_Shader: {fileID: -6465566751694194690, guid: 2e473390805f7c84aa6fdfa16913e080,
+    type: 3}
+  m_ShaderKeywords: 
+  m_LightmapFlags: 2
+  m_EnableInstancingVariants: 0
+  m_DoubleSidedGI: 0
+  m_CustomRenderQueue: -1
+  stringTagMap: {}
+  disabledShaderPasses: []
+  m_SavedProperties:
+    serializedVersion: 3
+    m_TexEnvs:
+    - MainTexture:
+        m_Texture: {fileID: 2800000, guid: 7d3c93d6e21f47d498be60cc5afb13e1, type: 3}
+        m_Scale: {x: 1, y: 1}
+        m_Offset: {x: 0, y: 0}
+    - Texture2D_2A51F102:
+        m_Texture: {fileID: 2800000, guid: 7d3c93d6e21f47d498be60cc5afb13e1, type: 3}
+        m_Scale: {x: 1, y: 1}
+        m_Offset: {x: 0, y: 0}
+    - _MainTexture:
+        m_Texture: {fileID: 2800000, guid: 7d3c93d6e21f47d498be60cc5afb13e1, type: 3}
+        m_Scale: {x: 1, y: 1}
+        m_Offset: {x: 0, y: 0}
+    m_Floats:
+    - Boolean_8F2AFF70: 0
+    - Vector1_4CCDC3D3: 0.05
+    - Vector1_5CA14F93: 2.12
+    - _EnableHighlight: 0
+    m_Colors:
+    - Color_55FEDF7A: {r: 1, g: 0, b: 0, a: 1}
+    - Color_6B8432C9: {r: 0.46666667, g: 0, b: 0, a: 1}
+    - _HighlightColor: {r: 0.4666667, g: 0, b: 0, a: 1}

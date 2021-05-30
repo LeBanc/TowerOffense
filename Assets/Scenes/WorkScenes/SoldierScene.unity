@@ -724,6 +724,41 @@ PrefabInstance:
   m_Modification:
     m_TransformParent: {fileID: 0}
     m_Modifications:
+    - target: {fileID: 2435408624596266883, guid: 09db6afe7623d554cbaa68ebeb6a178a,
+        type: 3}
+      propertyPath: m_Materials.Array.size
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 2435408624596266883, guid: 09db6afe7623d554cbaa68ebeb6a178a,
+        type: 3}
+      propertyPath: m_Materials.Array.data[1]
+      value: 
+      objectReference: {fileID: 2100000, guid: c8e0240e9684da34f8e797593fcd659e, type: 2}
+    - target: {fileID: 2435408624596266883, guid: 09db6afe7623d554cbaa68ebeb6a178a,
+        type: 3}
+      propertyPath: m_Materials.Array.data[0]
+      value: 
+      objectReference: {fileID: 2100000, guid: 3f6ca2700d711fa48ad105a0b2f7f3c3, type: 2}
+    - target: {fileID: 2435408624596266883, guid: 09db6afe7623d554cbaa68ebeb6a178a,
+        type: 3}
+      propertyPath: m_RenderingLayerMask
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 2435408624596266883, guid: 09db6afe7623d554cbaa68ebeb6a178a,
+        type: 3}
+      propertyPath: m_DynamicOccludee
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 3696448764796296235, guid: 09db6afe7623d554cbaa68ebeb6a178a,
+        type: 3}
+      propertyPath: m_IsActive
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 6051533052289567000, guid: 09db6afe7623d554cbaa68ebeb6a178a,
+        type: 3}
+      propertyPath: m_CastShadows
+      value: 3
+      objectReference: {fileID: 0}
     - target: {fileID: 8749437313307577319, guid: 09db6afe7623d554cbaa68ebeb6a178a,
         type: 3}
       propertyPath: m_LocalPosition.x

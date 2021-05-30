@@ -63,6 +63,12 @@ public class SquadActionPanel : MonoBehaviour
     public event SquadActionPanelEventHandler OnSelectionRequest;
     public event SquadActionPanelEventHandler OnRetreat;
 
+    // Static events to enable highlights on towers and HQ candidates
+    public static event SquadActionPanelEventHandler OnShowTowerHighlight;
+    public static event SquadActionPanelEventHandler OnHideTowerHighlight;
+    public static event SquadActionPanelEventHandler OnShowHQCHighlight;
+    public static event SquadActionPanelEventHandler OnHideHQCHighlight;
+
     // Properties
     public SquadUnit SquadUnit
     {
@@ -281,7 +287,14 @@ public class SquadActionPanel : MonoBehaviour
     {
         if (_isOn)
         {
+            // Set the cursor to move/attack and highlight the towers
             CursorManager.ShowCursorForAction(cursorCenter, cursorMin, cursorMax);
+            OnShowTowerHighlight?.Invoke();
+        }
+        else
+        {
+            // Unhighlight the towers
+            OnHideTowerHighlight?.Invoke();
         }
     }
 
@@ -328,6 +341,8 @@ public class SquadActionPanel : MonoBehaviour
                 squadUnit.OnActionDone += BuildHQDone;
                 squadUnit.OnUnselection += BuildHQCancel;
                 CursorManager.ShowCursorForAction(cursorCenter, cursorMin, cursorMax);
+                // Highlight the HQ candidates
+                OnShowHQCHighlight?.Invoke();
             }
         }
         else
@@ -349,6 +364,8 @@ public class SquadActionPanel : MonoBehaviour
         }
         squadUnit.OnActionDone -= BuildHQDone;
         squadUnit.OnUnselection -= BuildHQCancel;
+        // Unhighlight the HQ Candidates
+        OnHideHQCHighlight?.Invoke();
     }
 
     /// <summary>
@@ -361,6 +378,9 @@ public class SquadActionPanel : MonoBehaviour
 
         // BuildHQCancel is equivalent to Select sound
         audioUI.PlayUISelection();
+        
+        // Unhighlight the HQ Candidates
+        OnHideHQCHighlight?.Invoke();
     }
 
     /// <summary>
@@ -423,6 +443,8 @@ public class SquadActionPanel : MonoBehaviour
                 squadUnit.OnActionDone += ExplosivesDone;
                 squadUnit.OnUnselection += ExplosivesCancel;
                 CursorManager.ShowCursorForAction(cursorCenter, cursorMin, cursorMax);
+                // Highlight the towers
+                OnShowTowerHighlight?.Invoke();
             }
         }
         else
@@ -444,6 +466,8 @@ public class SquadActionPanel : MonoBehaviour
         }
         squadUnit.OnActionDone -= ExplosivesDone;
         squadUnit.OnUnselection -= ExplosivesCancel;
+        //Unhighlight the towers
+        OnHideTowerHighlight?.Invoke();
     }
 
     /// <summary>
@@ -456,6 +480,9 @@ public class SquadActionPanel : MonoBehaviour
 
         // ExplosivesCancel is equivalent to Select sound
         audioUI.PlayUISelection();
+
+        //Unhighlight the towers
+        OnHideTowerHighlight?.Invoke();
     }
 
     /// <summary>

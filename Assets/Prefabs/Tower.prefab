@@ -647,6 +647,7 @@ MonoBehaviour:
   enemySoldier: {fileID: 7775684171843242171, guid: 4588d112d2b6f67409f0dc1e9b830a91,
     type: 3}
   activeFlag: {fileID: 1064657789870497699}
+  towerRenderer: {fileID: 2435408624596266883}
   data: {fileID: 0}
 --- !u!65 &8749437313307577338
 BoxCollider:
@@ -807,6 +808,11 @@ PrefabInstance:
       propertyPath: m_Layer
       value: 0
       objectReference: {fileID: 0}
+    - target: {fileID: 916590980331435344, guid: 2557362e4e8bcfe4486030fd8a78182a,
+        type: 3}
+      propertyPath: m_Materials.Array.data[0]
+      value: 
+      objectReference: {fileID: 2100000, guid: 3f6ca2700d711fa48ad105a0b2f7f3c3, type: 2}
     - target: {fileID: 1420943568377158471, guid: 2557362e4e8bcfe4486030fd8a78182a,
         type: 3}
       propertyPath: m_LocalPosition.x
@@ -885,6 +891,12 @@ PrefabInstance:
     m_RemovedComponents:
     - {fileID: 3295646643590304130, guid: 2557362e4e8bcfe4486030fd8a78182a, type: 3}
   m_SourcePrefab: {fileID: 100100000, guid: 2557362e4e8bcfe4486030fd8a78182a, type: 3}
+--- !u!23 &2435408624596266883 stripped
+MeshRenderer:
+  m_CorrespondingSourceObject: {fileID: 916590980331435344, guid: 2557362e4e8bcfe4486030fd8a78182a,
+    type: 3}
+  m_PrefabInstance: {fileID: 3275292987596266195}
+  m_PrefabAsset: {fileID: 0}
 --- !u!4 &4525019470753677716 stripped
 Transform:
   m_CorrespondingSourceObject: {fileID: 1420943568377158471, guid: 2557362e4e8bcfe4486030fd8a78182a,

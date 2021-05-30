@@ -12,7 +12,7 @@ GameObject:
   - component: {fileID: 3623507161469174937}
   - component: {fileID: 920071286644831278}
   - component: {fileID: 7915116319869171245}
-  m_Layer: 11
+  m_Layer: 0
   m_Name: ExploWarning
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -112,7 +112,7 @@ GameObject:
   - component: {fileID: 2256044087702011340}
   - component: {fileID: 7437866963655531312}
   - component: {fileID: 2296103924341311611}
-  m_Layer: 11
+  m_Layer: 0
   m_Name: Grenade
   m_TagString: Untagged
   m_Icon: {fileID: 0}
