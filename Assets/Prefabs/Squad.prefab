@@ -79,7 +79,7 @@ GameObject:
   - component: {fileID: 1405736691217707932}
   - component: {fileID: 5348251234307360869}
   - component: {fileID: 5521145982470981720}
-  m_Layer: 9
+  m_Layer: 0
   m_Name: Quad
   m_TagString: Soldiers
   m_Icon: {fileID: 0}
