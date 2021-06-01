@@ -19,6 +19,8 @@ public class HQCanvas : UICanvas
     public Image barracksLevelUpImage;
     public Image memorialActiveImage;
     public Image intelServiceImage;
+    // New game info canvas
+    public UICanvas newGameCanvas;
 
     // Events
     public delegate void HQCanvasEventHandler();
@@ -38,6 +40,7 @@ public class HQCanvas : UICanvas
         PlayManager.OnHQPhase += Show;
         PlayManager.OnHQPhase += Init;
         PlayManager.OnLoadGame += Init;
+        PlayManager.OnNewGame += ShowNewGameCanvas;
 
         audioUI = GetComponent<AudioUI>();
 
@@ -61,6 +64,7 @@ public class HQCanvas : UICanvas
         PlayManager.OnHQPhase -= Init;
         PlayManager.OnLoadGame -= Init;
         GameManager.PlayUpdate -= HQCanvasUpdate;
+        PlayManager.OnNewGame -= ShowNewGameCanvas;
 
         tabs.barracks.soldierUpgrade.levelupCanvas.OnLevelUp -= UpdateLevelUp;
         NewSoldierCanvas.OnRecruitWithXP -= UpdateLevelUp;
@@ -169,5 +173,14 @@ public class HQCanvas : UICanvas
         {
             OnSecondaryShortcut?.Invoke();
         }
+    }
+
+    /// <summary>
+    /// ShowNewGameCanvas method displays the New Game message when starting a new game
+    /// </summary>
+    private void ShowNewGameCanvas()
+    {
+        newGameCanvas.Show();
+        newGameCanvas.GetComponentInChildren<Button>().Select();
     }
 }

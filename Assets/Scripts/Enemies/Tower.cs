@@ -30,6 +30,9 @@ public class Tower : Enemy
     private List<Vector3> middleRangeCells;
     private List<Vector3> longRangeCells;
 
+    public delegate void TowerEventHandler();
+    public static event TowerEventHandler OnFinaleTowerDestroyed;
+
     /// <summary>
     /// On Start, initialize HealthBar, events and available cells
     /// </summary>
@@ -184,9 +187,11 @@ public class Tower : Enemy
 
         // GFX
         HQ.InstantiateHQCandidate(transform.position);
-        //GetComponent<MeshRenderer>().material.color = Color.black;
 
         // SFX
+
+        // Test to display the end game message
+        if (data.towerLevel == 4) OnFinaleTowerDestroyed?.Invoke();
 
         Destroy(gameObject);
     }

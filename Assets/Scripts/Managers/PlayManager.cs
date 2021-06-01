@@ -90,6 +90,7 @@ public class PlayManager : Singleton<PlayManager>
     public static event PlayManagerEvents OnHQPhase;
     public static event PlayManagerEvents OnWorkforceUpdate;
     public static event PlayManagerEvents OnLoadGame;
+    public static event PlayManagerEvents OnNewGame;
     public static event PlayManagerEvents OnRecruit;
     public static event PlayManagerEvents OnReset;
 
@@ -650,12 +651,14 @@ public class PlayManager : Singleton<PlayManager>
     /// <summary>
     /// InitAfterLoad loads calls and event to init all things needed to be init
     /// </summary>
-    public static void InitAfterLoad()
+    public static void InitAfterLoad(bool _newGame)
     {
         PlayManager.soldierNav.BuildNavMesh();
         PlayManager.squadNav.BuildNavMesh();
 
         OnLoadGame?.Invoke();
         OnHQPhase?.Invoke();
+
+        if (_newGame) OnNewGame?.Invoke();
     }
 }

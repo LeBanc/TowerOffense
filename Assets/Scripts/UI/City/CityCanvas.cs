@@ -14,6 +14,7 @@ public class CityCanvas : UICanvas
     public SquadActionPanel squad3;
     public SquadActionPanel squad4;
     public Button retreatButton;
+    public UICanvas endGameCanvas;
     
     // Public Slow motion effect image
     public Image slowMotionEffect;
@@ -70,6 +71,7 @@ public class CityCanvas : UICanvas
         squad4.gameObject.SetActive(false);
         squad4.OnRetreat += HideRetreatButton;
         retreatButton.gameObject.SetActive(false);
+        endGameCanvas.Hide();
 
         foreach (GameObject _go in hideOnRetrat) _go.SetActive(false);
 
@@ -79,7 +81,9 @@ public class CityCanvas : UICanvas
         PlayManager.OnHQPhase += Hide;
         PlayManager.OnHQPhase += Reset;
         PlayManager.OnLoadGame += FetchCamera;
-        //enabled = false;
+
+        Tower.OnFinaleTowerDestroyed += ShowEndGame;
+        
     }
 
     /// <summary>
@@ -95,6 +99,8 @@ public class CityCanvas : UICanvas
         PlayManager.OnNewHealthBarAdded -= AddHealthBar;
         PlayManager.OnReset -= Reset;
         PlayManager.OnLoadGame -= FetchCamera;
+
+        Tower.OnFinaleTowerDestroyed -= ShowEndGame;
 
         squad1.OnRetreat -= HideRetreatButton;
         squad2.OnRetreat -= HideRetreatButton;
@@ -400,6 +406,7 @@ public class CityCanvas : UICanvas
         OnSquad2Selection = null;
         OnSquad3Selection = null;
         OnSquad4Selection = null;
+        endGameCanvas.Hide();
     }
 
     /// <summary>
@@ -640,5 +647,25 @@ public class CityCanvas : UICanvas
         {
             Debug.LogError("[CityCanvas] Cannot find main camera CameraMovement script!");
         }
+    }
+
+    /// <summary>
+    /// ShowEndGame method displays the end game message (when the enemy HQ is destroyed)
+    /// </summary>
+    private void ShowEndGame()
+    {
+        GameManager.PlayUpdate -= CityCanvasUpdate;
+        Time.timeScale = 0f;
+        endGameCanvas.Show();
+        endGameCanvas.GetComponentInChildren<Button>().Select(); // Not so great but ok
+    }
+
+    /// <summary>
+    /// BackToStartMenu method is used when the game is won to go back to the start menu
+    /// </summary>
+    public void BackToStartMenu()
+    {
+        GameManager.ChangeGameStateRequest(GameManager.GameState.start);
+        Time.timeScale = 1f;
     }
 }

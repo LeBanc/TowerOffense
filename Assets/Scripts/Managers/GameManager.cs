@@ -242,7 +242,7 @@ public class GameManager : Singleton<GameManager>
             DataSave.LoadSavedGame(_fileName);
         }
         // Always init after a load to unsure the game is in HQPhase, showing the new loaded data
-        PlayManager.InitAfterLoad();
+        PlayManager.InitAfterLoad(_loadingType==0);
 
         // Small pause if the loading take less than 2 seconds, just to see the loading screen
         while (Time.time < startTime +2f)
