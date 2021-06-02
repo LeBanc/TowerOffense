@@ -956,7 +956,7 @@ PrefabInstance:
     - target: {fileID: 7002637855023888307, guid: 790c0a6e56d113d42a8466aea60c9063,
         type: 3}
       propertyPath: m_FontData.m_FontSize
-      value: 13
+      value: 12
       objectReference: {fileID: 0}
     - target: {fileID: 7002637855023888307, guid: 790c0a6e56d113d42a8466aea60c9063,
         type: 3}
@@ -979,6 +979,11 @@ PrefabInstance:
         type: 3}
       propertyPath: m_FontData.m_Alignment
       value: 4
+      objectReference: {fileID: 0}
+    - target: {fileID: 7002637855023888307, guid: 790c0a6e56d113d42a8466aea60c9063,
+        type: 3}
+      propertyPath: m_FontData.m_VerticalOverflow
+      value: 1
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 790c0a6e56d113d42a8466aea60c9063, type: 3}
@@ -2170,7 +2175,7 @@ PrefabInstance:
     - target: {fileID: 7002637855023888307, guid: 790c0a6e56d113d42a8466aea60c9063,
         type: 3}
       propertyPath: m_FontData.m_FontSize
-      value: 13
+      value: 15
       objectReference: {fileID: 0}
     - target: {fileID: 7002637855023888307, guid: 790c0a6e56d113d42a8466aea60c9063,
         type: 3}
@@ -2191,6 +2196,11 @@ PrefabInstance:
         type: 3}
       propertyPath: m_Color.g
       value: 0.49019608
+      objectReference: {fileID: 0}
+    - target: {fileID: 7002637855023888307, guid: 790c0a6e56d113d42a8466aea60c9063,
+        type: 3}
+      propertyPath: m_FontData.m_VerticalOverflow
+      value: 1
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 790c0a6e56d113d42a8466aea60c9063, type: 3}
