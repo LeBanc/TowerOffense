@@ -513,6 +513,13 @@ public class Squad : ScriptableObject
     /// </summary>
     public void ComputeSoldierDeath()
     {
+        // Check if a soldier has the capacity to save the wounded soldiers ; if so, exit
+        foreach(Soldier _s in soldierList)
+        {
+            if (_s.Data.capacities.Contains(SoldierData.Capacities.WoundedSaving)) return;
+        }
+
+        // else one soldier will die
         int _r = Random.Range(0, 4);
         soldierList[_r].Die();
         PlayManager.deadSoldier.Add(soldierList[_r]);
