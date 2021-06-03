@@ -17,6 +17,7 @@ public class UIManager : Singleton<UIManager>
     public UICanvas playUI;
     public UICanvas loadMenu;
     public UICanvas saveMenu;
+    public UICanvas howToPlayMenu;
     public ConfirmMessageCanvas confirmMessage;
     public ErrorMessageCanvas errorMessage;
 
@@ -313,6 +314,24 @@ public class UIManager : Singleton<UIManager>
         // Select the last selected object from the previous canvas
         if (Instance.pauseMenu.IsVisible && Instance.pauseMenuLastSelected != null) Instance.pauseMenuLastSelected.Select();
     }
+
+    public void ShowHowToPlayMenu()
+    {
+        howToPlayMenu.Show();
+
+        if (howToPlayMenu.TryGetComponent<DefaultSelectable>(out DefaultSelectable _default))
+        {
+            if (_default.defaultSelectable != null)
+            {
+                _default.defaultSelectable.Select();
+            }
+        }
+    }
+
+    public static void HideHowToPlayMenu()
+    {
+        Instance.howToPlayMenu.Hide();
+    }
     #endregion
 
     #region Message Canvas
@@ -499,6 +518,10 @@ public class UIManager : Singleton<UIManager>
             {
                 HideLoadMenu();
             }
+            else if (howToPlayMenu.IsVisible)
+            {
+                HideHowToPlayMenu();
+            }
             else if (Input.GetButtonDown("Pause"))
             {
                 InitConfirmMessage("Are you sure you want to quit to desktop?", delegate { GameManager.QuitGameStatic(); });
@@ -541,6 +564,10 @@ public class UIManager : Singleton<UIManager>
             {
                 HideLoadMenu();
             }
+            else if (howToPlayMenu.IsVisible)
+            {
+                HideHowToPlayMenu();
+            }
             else
             {
                 GameManager.ChangeGameStateRequest(GameManager.GameState.play);
@@ -570,7 +597,8 @@ public class UIManager : Singleton<UIManager>
                 saveMenu.Hide();
             }
             if (loadMenu.IsVisible) loadMenu.Hide();
-            
+            if (howToPlayMenu.IsVisible) howToPlayMenu.Hide();
+
             GameManager.ChangeGameStateRequest(GameManager.GameState.play);
             if (playUILastSelected != null)
             {
