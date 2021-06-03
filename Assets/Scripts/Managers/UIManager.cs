@@ -18,6 +18,7 @@ public class UIManager : Singleton<UIManager>
     public UICanvas loadMenu;
     public UICanvas saveMenu;
     public UICanvas howToPlayMenu;
+    public UICanvas creditsMenu;
     public ConfirmMessageCanvas confirmMessage;
     public ErrorMessageCanvas errorMessage;
 
@@ -315,6 +316,9 @@ public class UIManager : Singleton<UIManager>
         if (Instance.pauseMenu.IsVisible && Instance.pauseMenuLastSelected != null) Instance.pauseMenuLastSelected.Select();
     }
 
+    /// <summary>
+    /// ShowHowToPlayMenu method displays the How To Play Canvas
+    /// </summary>
     public void ShowHowToPlayMenu()
     {
         howToPlayMenu.Show();
@@ -328,9 +332,36 @@ public class UIManager : Singleton<UIManager>
         }
     }
 
+    /// <summary>
+    /// HideHowToPlayMenu static method hides the How To Play Canvas
+    /// </summary>
     public static void HideHowToPlayMenu()
     {
         Instance.howToPlayMenu.Hide();
+    }
+
+    /// <summary>
+    /// ShowCreditsMenu method displays the Credits Canvas
+    /// </summary>
+    public void ShowCreditsMenu()
+    {
+        creditsMenu.Show();
+
+        if (creditsMenu.TryGetComponent<DefaultSelectable>(out DefaultSelectable _default))
+        {
+            if (_default.defaultSelectable != null)
+            {
+                _default.defaultSelectable.Select();
+            }
+        }
+    }
+
+    /// <summary>
+    /// HideCreditsMenu static method hides the Credits Canvas
+    /// </summary>
+    public static void HideCreditsMenu()
+    {
+        Instance.creditsMenu.Hide();
     }
     #endregion
 
@@ -521,6 +552,10 @@ public class UIManager : Singleton<UIManager>
             else if (howToPlayMenu.IsVisible)
             {
                 HideHowToPlayMenu();
+            }
+            else if (creditsMenu.IsVisible)
+            {
+                HideCreditsMenu();
             }
             else if (Input.GetButtonDown("Pause"))
             {
