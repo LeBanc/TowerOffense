@@ -68,8 +68,7 @@ public class GameData: ScriptableObject
     [Header("Lists of resources")]
     public List<Color> squadColors;
     public List<Sprite> soldierImages;
-    public List<string> soldierFirstNames;
-    public List<string> soldierLastNames;
+    public SoldierNamesData soldierNames;
 }
 
 [System.Serializable]

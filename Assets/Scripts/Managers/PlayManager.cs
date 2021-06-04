@@ -526,7 +526,8 @@ public class PlayManager : Singleton<PlayManager>
     /// <returns>Soldier name</returns>
     public static string GetRandomSoldierName()
     {
-        return string.Concat(data.soldierFirstNames[Random.Range(0,data.soldierFirstNames.Count-1)], " ", data.soldierLastNames[Random.Range(0, data.soldierLastNames.Count - 1)]);
+        List<string> firstNames = (Random.Range(0f, 1f) > 0.5f)?data.soldierNames.femaleFirstNamesList:data.soldierNames.maleFirstNamesList;
+        return string.Concat(firstNames[Random.Range(0,firstNames.Count-1)], " ", data.soldierNames.lastNamesList[Random.Range(0, data.soldierNames.lastNamesList.Count - 1)]);
     }
 
     /// <summary>
