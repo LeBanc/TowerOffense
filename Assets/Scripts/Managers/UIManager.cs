@@ -2,7 +2,6 @@
 using UnityEngine;
 using UnityEngine.UI;
 using UnityEngine.EventSystems;
-using UnityEngine.XR.WSA.Input;
 
 /// <summary>
 /// UIManager is the manager of the UI
@@ -19,6 +18,7 @@ public class UIManager : Singleton<UIManager>
     public UICanvas saveMenu;
     public UICanvas howToPlayMenu;
     public UICanvas creditsMenu;
+    public UICanvas optionsMenu;
     public ConfirmMessageCanvas confirmMessage;
     public ErrorMessageCanvas errorMessage;
 
@@ -363,6 +363,30 @@ public class UIManager : Singleton<UIManager>
     {
         Instance.creditsMenu.Hide();
     }
+
+    /// <summary>
+    /// ShowOptionsMenu method displays the Options Canvas
+    /// </summary>
+    public void ShowOptionsMenu()
+    {
+        optionsMenu.Show();
+
+        if (optionsMenu.TryGetComponent<DefaultSelectable>(out DefaultSelectable _default))
+        {
+            if (_default.defaultSelectable != null)
+            {
+                _default.defaultSelectable.Select();
+            }
+        }
+    }
+
+    /// <summary>
+    /// HideOptionsMenu static method hides the Options Canvas
+    /// </summary>
+    public static void HideOptionsMenu()
+    {
+        Instance.optionsMenu.Hide();
+    }
     #endregion
 
     #region Message Canvas
@@ -557,6 +581,10 @@ public class UIManager : Singleton<UIManager>
             {
                 HideCreditsMenu();
             }
+            else if(optionsMenu.IsVisible)
+            {
+                HideOptionsMenu();
+            }
             else if (Input.GetButtonDown("Pause"))
             {
                 InitConfirmMessage("Are you sure you want to quit to desktop?", delegate { GameManager.QuitGameStatic(); });
@@ -602,6 +630,10 @@ public class UIManager : Singleton<UIManager>
             else if (howToPlayMenu.IsVisible)
             {
                 HideHowToPlayMenu();
+            }
+            else if (optionsMenu.IsVisible)
+            {
+                HideOptionsMenu();
             }
             else
             {
