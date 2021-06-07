@@ -78,18 +78,4 @@ MonoBehaviour:
   - {fileID: 21300000, guid: 888936182c7338043915bc9b88c021e5, type: 3}
   - {fileID: 21300000, guid: 95b3e1bc08ce35644aba10e47cd321bb, type: 3}
   - {fileID: 21300000, guid: ffabe18f14c66f7498eef5cf9070bf8e, type: 3}
-  soldierFirstNames:
-  - Michel
-  - Robert
-  - Nathalie
-  - "Fran\xE7ois"
-  - Eli
-  soldierLastNames:
-  - Martin
-  - Gaga
-  - Mouche
-  - "De La Robussi\xE8re"
-  - O'Maley
-  - Xi
-  - Doe
-  - Licorne
+  soldierNames: {fileID: 11400000, guid: fbfedd75d282bd04daea1f5175111422, type: 2}
