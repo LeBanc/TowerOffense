@@ -36,7 +36,7 @@ RectTransform:
   m_AnchorMin: {x: 0, y: 0}
   m_AnchorMax: {x: 1, y: 1}
   m_AnchoredPosition: {x: 0, y: 0}
-  m_SizeDelta: {x: 0, y: 0}
+  m_SizeDelta: {x: 20, y: 20}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!222 &6520675900206897288
 CanvasRenderer:
@@ -187,6 +187,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 94f0ac4d13ea2b8488d1b7d7c7fcea52, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  webGLObjectsToHide: []
 --- !u!1001 &3554641604826302160
 PrefabInstance:
   m_ObjectHideFlags: 0
