@@ -16,8 +16,8 @@ MonoBehaviour:
   towerType: Short Range Tower
   towerTypeSprite: {fileID: 21300000, guid: a3ded17cf9202bc4fbb74695fd6a2b95, type: 3}
   spawnSoldier: 1
-  shortRangeAttack: 28
-  middleRangeAttack: 10
+  shortRangeAttack: 24
+  middleRangeAttack: 14
   longRangeAttack: 0
   explosiveAttack: 0
   shortRangeDefense: 3

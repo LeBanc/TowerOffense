@@ -17,8 +17,8 @@ MonoBehaviour:
   towerTypeSprite: {fileID: 21300000, guid: 3e73908236ec1924181394042f367dd8, type: 3}
   spawnSoldier: 1
   shortRangeAttack: 0
-  middleRangeAttack: 6
-  longRangeAttack: 20
+  middleRangeAttack: 16
+  longRangeAttack: 26
   explosiveAttack: 0
   shortRangeDefense: 0
   middleRangeDefense: 0
