@@ -1,9 +1,7 @@
-﻿using System.Collections;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using UnityEngine;
 using System.IO;
 using UnityEditor;
-using System.Text;
 
 /// <summary>
 /// SoldierNamesData are the list of soldiers name
@@ -30,6 +28,7 @@ public class SoldierNamesData : ScriptableObject
     /// </summary>
     public void LoadLastNames()
     {
+#if UnityEditor
         lastNamesList.Clear();
         if(lastNamesFile != null)
         {
@@ -44,6 +43,7 @@ public class SoldierNamesData : ScriptableObject
                 }
             }
         }
+#endif
     }
 
     /// <summary>
@@ -51,6 +51,7 @@ public class SoldierNamesData : ScriptableObject
     /// </summary>
     public void SaveLastNames()
     {
+#if UnityEditor
         if(lastNamesFile != null)
         {
             string filePath = AssetDatabase.GetAssetPath(lastNamesFile);
@@ -64,6 +65,7 @@ public class SoldierNamesData : ScriptableObject
             writer.Flush();
             writer.Close();
         }
+#endif
     }
 
     /// <summary>
@@ -71,6 +73,7 @@ public class SoldierNamesData : ScriptableObject
     /// </summary>
     public void LoadMaleNames()
     {
+#if UnityEditor
         maleFirstNamesList.Clear();
         if (maleFirstNamesFile != null)
         {
@@ -85,6 +88,7 @@ public class SoldierNamesData : ScriptableObject
                 }
             }
         }
+#endif
     }
 
     /// <summary>
@@ -92,6 +96,7 @@ public class SoldierNamesData : ScriptableObject
     /// </summary>
     public void SaveMaleNames()
     {
+#if UnityEditor
         if (maleFirstNamesFile != null)
         {
             string filePath = AssetDatabase.GetAssetPath(maleFirstNamesFile);
@@ -105,6 +110,7 @@ public class SoldierNamesData : ScriptableObject
             writer.Flush();
             writer.Close();
         }
+#endif
     }
 
     /// <summary>
@@ -112,6 +118,7 @@ public class SoldierNamesData : ScriptableObject
     /// </summary>
     public void LoadFemaleNames()
     {
+#if UnityEditor
         femaleFirstNamesList.Clear();
         if (femaleFirstNamesFile != null)
         {
@@ -126,6 +133,7 @@ public class SoldierNamesData : ScriptableObject
                 }
             }
         }
+#endif
     }
 
     /// <summary>
@@ -133,6 +141,7 @@ public class SoldierNamesData : ScriptableObject
     /// </summary>
     public void SaveFemaleNames()
     {
+#if UnityEditor
         if (femaleFirstNamesFile != null)
         {
             string filePath = AssetDatabase.GetAssetPath(femaleFirstNamesFile);
@@ -146,8 +155,6 @@ public class SoldierNamesData : ScriptableObject
             writer.Flush();
             writer.Close();
         }
+#endif
     }
-
-
-
 }
