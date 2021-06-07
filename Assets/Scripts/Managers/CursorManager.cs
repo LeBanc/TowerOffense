@@ -21,7 +21,7 @@ public class CursorManager : Singleton<CursorManager>
 
     private bool forceVisibility;
     private Vector2 lastPos;
-    private float gamePadSpeed = 2f;
+    private float gamePadSpeed = 500f;
 
     public delegate void CursorManagerEventHandler();
     public static event CursorManagerEventHandler OnMouseControlChange;
@@ -86,6 +86,8 @@ public class CursorManager : Singleton<CursorManager>
         GameManager.OnPauseToPlay += ShowCursor;
 
         OnMouseControlChange?.Invoke();
+
+        gamePadSpeed = Screen.width / 1.5f;
     }
 
     /// <summary>
@@ -210,7 +212,7 @@ public class CursorManager : Singleton<CursorManager>
         }
         else
         {
-            CustomInputModule.MoveCursorPosition(new Vector2(Input.GetAxis("Controller X")*gamePadSpeed, Input.GetAxis("Controller Y")*gamePadSpeed));
+            CustomInputModule.MoveCursorPosition(new Vector2(Input.GetAxis("Controller X")*gamePadSpeed*Time.deltaTime, Input.GetAxis("Controller Y")*gamePadSpeed*Time.deltaTime));
         }
 
         // Set the state & shape of the cursor
