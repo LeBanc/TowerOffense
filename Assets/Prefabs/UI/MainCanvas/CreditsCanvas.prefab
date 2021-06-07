@@ -720,20 +720,20 @@ PrefabInstance:
     - target: {fileID: 7002637855023888307, guid: 790c0a6e56d113d42a8466aea60c9063,
         type: 3}
       propertyPath: m_Text
-      value: 'Soldier model and animations based on:
-
-        Toon Soldier Demo by
-        Polygon Blacksmith @ Unity Asset Store
+      value: 'Soldier model and animations based on Toon Soldier Demo by Polygon
+        Blacksmith @ Unity Asset Store
 
 
-        Building model based on:
-
-        Cartoon
+        Building model based on Cartoon
         Low Poly City Lite by JustCreate @ Unity Asset Store
 
 
-        Title font
-        is WorldConflict by Vladimir Nikolic @ 1001freefonts.com
+        Controller
+        sprites based on Controller Icon Pack by NullSave @ Unity Asset Store
+
+
+        Title
+        font is WorldConflict by Vladimir Nikolic @ 1001freefonts.com
 
 
         Musics
