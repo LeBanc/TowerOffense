@@ -1363,7 +1363,7 @@ PrefabInstance:
     - target: {fileID: 7002637855023888307, guid: 790c0a6e56d113d42a8466aea60c9063,
         type: 3}
       propertyPath: m_FontData.m_BestFit
-      value: 0
+      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 7002637855023888307, guid: 790c0a6e56d113d42a8466aea60c9063,
         type: 3}
@@ -1373,7 +1373,7 @@ PrefabInstance:
     - target: {fileID: 7002637855023888307, guid: 790c0a6e56d113d42a8466aea60c9063,
         type: 3}
       propertyPath: m_FontData.m_MinSize
-      value: 1
+      value: 10
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 790c0a6e56d113d42a8466aea60c9063, type: 3}
