@@ -37,6 +37,7 @@ public class Turret : Shootable
         PlayManager.OnLoadSquadsOnNewDay += Activate;
         PlayManager.OnEndDay += EndOfTurn;
         PlayManager.OnEndDay += Deactivate;
+        PlayManager.OnReset += DestroyTurret;
 
         SetupHealthBar(30f);
         RaiseOnDamage(hP, maxHP);
@@ -57,6 +58,7 @@ public class Turret : Shootable
         PlayManager.OnLoadSquadsOnNewDay -= Activate;
         PlayManager.OnEndDay -= EndOfTurn;
         PlayManager.OnEndDay -= Deactivate;
+        PlayManager.OnReset -= DestroyTurret;
 
         base.OnDestroy();
     }

@@ -11,7 +11,9 @@ public class OptionCanvas : CancelableUICanvas
 {
     // TabToggle
     public ToggleGroup tabs;
-
+    public Toggle firstTab;
+    public UICanvas[] contentCanvas;
+    
     /// <summary>
     /// Show method shows the canvas and subscribes to events
     /// </summary>
@@ -19,6 +21,16 @@ public class OptionCanvas : CancelableUICanvas
     {
         GameManager.StartUpdate += OptionCanvasUpdate;
         GameManager.PauseUpdate += OptionCanvasUpdate;
+
+        if(firstTab.isOn)
+        {
+            contentCanvas[0].Show();
+        }
+        else
+        {
+            firstTab.Select();
+        }
+
         base.Show();
     }
 
@@ -28,8 +40,14 @@ public class OptionCanvas : CancelableUICanvas
     public override void Hide()
     {
         base.Hide();
+
         GameManager.StartUpdate -= OptionCanvasUpdate;
         GameManager.PauseUpdate -= OptionCanvasUpdate;
+
+        foreach (UICanvas _canvas in contentCanvas)
+        {
+            _canvas.Hide();
+        }
     }
 
     /// <summary>

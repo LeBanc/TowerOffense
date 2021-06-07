@@ -46,14 +46,17 @@ public class SoldierNamesDataEditor : Editor
         if (GUILayout.Button("Load last names"))
         {
             dataTarget.LoadLastNames();
+            EditorUtility.SetDirty(dataTarget);
         }
         if (GUILayout.Button("Load male first names"))
         {
             dataTarget.LoadMaleNames();
+            EditorUtility.SetDirty(dataTarget);
         }
         if (GUILayout.Button("Load female first names"))
         {
             dataTarget.LoadFemaleNames();
+            EditorUtility.SetDirty(dataTarget);
         }
 
         EditorGUILayout.PropertyField(lastNamesListProperty);

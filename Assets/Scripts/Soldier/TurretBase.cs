@@ -18,6 +18,17 @@ public class TurretBase : Buildable
         base.Start();
         PlayManager.turretBaseList.Add(this);
         StartBuilding();
+
+        PlayManager.OnReset += Remove;
+    }
+
+    /// <summary>
+    /// OnDestroy, unsubscribes from events
+    /// </summary>
+    protected override void OnDestroy()
+    {
+        PlayManager.OnReset -= Remove;
+        base.OnDestroy();
     }
 
     /// <summary>
@@ -43,6 +54,14 @@ public class TurretBase : Buildable
 
         base.EndBuilding();
 
+        Remove();
+    }
+
+    /// <summary>
+    /// Remove method remove the turretbase from the scene and from the PlayManager data
+    /// </summary>
+    private void Remove()
+    {
         PlayManager.turretBaseList.Remove(this);
         Destroy(gameObject, Time.deltaTime);
     }

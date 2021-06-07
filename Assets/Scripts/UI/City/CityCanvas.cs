@@ -665,6 +665,14 @@ public class CityCanvas : UICanvas
     /// </summary>
     public void BackToStartMenu()
     {
+        // Hide CityCanvas and win popup
+        endGameCanvas.Hide();
+        Hide();
+
+        //Clear Game Data
+        PlayManager.ResetGame();
+
+        // Change GameState to go back to Start Menu
         GameManager.ChangeGameStateRequest(GameManager.GameState.start);
         Time.timeScale = 1f;
     }

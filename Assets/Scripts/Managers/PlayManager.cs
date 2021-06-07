@@ -244,7 +244,6 @@ public class PlayManager : Singleton<PlayManager>
         {
             isRecruiting = true;
             // Canvas call by event is no more done here to avoid null event system error
-            Debug.Log("New Soldier at " + recruitment + "% chances");
             recruitment = data.baseRecruitAmount + ((recruitmentLevel >= 1) ? data.facilities.recruiting1Bonus : 0) + ((recruitmentLevel >= 2) ? data.facilities.recruiting2Bonus : 0) + ((recruitmentLevel >= 3) ? data.facilities.recruiting3Bonus : 0);
         }
 
@@ -383,17 +382,17 @@ public class PlayManager : Singleton<PlayManager>
         // Clear data from scene (dynamic)
         foreach(EnemySoldier _enemy in enemyList)
         {
-            Destroy(_enemy.gameObject);
+            if(_enemy != null) Destroy(_enemy.gameObject);
         }
         enemyList.Clear();
         foreach (SquadUnit _squadUnit in squadUnitList)
         {
-            Destroy(_squadUnit.gameObject);
+            if(_squadUnit!= null) Destroy(_squadUnit.gameObject);
         }
         squadUnitList.Clear();
         foreach (Explosives _explosives in explosivesList)
         {
-            Destroy(_explosives.gameObject);
+            if(_explosives != null) Destroy(_explosives.gameObject);
         }
         explosivesList.Clear();
 
@@ -447,7 +446,7 @@ public class PlayManager : Singleton<PlayManager>
         recruitingWithXP = 0;
 
         // Create soldiers
-        for (int i = 0; i < 8; i++)
+        for (int i = 0; i < data.baseSoldierInitNumber; i++)
         {
             soldierIDList.Add(nextSoldierID);
             Soldier _soldier = ScriptableObject.CreateInstance("Soldier") as Soldier;
@@ -463,6 +462,14 @@ public class PlayManager : Singleton<PlayManager>
         squadList[0].ChangeSoldier(3, soldierList[2]);
         squadList[0].ChangeSoldier(4, soldierList[3]);
         squadList[0].isEngaged = true;
+    }
+
+    /// <summary>
+    /// ResetGame static method calls OnReset event to reset game data
+    /// </summary>
+    public static void ResetGame()
+    {
+        OnReset?.Invoke();
     }
 
     /// <summary>

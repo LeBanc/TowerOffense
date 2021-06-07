@@ -118,7 +118,7 @@ public class Explosives : Buildable
         GameManager.PlayUpdate -= Countdown;
 
         // Compute the damage amount
-        int _explosiveDamages = PlayManager.data.baseExplosivesDamage + ((PlayManager.explosivesLevel >= 1) ? PlayManager.data.facilities.exploDamages1Bonus : 0) + ((PlayManager.explosivesLevel >= 2) ? PlayManager.data.facilities.exploDamages2Bonus : 0) + ((PlayManager.explosivesLevel >= 3) ? PlayManager.data.facilities.exploDamages3Bonus : 0);        
+        int _explosiveDamages = PlayManager.data.baseExplosivesDamage + ((PlayManager.explosivesLevel >= 1) ? PlayManager.data.facilities.exploDamages1Bonus : 0) + ((PlayManager.explosivesLevel >= 2) ? PlayManager.data.facilities.exploDamages2Bonus : 0) + ((PlayManager.explosivesLevel >= 3) ? PlayManager.data.facilities.exploDamages3Bonus : 0);
 
         // Damage the target (tower)
         target.DamageExplosive(_explosiveDamages);

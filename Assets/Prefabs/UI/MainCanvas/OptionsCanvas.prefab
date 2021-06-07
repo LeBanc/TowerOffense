@@ -2618,6 +2618,12 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   webGLObjectsToHide: []
   tabs: {fileID: 7126430120985653428}
+  firstTab: {fileID: 6009940624024844475}
+  contentCanvas:
+  - {fileID: 6992534839612222768}
+  - {fileID: 5042601165687398384}
+  - {fileID: 2655939803859727334}
+  - {fileID: 7940093083632587455}
 --- !u!114 &8087859223145737694
 MonoBehaviour:
   m_ObjectHideFlags: 0

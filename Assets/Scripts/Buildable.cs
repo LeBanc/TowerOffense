@@ -43,6 +43,8 @@ public class Buildable : MonoBehaviour
     /// </summary>
     protected virtual void OnDestroy()
     {
+        if (healthBar != null) healthBar.Remove();
+
         PlayManager.OnLoadSquadsOnNewDay -= Init;
         PlayManager.OnEndDay -= Hide;
         GameManager.PlayUpdate -= Build;
