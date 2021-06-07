@@ -1,4 +1,5 @@
 ﻿using UnityEngine;
+using UnityEngine.UI;
 
 /// <summary>
 /// HQLevelupCanvas class manages the Level Up Canvas
@@ -65,18 +66,19 @@ public class HQLevelupCanvas : CancelableUICanvas
             soldier = _soldier;
             item1.gameObject.SetActive(true);
             item1.Setup(soldier, soldier.Data.improveTo[0]);
-            item2.gameObject.SetActive(false);
-            item3.gameObject.SetActive(true);
-            item3.Setup(soldier, soldier.Data.improveTo[1]);
+            item2.gameObject.SetActive(true);
+            item2.Setup(soldier, soldier.Data.improveTo[1]);
+            item3.gameObject.SetActive(false);
+            
 
             Show();
         }
         else if (_soldier.Data.improveTo.Count == 1) // If only one possible evolution
         {
             soldier = _soldier;
-            item1.gameObject.SetActive(false);
-            item2.gameObject.SetActive(true);
-            item2.Setup(soldier, soldier.Data.improveTo[0]);
+            item1.gameObject.SetActive(true);
+            item1.Setup(soldier, soldier.Data.improveTo[0]);
+            item2.gameObject.SetActive(false);            
             item3.gameObject.SetActive(false);
 
             Show();
