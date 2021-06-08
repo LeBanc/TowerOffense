@@ -20,6 +20,7 @@ MonoBehaviour:
   baseRecruitAmount: 10
   baseExplosivesDamage: 25
   baseExplosivesTime: 5
+  baseSoldierInitNumber: 10
   towerHeal: 100
   hqBuildTime: 20
   explosivesBuildTime: 10
@@ -68,10 +69,10 @@ MonoBehaviour:
   turretPrefab: {fileID: 6257947811021738995, guid: ceb8473b5a5b8a147b4d73afcf6671c5,
     type: 3}
   squadColors:
-  - {r: 1, g: 0.84705883, b: 0, a: 1}
-  - {r: 0.14901961, g: 0.49803922, b: 0, a: 1}
-  - {r: 0, g: 0.5803922, b: 1, a: 1}
-  - {r: 1, g: 0, b: 0.11372549, a: 1}
+  - {r: 1, g: 1, b: 0, a: 1}
+  - {r: 0.32156864, g: 0.6627451, b: 0, a: 1}
+  - {r: 0, g: 0.4862745, b: 1, a: 1}
+  - {r: 0.654902, g: 0, b: 0.11372549, a: 1}
   soldierImages:
   - {fileID: 21300000, guid: 0b977be902319134281ebfdf6b4ee6e8, type: 3}
   - {fileID: 21300000, guid: 1fe592591d7fc0e4c81e60dab966a742, type: 3}
