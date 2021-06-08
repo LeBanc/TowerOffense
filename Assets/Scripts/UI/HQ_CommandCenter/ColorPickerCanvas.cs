@@ -14,16 +14,28 @@ public class ColorPickerCanvas : CancelableUICanvas
     // Squad currently selected (to update the color of the right squad)
     private Squad selectedSquad;
 
+    private RectTransform colorPickerRect;
     private Vector2 center;
     private Vector2 min;
     private Vector2 max;
 
+    /// <summary>
+    /// On Start, fetch the RectTransform and update the rect value
+    /// </summary>
     private void Start()
     {
-        RectTransform rectTransform = colorPicker.GetComponent<RectTransform>();
-        center = (Vector2)rectTransform.position - rectTransform.anchoredPosition;
-        min = center + rectTransform.rect.min;
-        max = center + rectTransform.rect.max;
+        colorPickerRect = colorPicker.GetComponent<RectTransform>();
+        UpdateRectValue();
+    }
+
+    /// <summary>
+    /// UpdateRectValue update the center, min and max value of the RectTransform for cursor movement when using gamepad
+    /// </summary>
+    private void UpdateRectValue()
+    {
+        center = (Vector2)colorPickerRect.position;
+        min = center + colorPickerRect.rect.min * CustomInputModule.ScreenRatio;
+        max = center + colorPickerRect.rect.max * CustomInputModule.ScreenRatio;
         center = (min + max) / 2;
     }
 
@@ -45,7 +57,7 @@ public class ColorPickerCanvas : CancelableUICanvas
         base.Show();
 
         defaultSelectable.Select();
-
+        UpdateRectValue();
         CursorManager.ShowCursorForAction(center, min, max);
 
         // Subscribing to PlayUpdate is delayed to avoid multiple UI Selection

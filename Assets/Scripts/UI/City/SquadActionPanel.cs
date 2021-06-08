@@ -51,9 +51,10 @@ public class SquadActionPanel : MonoBehaviour
     private int explosivesCapacity;
 
     // private UI & Cursor parameters
-    Vector2 cursorCenter;
-    Vector2 cursorMin;
-    Vector2 cursorMax;
+    private Vector2 cursorCenter;
+    private Vector2 cursorMin;
+    private Vector2 cursorMax;
+    private Image cursorAllowedImage;
 
     static bool buttonDown = false;
 
@@ -209,10 +210,8 @@ public class SquadActionPanel : MonoBehaviour
         PlayManager.OnRetreatAll += Retreat;
 
         // Setup the cursor zone for gamePad
-        cursorCenter = (Vector2)_cursorAllowedImage.rectTransform.position;
-        cursorMin = Vector2.Max(cursorCenter + _cursorAllowedImage.rectTransform.rect.min + new Vector2(25,25), Vector2.zero);
-        cursorMax = new Vector2(Screen.width, Screen.height);
-        cursorCenter = (cursorMin + cursorMax) / 2;
+        cursorAllowedImage = _cursorAllowedImage;
+        UpdateRectValue();
     }
 
     /// <summary>
@@ -272,6 +271,17 @@ public class SquadActionPanel : MonoBehaviour
     }
 
     /// <summary>
+    /// UpdateRectValue update the center, min and max value of the RectTransform for cursor movement when using gamepad
+    /// </summary>
+    private void UpdateRectValue()
+    {
+        cursorCenter = (Vector2)cursorAllowedImage.rectTransform.position;
+        cursorMin = Vector2.Max(cursorCenter + cursorAllowedImage.rectTransform.rect.min * CustomInputModule.ScreenRatio, Vector2.zero);
+        cursorMax = new Vector2(Screen.width, Screen.height);
+        cursorCenter = (cursorMin + cursorMax) / 2;
+    }
+
+    /// <summary>
     /// HideCursor method calls the CursorManager to hide the cursor (Retreat or Heal selected or Action Done or Cancel)
     /// </summary>
     /// <param name="_hide">True to hide, false otherwise (bool)</param>
@@ -288,6 +298,7 @@ public class SquadActionPanel : MonoBehaviour
         if (_isOn)
         {
             // Set the cursor to move/attack and highlight the towers
+            UpdateRectValue();
             CursorManager.ShowCursorForAction(cursorCenter, cursorMin, cursorMax);
             OnShowTowerHighlight?.Invoke();
         }
@@ -340,6 +351,7 @@ public class SquadActionPanel : MonoBehaviour
             {
                 squadUnit.OnActionDone += BuildHQDone;
                 squadUnit.OnUnselection += BuildHQCancel;
+                UpdateRectValue();
                 CursorManager.ShowCursorForAction(cursorCenter, cursorMin, cursorMax);
                 // Highlight the HQ candidates
                 OnShowHQCHighlight?.Invoke();
@@ -395,6 +407,7 @@ public class SquadActionPanel : MonoBehaviour
             {
                 squadUnit.OnActionDone += BuildTurretDone;
                 squadUnit.OnUnselection += BuildTurretCancel;
+                UpdateRectValue();
                 CursorManager.ShowCursorForAction(cursorCenter, cursorMin, cursorMax);
             }
         }
@@ -442,6 +455,7 @@ public class SquadActionPanel : MonoBehaviour
             {
                 squadUnit.OnActionDone += ExplosivesDone;
                 squadUnit.OnUnselection += ExplosivesCancel;
+                UpdateRectValue();
                 CursorManager.ShowCursorForAction(cursorCenter, cursorMin, cursorMax);
                 // Highlight the towers
                 OnShowTowerHighlight?.Invoke();

@@ -11,6 +11,7 @@ public class CustomInputModule : StandaloneInputModule
 
     private static Vector2 m_min;
     private static Vector2 m_max;
+    private Vector2 screenSize;
 
     /// <summary>
     /// UpdateCursorPosition method moves the cursor to the desired location
@@ -51,6 +52,18 @@ public class CustomInputModule : StandaloneInputModule
         m_max = new Vector2(Screen.width, Screen.height);
     }
 
+    private void ScreenSizeChange()
+    {
+        m_min = new Vector2(m_min.x * Screen.width / screenSize.x, m_min.y * Screen.height / screenSize.y);
+        m_max = new Vector2(m_max.x * Screen.width / screenSize.x, m_max.y * Screen.height / screenSize.y);
+        screenSize = new Vector2(Screen.width, Screen.height);
+    }
+
+    private void Update()
+    {
+        if (screenSize.x != Screen.width || screenSize.y != Screen.height) ScreenSizeChange();
+    }
+
     /// <summary>
     /// Get the current cursor position
     /// </summary>
@@ -60,11 +73,20 @@ public class CustomInputModule : StandaloneInputModule
     }
 
     /// <summary>
+    /// Get the current screen ratio
+    /// </summary>
+    public static Vector2 ScreenRatio
+    {
+        get { return new Vector2(Screen.width / 1306f, Screen.height / 735f); }
+    }
+
+    /// <summary>
     /// At awake, reset the cursor min & max allowed positions
     /// </summary>
     protected override void Awake()
     {
         base.Awake();
+        screenSize = new Vector2(Screen.width, Screen.height);
         ResetMinMaxCursorPosition();
     }
 
