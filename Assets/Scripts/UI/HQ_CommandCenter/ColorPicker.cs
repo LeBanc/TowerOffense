@@ -104,7 +104,7 @@ public class ColorPicker : MonoBehaviour
                 // Activate the Color Preview (update of preview image via event)
                 _colorReturn.ColorPreview();
                 // And if the left mouse button is clicked, activate the Color Selection (update of select image via event)
-                if (Input.GetButtonDown("Submit"))
+                if (Input.GetButtonDown("Submit") || Input.GetButtonDown("SubmitMouse"))
                 {
                     _colorReturn.ColorSelection();
                 }
